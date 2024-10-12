@@ -1,0 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap');
+
+:root {
+  box-sizing: border-box;
+  --primary-font-color: #faecff;
+  --warning-color: #e92d53;
+  --title-font: 'Gill Sans MT', sans-serif;
+  --navigation-font: 'Poppins', sans-serif;
+  --paragraph-font: 'Monserrat', sans-serif;
+  --primary-bg-color: #004745;
+  --secondary-bg-color: #0C3751;
+  --primary-btn-color: #00b3b9;
+  color: var(--primary-font-color);
+  font-family: var(--paragraph-font);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3 {
+  margin: 0;
+  padding: 0;
+  font-family: var(--title-font);
+}
+
+a {
+  text-decoration: none
+}
