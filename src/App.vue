@@ -1,15 +1,27 @@
 <template>
-  <Header>
-
-  </Header>
+  <TopBar />
   <main>
     <RouterView />
   </main>
 </template>
 
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
-import Header from '@/components/single/Header.vue';
+import { RouterView, useRouter } from 'vue-router'
+import TopBar from '@/components/single/TopBar.vue';
+import { useAuthStore } from './store/user/authStore';
+import { ROUTE_NAMES } from './router';
+import { HOME_PAGE_QUERIES } from './utils/constants';
+
+const router = useRouter();
+const { isRefreshTokenExpired } = useAuthStore();
+
+router.beforeEach((_to, _from, next) => {
+  if (isRefreshTokenExpired()) {
+    next({ name: ROUTE_NAMES.home, query: HOME_PAGE_QUERIES.autoLoggedOut });
+    return;
+  }
+  next();
+});
 </script>
 
 <style lang="css" scoped>

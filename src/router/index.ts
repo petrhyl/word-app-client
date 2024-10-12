@@ -6,6 +6,8 @@ import NotFoundPage from '@/pages/NotFoundPage.vue'
 export const ROUTE_NAMES = {
   home: 'home',
   account: 'account',
+  signup: 'signup',
+  login: 'login',
   practise: 'practise',
   practiseRunning: 'practise-running',
   notFound: 'notFound',
@@ -13,7 +15,7 @@ export const ROUTE_NAMES = {
 }
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory(import.meta.env.BASE_URL),  
   routes: [
     {
       path: '/',
@@ -24,7 +26,18 @@ const router = createRouter({
       path: '/account',
       name: ROUTE_NAMES.account,
       component: () => import('@/pages/account/AccountPage.vue')
-    }, {
+    },
+    {
+      path: '/signup',
+      name: ROUTE_NAMES.signup,
+      component: () => import('@/pages/signup/SignupPage.vue')
+    },
+    {
+      path: '/login',
+      name: ROUTE_NAMES.login,
+      component: () => import('@/pages/login/LoginPage.vue')
+    },
+    {
       path: '/practise',
       name: ROUTE_NAMES.practise,
       component: () => import('@/pages/practise/PractisePage.vue')
@@ -52,6 +65,5 @@ router.onError((err) => {
   console.error(err)
   router.replace({ name: ROUTE_NAMES.notFound })
 })
-
 
 export default router
