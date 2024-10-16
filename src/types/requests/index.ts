@@ -1,5 +1,5 @@
-export type VocabularyQueryParams = {
-    lang: string
+export type ExerciseQueryParams = {
+    langId: number
     limit: number
 }
 

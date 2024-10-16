@@ -4,6 +4,7 @@ export type FormElementProps = {
     validationMessage: string
     defaultValue?: string
     isFormSubmitted: boolean
+    tabIndex?: number
     validateInput: (value: string | File | null) => boolean;
 }
 

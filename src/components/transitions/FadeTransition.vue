@@ -7,7 +7,7 @@
 <style scoped>
 .v-enter-active,
 .v-leave-active {
-  transition: opacity 0.17s ease-in;
+  transition: opacity 0.175s ease-in;
 }
 
 .v-enter-from,

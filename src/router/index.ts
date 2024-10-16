@@ -6,6 +6,9 @@ import NotFoundPage from '@/pages/NotFoundPage.vue'
 export const ROUTE_NAMES = {
   home: 'home',
   account: 'account',
+  profile: 'profile',
+  addVocabulary: 'addVocabulary',
+  vocabularyStats: 'vocabularyStats',
   signup: 'signup',
   login: 'login',
   practise: 'practise',
@@ -25,7 +28,25 @@ const router = createRouter({
     {
       path: '/account',
       name: ROUTE_NAMES.account,
-      component: () => import('@/pages/account/AccountPage.vue')
+      component: () => import('@/pages/account/AccountPage.vue'),
+      meta: { requiresAuth: true },
+      children: [
+        {
+          path: 'profile',
+          name: ROUTE_NAMES.profile,
+          component: () => import('@/pages/account/ProfilePage.vue')
+        },
+        {
+          path: 'vocabularies/add',
+          name: ROUTE_NAMES.addVocabulary,
+          component: () => import('@/pages/account/vocabulary/AddVocabularyPage.vue')
+        },
+        {
+          path: 'vocabularies/stats',
+          name: ROUTE_NAMES.vocabularyStats,
+          component: () => import('@/pages/account/vocabulary/VocabularyStatsPage.vue')
+        }
+      ]
     },
     {
       path: '/signup',
@@ -40,12 +61,14 @@ const router = createRouter({
     {
       path: '/practise',
       name: ROUTE_NAMES.practise,
-      component: () => import('@/pages/practise/PractisePage.vue')
+      component: () => import('@/pages/practise/PractisePage.vue'),
+      meta: { requiresAuth: true }
     },
     {
       path: '/practise/running',
       name: ROUTE_NAMES.practise,
       component: () => import('@/pages/practise/running/PractiseRunningPage.vue'),
+      meta: { requiresAuth: true },
       beforeEnter: (to, _from, next) => {
         if (!to.query.lang || !to.query.limit || Number(to.query.limit) < 5 || Number(to.query.limit) > 100) {
           return next({ name: ROUTE_NAMES.practise })

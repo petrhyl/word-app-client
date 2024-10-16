@@ -6,14 +6,20 @@
 
 <style lang="css" scoped>
 .page-wrapper {
-    height: 100%;
     width: 100%;
-    max-width: 980px;
+    max-width: 780px;
+    height: 100%;
     display: flex;
+    flex-grow: 1;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    padding-top: 5rem;  
+    padding: 4rem 1.25rem 2rem 1.25rem;  
     row-gap: 2rem;  
+}
+
+@media screen and (max-width: 980px) {
+    .page-wrapper {
+        padding-top: 2.5rem;
+    }
 }
 </style>

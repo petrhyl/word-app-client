@@ -7,7 +7,7 @@
 
 <script setup lang="ts">
 import { RouterView, useRouter } from 'vue-router'
-import TopBar from '@/components/single/TopBar.vue';
+import TopBar from '@/components/single/top-bar/TopBar.vue';
 import { useAuthStore } from './store/user/authStore';
 import { ROUTE_NAMES } from './router';
 import { HOME_PAGE_QUERIES } from './utils/constants';
@@ -26,7 +26,7 @@ router.beforeEach((_to, _from, next) => {
 
 <style lang="css" scoped>
 main {
-  min-height: calc(100vh - 8rem);
+  min-height: calc(100vh - var(--header-height));
   display: flex;
   flex-direction: column;
   align-items: center;

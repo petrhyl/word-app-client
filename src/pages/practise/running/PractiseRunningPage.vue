@@ -5,6 +5,6 @@
 </template>
 
 <script setup lang="ts">
-import PageWrapper from '@/components/ui/pages/PageWrapper.vue';
+import PageWrapper from '@/components/ui/page/PageWrapper.vue';
 
 </script>

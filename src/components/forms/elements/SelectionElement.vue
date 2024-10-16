@@ -1,6 +1,8 @@
 <template>
     <div class="element">
-        <label :for="id">{{ label }}</label>
+        <div>
+            <label :for="id">{{ label }}</label>
+        </div>
         <div :class="getCssClasses">
             <select :id="id" :value="selectedValue.label" @change="handleChange" @click="handleOpen" @blur="handleBlur">
                 <option class="select-option" v-for="option in options" :key="option.value" :value="option.value">
@@ -154,10 +156,11 @@ select option {
 .check-icon {
     width: 1.5rem;
     height: 1.5rem;
-    stroke-width: 2;
+    stroke-width: 0.5rem;
 }
 
 .valid {
+    border-color: transparent;
 }
 
 .invalid {

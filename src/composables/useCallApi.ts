@@ -157,7 +157,7 @@ export default function useCallApi() {
                     }
                 }
 
-                const tokenResponse = await fetch(`${import.meta.env.VITE_API_URL}/auth/refresh`, {
+                const tokenResponse = await fetch(`${import.meta.env.VITE_API_URL}/user/refresh`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
