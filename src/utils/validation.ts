@@ -100,5 +100,5 @@ export function isBithNumberValid(value: string): boolean {
 }
 
 export function isPasswordValid(value: string): boolean {
-    return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$/.test(value)
+    return /(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}/.test(value)
 }

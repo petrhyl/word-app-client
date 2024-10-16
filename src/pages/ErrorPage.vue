@@ -1,12 +1,22 @@
+<template>
+    <PageWrapper>
+        <h1>Error</h1>
+        <p class="sorry-text">We are sorry.<br />An error accured on the page. Try it later.</p>
+        <span class="home-page-link">
+            Go to <AppButton :type="'link'" :style="'link'" :route="{ name: ROUTE_NAMES.home }">home page</AppButton>
+        </span>
+    </PageWrapper>
+</template>
+
 <script setup lang="ts">
-import { ROUTE_NAMES } from '@/router';
+import AppButton from "@/components/ui/button/AppButton.vue"
+import PageWrapper from "@/components/ui/page/PageWrapper.vue"
+import { ROUTE_NAMES } from "@/router"
 </script>
 
-<template>
-    <div>
-        <h1>Error</h1>
-        <p>We are sorry.</p>
-        <p>An error accured on the page. Try it somewhere else.</p>
-        <RouterLink :to="{ name: ROUTE_NAMES.home }">Go to home page</RouterLink>
-    </div>
-</template>
+<style lang="css" scoped>
+.sorry-text {
+    font-size: 1.25rem;
+    text-align: center;
+}
+</style>

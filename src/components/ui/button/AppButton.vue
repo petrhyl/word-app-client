@@ -3,8 +3,12 @@
         <slot></slot>
     </RouterLink>
     <button v-if="type !== 'link'" :type="type" :class="getCssClasses">
-        <slot></slot>
-        <LoadingSpinner class="spinner" v-if="isSubmitting" />
+        <span class="button-content">
+            <slot></slot>
+        </span>
+        <div class="spinner" v-if="isSubmitting">
+            <LoadingSpinner :circle-color="'#fbfbfb'" :strip-color="'#14f9ff'" :circle-width="5"/>
+        </div>
     </button>
 </template>
 
@@ -22,7 +26,8 @@ const props = defineProps<{
 
 const getCssClasses = computed(() => {
     return {
-        button: true,
+        clickable: true,
+        button: props.style !== "link",
         primary: props.style === "primary",
         secondary: props.style === "secondary",
         danger: props.style === "danger",
@@ -33,19 +38,22 @@ const getCssClasses = computed(() => {
 </script>
 
 <style lang="css" scoped>
+.clickable {
+    cursor: pointer;
+    transition: all 0.18s ease-in-out;
+    color: var(--primary-font-color);
+    font-family: var(--navigation-font);
+    font-weight: 500;
+}
+
 .button {
     width: 100%;
     min-width: fit-content;
     display: flex;
     justify-content: center;
     align-items: center;
-    color: var(--primary-font-color);
-    font-family: var(--navigation-font);
-    font-weight: 500;
-    cursor: pointer;
     border-radius: 5px;
     padding: 0.65rem 1.5rem;
-    transition: all 0.18s ease-in-out;
 }
 
 button {
@@ -78,15 +86,30 @@ button::deep(.spinner) {
 }
 
 .link:hover {
-    text-shadow: 0 0 2px var(--primary-text-color);
+    text-shadow: 0 0 2px var(--primary-font-color);
 }
 
-.button:hover {
+.clickable:hover {
     filter: brightness(1.2);
 }
 
 .is-submitting {
     pointer-events: none;
     filter: brightness(0.8);
+}
+
+.spinner {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.is-submitting .button-content {
+    opacity: 0;
 }
 </style>

@@ -16,7 +16,7 @@ export type ElementExposedFunctions = {
 }
 
 export type InputElementProps = {
-    type: 'text' | 'email' | 'password' | 'number' | 'date'
+    type: 'text' | 'email' | 'password' | 'number' | 'date' | 'watch-password'
     placeholder?: string
 } & FormElementProps
 

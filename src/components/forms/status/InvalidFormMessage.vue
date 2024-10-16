@@ -1,8 +1,6 @@
 <template>
     <div class="invalid-message-container">
-        <div v-if="isShown" class="invalid-form-message">
-            {{ message }}
-        </div>
+        <span v-if="isShown" class="invalid-form-message"> {{ message }}<span>&nbsp;</span> </span>
     </div>
 </template>
 
@@ -15,12 +13,13 @@ defineProps<{
 
 <style lang="css" scoped>
 .invalid-form-message {
-    width: 100%;
-    text-align: end;
+    padding-right: 0.5rem;
     color: var(--warning-color);
 }
 
 .invalid-message-container {
     width: 100%;
+    display: flex;
+    justify-content: end;
 }
 </style>

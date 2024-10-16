@@ -35,7 +35,7 @@ const isMenuOpening = ref(false)
 function toggleOpen() {
     if (isMenuOpen.value) {
         isMenuOpening.value = false
-        setTimeout(() => (isMenuOpen.value = false), 1800)
+        setTimeout(() => (isMenuOpen.value = false), 180)
     } else {
         isMenuOpen.value = true
         isMenuOpening.value = true
@@ -114,6 +114,7 @@ function toggleOpen() {
     .nav-menu.closing {
         animation-name: closeBackground;
         animation-timing-function: ease-out;
+        animation-fill-mode: forwards;
     }
 
     .nav-menu-content.opening {
@@ -126,6 +127,7 @@ function toggleOpen() {
         display: flex;
         animation-name: closeMenu;
         animation-timing-function: ease-in;
+        animation-fill-mode: forwards;
     }
 
     .nav-menu-content {

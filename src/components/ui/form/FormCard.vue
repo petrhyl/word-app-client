@@ -7,10 +7,16 @@
 <style scoped>
 .form-card {
     display: flex;
-    width: 96%;
+    width: 100%;
     max-width: 480px;
-    padding: 1rem;
+    padding: 1.5rem;
     border-radius: 5px;
     border: 2px solid #82828244;
+}
+
+@media screen and (max-width: 980px) {
+    .form-card {
+        padding: 1.25rem;
+    }
 }
 </style>
