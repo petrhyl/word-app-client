@@ -1,37 +1,43 @@
 <template>
-    <FormCard>
-        <form @submit.prevent="handleSubmit">
-            <InputElement
-                v-for="element in formElements"
-                ref="elementsRefs"
-                :key="element.id"
-                v-bind="element"
-                @on-validate="handleValidate"
-            />
-            <InvalidFormMessage :isShown="isFormInvalid || isError" :message="getInvalidMessage" />
-            <AppButton :type="'submit'" :style="'primary'" :is-submitting="isLoading">Sign Up</AppButton>
-        </form>
-    </FormCard>
+    <AppForm
+        ref="formRef"
+        :elementsRefs="elementsRefs"
+        :isError="props.isError"
+        :errorMessage="props.errorMessage"
+        :isLoading="props.isLoading"
+        @submit-form="handleSubmit"
+        @on-valid-state="handleValidState"
+    >
+        <InputElement
+            v-for="element in formElements"
+            ref="elementsRefs"
+            :key="element.id"
+            v-bind="element"
+            @on-validate="handleValidate"
+        />
+        <template #submit-text>Sign Up</template>
+    </AppForm>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue"
-import FormCard from "../ui/form/FormCard.vue"
+import { ref } from "vue"
 import { UserRegistration } from "@/types/requests"
 import InputElement from "./elements/InputElement.vue"
-import AppButton from "../ui/button/AppButton.vue"
 import { isEmailValid, isPasswordValid } from "@/utils/validation"
-import InvalidFormMessage from "./status/InvalidFormMessage.vue"
 import { getLocalLanguageCode } from "@/utils/functions"
 import { InputElementProps } from "./elements/FormElementProps"
+import AppForm from "./form/AppForm.vue"
+import { SubmitData } from "./form/SubmitData"
 
 const props = defineProps<{
     isLoading: boolean
     isError: boolean
+    errorMessage: string | null
 }>()
 
 const emits = defineEmits<{
     onSubmit: [data: UserRegistration]
+    onValidState: []
 }>()
 
 const elementIds = {
@@ -41,7 +47,7 @@ const elementIds = {
     confirmPassword: "user-confirm-password"
 }
 
-const formElements = computed<InputElementProps[]>(() => [
+const formElements: InputElementProps[] = [
     {
         id: elementIds.name,
         label: "Name",
@@ -49,17 +55,15 @@ const formElements = computed<InputElementProps[]>(() => [
         placeholder: "Your name",
         tabIndex: 1,
         validationMessage: "is required",
-        isFormSubmitted: isSubmitted.value,
         validateInput: value => typeof value === "string" && value.length > 2 && value.length < 150
     },
     {
         id: elementIds.email,
-        label: "Email",
+        label: "E-mail",
         type: "email",
-        placeholder: "Your email address",
+        placeholder: "Your e-mail address",
         tabIndex: 2,
-        validationMessage: "wrong format",
-        isFormSubmitted: isSubmitted.value,
+        validationMessage: "wrong e-mail format",
         validateInput: value => typeof value === "string" && isEmailValid(value)
     },
     {
@@ -69,7 +73,6 @@ const formElements = computed<InputElementProps[]>(() => [
         placeholder: "Enter password",
         tabIndex: 3,
         validationMessage: "at least 8 letters (uppercase, lowercase, number)",
-        isFormSubmitted: isSubmitted.value,
         validateInput: value => typeof value === "string" && isPasswordValid(value)
     },
     {
@@ -79,72 +82,33 @@ const formElements = computed<InputElementProps[]>(() => [
         placeholder: "Confirm password",
         tabIndex: 4,
         validationMessage: "passwords do not match",
-        isFormSubmitted: isSubmitted.value,
         validateInput: value => typeof value === "string" && elementsRefs.value[2]?.getValue() === value
     }
-])
+]
 
 const elementsRefs = ref<InstanceType<typeof InputElement>[]>([])
-
-const isSubmitted = ref(false)
-const isFormInvalid = ref(false)
-
-const getInvalidMessage = computed(() => {
-    if (props.isError) {
-        return "Something went wrong. Please try again later or contact us."
-    } else {
-        return "Please fill in all fields correctly"
-    }
-})
-
-function isAnyElementInvalid() {
-    for (const element of elementsRefs.value) {
-        console.log(element)
-
-        if (!element.isValid()) {
-            return true
-        }
-    }
-
-    return false
-}
+const formRef = ref<InstanceType<typeof AppForm> | null>(null)
 
 function handleValidate() {
-    if (isAnyElementInvalid()) {
-        return
-    }
-
-    isFormInvalid.value = false
+    formRef.value?.setIsValid()
 }
 
-function handleSubmit() {
+function handleValidState() {
+    emits("onValidState")
+}
+
+function handleSubmit(data: SubmitData) {
     if (props.isLoading) {
         return
     }
 
-    isSubmitted.value = true
-
-    if (isAnyElementInvalid()) {
-        isFormInvalid.value = true
-        return
-    }
-
-    const data: UserRegistration = {
-        name: elementsRefs.value[0].getValue() as string,
-        email: elementsRefs.value[1].getValue() as string,
-        password: elementsRefs.value[2].getValue() as string,
+    const registration: UserRegistration = {
+        name: data.get(elementIds.name) as string,
+        email: data.get(elementIds.email) as string,
+        password: data.get(elementIds.password) as string,
         language: getLocalLanguageCode()
     }
 
-    emits("onSubmit", data)
+    emits("onSubmit", registration)
 }
 </script>
-
-<style lang="css" scoped>
-form {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-</style>

@@ -1,9 +1,11 @@
 <template>
     <div class="element-container">
-        <div class="label-container">
-            <label :for="props.id">{{ props.label }}</label>
-            <span v-if="isWarningDisplayed" class="warning">{{ props.validationMessage }}</span>
-        </div>
+        <ElementLable
+            :forId="id"
+            :label="label"
+            :validationMessage="validationMessage"
+            :isWarningDisplayed="isWarningDisplayed"
+        />
         <div class="input-wrapper" :class="isWarningDisplayed ? 'invalid' : 'valid'">
             <input
                 :id="props.id"
@@ -25,6 +27,7 @@
 import { computed, ref } from "vue"
 import { ElementExposedFunctions, InputElementProps } from "./FormElementProps"
 import { EyeIcon, EyeSlashIcon } from "@heroicons/vue/16/solid"
+import ElementLable from "./ElementLable.vue"
 
 const props = defineProps<InputElementProps>()
 
@@ -34,18 +37,20 @@ defineExpose<ElementExposedFunctions>({
     getId,
     getValue,
     isValid,
-    reset
+    reset,
+    setIsFormSubmitted
 })
 
 const value = ref<string | number | null>(props.defaultValue || null)
 const isBlured = ref<boolean>(false)
 const isPasswordVisible = ref<boolean>(false)
+const isFormSubmitted = ref<boolean>(false)
 
 const isWarningDisplayed = computed<boolean>(() => {
-    return !isValid() && ((isBlured.value && value.value !== null) || props.isFormSubmitted)
+    return !isValid() && ((isBlured.value && value.value !== null) || isFormSubmitted.value)
 })
 const getInputType = computed(() => {
-    if (isPasswordVisible.value && props.type === "watch-password") {
+    if ((isPasswordVisible.value && props.type === "watch-password") || props.type === "email") {
         return "text"
     }
 
@@ -83,6 +88,10 @@ function isValid(): boolean {
 function reset() {
     value.value = props.defaultValue || null
 }
+
+function setIsFormSubmitted() {
+    isFormSubmitted.value = true
+}
 </script>
 
 <style lang="css" scoped>
@@ -93,43 +102,34 @@ function reset() {
     row-gap: 0.5rem;
 }
 
-.label-container {
-    display: inline;
-}
-
-.label-container label {
-    font-family: var(--title-font);
-    color: var(--title-font-color);
-    font-size: 1.15rem;
-    padding-right: 0.5rem;
-    padding-left: calc(0.75rem + 2px);
-}
-
-.warning {
-    color: var(--warning-color);
-    font-size: 0.75rem;
-}
-
 .input-wrapper {
+    position: relative;
     width: 100%;
-    display: flex;
-    background-color: #002931d3;
+    background-color: var(--element-bg-color);
     border-width: 2px;
     border-style: solid;
-    border-radius: 5px;
-    padding: 0.75rem 0.75rem;
+    border-radius: var(--border-radius);    
 }
 
 .input-wrapper input {
     width: 100%;
-    background-color: transparent;
+    background-color: var(--element-bg-color);
     color: var(--primary-font-color);
     font-family: var(--paragraph-font);
-    font-size: 1rem;
+    font-size: 1rem;    
+    border-radius: var(--border-radius);  
+    padding: 0.75rem 0.75rem;
+}
+
+.input-wrapper input:-webkit-autofill {
+    background-color: #002931d3 !important;
+    color: #f2e0ff !important;
+    appearance: none !important;
 }
 
 .input-wrapper input::placeholder {
     color: var(--secondary-font-color);
+    font-family: var(--paragraph-font);
 }
 
 .valid {
@@ -141,8 +141,13 @@ function reset() {
 }
 
 .watch-icon-wrapper {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
     display: flex;
     align-items: center;
+    padding-right: 0.75rem;
 }
 
 .watch-icon {

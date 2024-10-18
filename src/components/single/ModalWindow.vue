@@ -8,7 +8,7 @@
                             <XMarkIcon class="x-mark-icon" />
                         </button>
                     </div>
-                    <div class="modal-content"> 
+                    <div class="modal-content">
                         <slot></slot>
                     </div>
                     <div class="modal-padding-element"></div>
@@ -19,9 +19,9 @@
 </template>
 
 <script setup lang="ts">
-import { XMarkIcon } from "@heroicons/vue/24/solid"
+import { XMarkIcon } from "@heroicons/vue/20/solid"
 import FadeTransition from "../transitions/FadeTransition.vue"
-import { ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue"
 
 const props = defineProps<{
     show: boolean
@@ -29,22 +29,41 @@ const props = defineProps<{
 
 const emits = defineEmits(["clickCloseButton"])
 
-
-const isShown = ref<boolean>(false)
+const isShown = ref<boolean>(props.show)
 const isWindowOpen = ref<boolean>(false)
+const timeout = ref<NodeJS.Timeout | null>(null)
 
-watch(() => props.show, (value) => {
-    if (value === true) {
+function toggleOpen(isOpen: boolean) {
+    if (timeout.value) {
+        clearTimeout(timeout.value)        
+    }
+    
+    if (isOpen === true) {
         isShown.value = true
-        setTimeout(() => {
+        timeout.value = setTimeout(() => {
             isWindowOpen.value = true
         }, 3)
     } else {
         isWindowOpen.value = false
-        setTimeout(() => {
+        timeout.value = setTimeout(() => {
             isShown.value = false
         }, 175)
     }
+}
+
+watch(
+    () => props.show,
+    value => {
+        console.log("watch", value);
+        
+        toggleOpen(value)
+    }
+)
+
+onMounted(() => {
+    console.log(props.show);
+    
+    toggleOpen(props.show)
 })
 </script>
 
@@ -55,24 +74,26 @@ watch(() => props.show, (value) => {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: #ecedff80;
+    background-color: var(--overlay-color);
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 1000;
 }
 
 .modal-window {
+    max-width: 480px;
     background-color: var(--primary-bg-color);
-    border-radius: 5px;
+    border-radius: var(--border-radius);
     box-shadow: 0 3px 5px #0000001a;
 }
 
-.modal-content{
+.modal-content {
     display: flex;
     flex-direction: column;
     align-items: center;
-    row-gap: 1rem;
-    padding: 1rem 1.5rem;    
+    row-gap: 1.5rem;
+    padding: 1.5rem;
 }
 
 .modal-padding-element {
@@ -89,13 +110,15 @@ watch(() => props.show, (value) => {
 }
 
 .modal-padding-element.top button {
-    padding: 0.75rem;
+    height: 100%;
+    display: flex;
+    align-items: center;
 }
 
 .x-mark-icon {
-    width: 1.5rem;
-    height: 1.5rem;
-    stroke-width: 0.5rem;
+    width: 1.75rem;
+    height: 1.75rem;
+    stroke-width: 0.75rem;
     color: var(--primary-font-color);
 }
 </style>

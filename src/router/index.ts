@@ -10,6 +10,7 @@ export const ROUTE_NAMES = {
   addVocabulary: 'addVocabulary',
   vocabularyStats: 'vocabularyStats',
   signup: 'signup',
+  vefication: 'vefication',
   login: 'login',
   practise: 'practise',
   practiseRunning: 'practise-running',
@@ -18,7 +19,7 @@ export const ROUTE_NAMES = {
 }
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),  
+  history: createWebHistory(import.meta.env.VITE_BASE_URL),
   routes: [
     {
       path: '/',
@@ -29,7 +30,7 @@ const router = createRouter({
       path: '/account',
       name: ROUTE_NAMES.account,
       component: () => import('@/pages/account/AccountPage.vue'),
-      meta: { requiresAuth: true },
+      meta: { authRequired: true },
       children: [
         {
           path: 'profile',
@@ -51,24 +52,31 @@ const router = createRouter({
     {
       path: '/signup',
       name: ROUTE_NAMES.signup,
+      meta: { authRestricted: true },
       component: () => import('@/pages/signup/SignupPage.vue')
+    }, {
+      path: '/signup/verification/:token',
+      name: ROUTE_NAMES.vefication,
+      meta: { authRestricted: true },
+      component: () => import('@/pages/signup/verification/VerificationPage.vue')
     },
     {
       path: '/login',
       name: ROUTE_NAMES.login,
+      meta: { authRestricted: true },
       component: () => import('@/pages/login/LoginPage.vue')
     },
     {
       path: '/practise',
       name: ROUTE_NAMES.practise,
+      meta: { authRequired: true },
       component: () => import('@/pages/practise/PractisePage.vue'),
-      meta: { requiresAuth: true }
     },
     {
       path: '/practise/running',
       name: ROUTE_NAMES.practise,
+      meta: { authRequired: true },
       component: () => import('@/pages/practise/running/PractiseRunningPage.vue'),
-      meta: { requiresAuth: true },
       beforeEnter: (to, _from, next) => {
         if (!to.query.lang || !to.query.limit || Number(to.query.limit) < 5 || Number(to.query.limit) > 100) {
           return next({ name: ROUTE_NAMES.practise })

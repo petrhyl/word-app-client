@@ -1,17 +1,19 @@
 <template>
     <PageWrapper>
-        <ModalWindow :show="isAutoLoggedOut">
+        <ModalWindow :show="isAutoLoggedOut" @click-close-button="handleCloseLoggedoutModal">
             <h3>You have been automatically logged out.</h3>
-            <p>Please go to log-in page by clicking on the button below and log in again.</p>
+            <p class="auto-loggedout-text">
+                Please go to log-in page by clicking on the button below and log in again.
+            </p>
             <AppButton :style="'primary'" type="link" :route="{ name: ROUTE_NAMES.login }">Log in</AppButton>
         </ModalWindow>
         <h1 class="welcome-message">Welcome to application for practising your foreign language vocabulary</h1>
         <div v-if="!user?.id" class="prompt-container">
-            <h3>Please log in or sign up to start practising</h3>
+            <p>Please log in or sign up to start practising</p>
             <UnloggedUserNav css-class="auth-buttons-container" />
         </div>
-        <div v-else>
-            <h3>You can start practising now</h3>
+        <div v-else class="prompt-container">
+            <p>You can start practising now</p>
             <div>
                 <AppButton :style="'primary'" type="link" :route="{ name: ROUTE_NAMES.practise }">
                     Start Exercise
@@ -38,27 +40,43 @@ import ModalWindow from "@/components/single/ModalWindow.vue"
 import AppButton from "@/components/ui/button/AppButton.vue"
 import PageWrapper from "@/components/ui/page/PageWrapper.vue"
 import { ROUTE_NAMES } from "@/router"
+import { useAuthStore } from "@/store/user/authStore"
 import { useUserStore } from "@/store/user/userStore"
-import { HOME_PAGE_QUERY_KEY_VALUE } from "@/utils/constants"
-import { ref } from "vue"
-import { onBeforeRouteUpdate, useRoute } from "vue-router"
+import { onBeforeMount, ref } from "vue"
+import { onBeforeRouteUpdate } from "vue-router"
 
-const route = useRoute()
 const { user } = useUserStore()
+const { nullifyTokens, isRefreshTokenExpired } = useAuthStore()
 
 const isAutoLoggedOut = ref(false)
 
-onBeforeRouteUpdate(() => {
+function handleCloseLoggedoutModal() {
+    isAutoLoggedOut.value = false
+}
+
+function resolveLoginExpiration() {
     if (
-        route.query &&
-        route.query[HOME_PAGE_QUERY_KEY_VALUE.autoLoggedOut.key] === HOME_PAGE_QUERY_KEY_VALUE.autoLoggedOut.value
+        isRefreshTokenExpired()
     ) {
         isAutoLoggedOut.value = true
+        nullifyTokens()
     }
+}
+
+onBeforeRouteUpdate(() => {
+    resolveLoginExpiration()
+})
+
+onBeforeMount(() => {
+    resolveLoginExpiration()
 })
 </script>
 
 <style lang="css" scoped>
+.auto-loggedout-text {
+    text-align: center;
+}
+
 .prompt-container {
     display: flex;
     flex-direction: column;
@@ -69,8 +87,9 @@ onBeforeRouteUpdate(() => {
     padding-bottom: 5%;
 }
 
-.prompt-container h3 {
+.prompt-container p {
     text-align: center;
+    font-size: 1.25rem;
 }
 
 .welcome-message {

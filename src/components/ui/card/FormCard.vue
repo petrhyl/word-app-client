@@ -10,8 +10,9 @@
     width: 100%;
     max-width: 480px;
     padding: 1.5rem;
-    border-radius: 5px;
-    border: 2px solid #82828244;
+    border-radius: var(--border-radius);
+    border: 2px solid var(--form-border-color);
+    box-shadow: var(--shadow);
 }
 
 @media screen and (max-width: 980px) {

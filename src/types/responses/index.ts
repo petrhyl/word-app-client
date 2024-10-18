@@ -17,7 +17,7 @@ export type AuthResponse = {
 
 export type UserRegistrationResponse = {
     auth?: AuthResponse
-    retistration: {
+    registration?: {
         userEmail: string
         message: string
     }

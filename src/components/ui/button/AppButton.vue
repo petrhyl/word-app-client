@@ -7,7 +7,7 @@
             <slot></slot>
         </span>
         <div class="spinner" v-if="isSubmitting">
-            <LoadingSpinner :circle-color="'#fbfbfb'" :strip-color="'#14f9ff'" :circle-width="5"/>
+            <LoadingSpinner :circle-color="'#fbfbfb'" :strip-color="'#14f9ff'" :circle-width="4"/>
         </div>
     </button>
 </template>
@@ -44,6 +44,7 @@ const getCssClasses = computed(() => {
     color: var(--primary-font-color);
     font-family: var(--navigation-font);
     font-weight: 500;
+    font-size: 1rem;
 }
 
 .button {
@@ -52,7 +53,7 @@ const getCssClasses = computed(() => {
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 5px;
+    border-radius: var(--border-radius);
     padding: 0.65rem 1.5rem;
 }
 

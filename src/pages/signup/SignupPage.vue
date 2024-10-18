@@ -1,22 +1,51 @@
 <template>
     <PageWrapper>
-        <h1>Create your account</h1>
-        <p class="description">Sign up to be able to create your own vocabulary to practise.</p>
-        <SignupForm :is-loading="isLoading" :is-error="isError" @on-submit="handleSubmit" />
+        <PageTitle :title="getTitle" :description="getDescription" />
+        <SignupForm
+            v-if="!isRegistered"
+            :is-loading="isLoading"
+            :is-error="isError"
+            :error-message="errorMessage"
+            @on-submit="handleSubmit"
+            @on-valid-state="handleValidState"
+        />
+        <PrimaryCard v-else>
+            <p class="registered-thanks">Your account was created successfully</p>
+            <p class="registered-message">
+                To log in, please verify your email address by clicking on the link in the email we sent you.
+            </p>
+        </PrimaryCard>
     </PageWrapper>
 </template>
 
 <script setup lang="ts">
 import SignupForm from "@/components/forms/SignupForm.vue"
+import PrimaryCard from "@/components/ui/card/PrimaryCard.vue"
+import PageTitle from "@/components/ui/page/PageTitle.vue"
 import PageWrapper from "@/components/ui/page/PageWrapper.vue"
+import { ErrorResponseType } from "@/composables/useCallApi"
+import { ROUTE_NAMES } from "@/router"
 import { useUserStore } from "@/store/user/userStore"
 import { UserRegistration } from "@/types/requests"
-import { ref } from "vue"
+import { computed, ref } from "vue"
+import { useRouter } from "vue-router"
 
 const { register } = useUserStore()
+const router = useRouter()
 
 const isLoading = ref(false)
 const isError = ref(false)
+const errorMessage = ref<string | null>(null)
+const isRegistered = ref(false)
+
+const getTitle = computed(() => (isRegistered.value ? "Account created" : "Account registration"))
+const getDescription = computed(() =>
+    isRegistered.value ? "Thank you for signing up." : "Sign up to be able to create your own vocabulary to practise."
+)
+
+function handleValidState() {
+    isError.value = false
+}
 
 async function handleSubmit(data: UserRegistration) {
     if (isLoading.value) {
@@ -25,16 +54,33 @@ async function handleSubmit(data: UserRegistration) {
 
     isLoading.value = true
 
-    const result = await register(data)
+    const response = await register(data)
 
-    isError.value = !result
+    isError.value = response.isError
+
+    errorMessage.value =
+        response.errorType === ErrorResponseType.UNPROCESSABLE_ENTITY ? "E-mail is already taken" : null
     isLoading.value = false
+
+    if (!response.isError && response.data !== null) {
+        isRegistered.value = true
+        window.scrollY = 0
+        setTimeout(() => {
+            router.push({ name: ROUTE_NAMES.login })
+        }, 10000)
+    }
 }
 </script>
 
-
 <style lang="css" scoped>
-.description{
+.registered-thanks {
+    text-align: center;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--success-color);
+}
+
+.registered-message {
     text-align: center;
 }
 </style>

@@ -4,12 +4,16 @@
             <XMarkIcon v-if="isMenuOpen" class="button-icon" />
             <Bars3Icon v-else class="button-icon" />
         </button>
-        <div
-            class="nav-menu"
-            :class="{ opening: isMenuOpening, closing: !isMenuOpening, open: isMenuOpen }"
-            @click.self="toggleOpen"
-        >
-            <menu class="nav-menu-content" :class="{ opening: isMenuOpening, closing: !isMenuOpening }">
+        <div class="menu-wrapper">
+            <div
+                class="nav-menu"
+                :class="{ opening: isMenuOpening, closing: !isMenuOpening, open: isMenuOpen }"
+                @click.self="toggleOpen"
+            ></div>
+            <menu
+                class="nav-menu-content"
+                :class="{ opening: isMenuOpening, closing: !isMenuOpening, open: isMenuOpen }"
+            >
                 <div v-if="user?.id" class="user-nav-container">
                     <UserMenu />
                 </div>
@@ -45,7 +49,6 @@ function toggleOpen() {
 
 <style lang="css" scoped>
 .menu-container {
-    position: relative;
     height: 100%;
     display: flex;
     align-items: center;
@@ -54,6 +57,13 @@ function toggleOpen() {
 
 .toggle-menu-btn {
     display: none;
+}
+
+.menu-wrapper {
+    position: relative;
+    height: 100%;
+    display: flex;
+    align-items: center;
 }
 
 .nav-menu {
@@ -96,10 +106,9 @@ function toggleOpen() {
         height: calc(100vh - var(--header-height) + 4px);
         display: none;
         justify-content: end;
-        background-color: #1111114c;
-        overflow: hidden;
+        background-color: var(--overlay-color);
         animation-duration: 180ms;
-        --menu-translate-x: 321px;
+        --menu-width: 320px;
     }
 
     .nav-menu.open {
@@ -117,27 +126,35 @@ function toggleOpen() {
         animation-fill-mode: forwards;
     }
 
-    .nav-menu-content.opening {
+    .nav-menu-content {
+        display: none;
+        position: absolute;
+        right: -1.25rem;
+        top: calc(var(--header-height) - 8px);
+        height: calc(100vh - var(--header-height) + 4px);
+        width: var(--menu-width);
+        max-width: 90vw;
+        flex-direction: column;
+        padding: 1.5rem 2rem;
+        background-color: var(--secondary-bg-color);
+        overflow: hidden;
+        z-index: 101;
+        animation-duration: 180ms;
+    }
+
+    .nav-menu-content.open {
         display: flex;
+    }
+
+    .nav-menu-content.opening {
         animation-name: openMenu;
         animation-timing-function: ease-out;
     }
 
     .nav-menu-content.closing {
-        display: flex;
         animation-name: closeMenu;
         animation-timing-function: ease-in;
         animation-fill-mode: forwards;
-    }
-
-    .nav-menu-content {
-        display: none;
-        width: 320px;
-        max-width: 90%;
-        flex-direction: column;
-        padding: 1.5rem 2rem;
-        background-color: var(--secondary-bg-color);
-        animation-duration: 180ms;
     }
 
     .user-nav-container {
@@ -153,10 +170,10 @@ function toggleOpen() {
 
     @keyframes openMenu {
         0% {
-            transform: translateX(var(--menu-translate-x));
+            right: calc(calc(var(--menu-width) * -1) - 1.25rem);
         }
         100% {
-            transform: translateX(0);
+            right: -1.25rem;
         }
     }
 
@@ -171,10 +188,10 @@ function toggleOpen() {
 
     @keyframes closeMenu {
         0% {
-            transform: translateX(0);
+            right: -1.25rem;
         }
         100% {
-            transform: translateX(var(--menu-translate-x));
+            right: calc(calc(var(--menu-width) * -1) - 1.25rem);
         }
     }
 

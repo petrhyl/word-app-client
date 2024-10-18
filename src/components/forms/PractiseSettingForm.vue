@@ -31,7 +31,7 @@
 <script setup lang="ts">
 import { ExerciseQueryParams } from "@/types/requests"
 import { SelectionOptionProps } from "./elements/FormElementProps"
-import FormCard from "../ui/form/FormCard.vue"
+import FormCard from "../ui/card/FormCard.vue"
 import SelectionElement from "./elements/SelectionElement.vue"
 import { ref } from "vue"
 import AppButton from "../ui/button/AppButton.vue"

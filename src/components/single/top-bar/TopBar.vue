@@ -25,7 +25,7 @@
 import { ROUTE_NAMES } from "@/router"
 import AppButton from "@/components/ui/button/AppButton.vue"
 import { useUserStore } from "@/store/user/userStore"
-import NavMenu from "./NavMenu.vue";
+import NavMenu from "./NavMenu.vue"
 
 const { user } = useUserStore()
 </script>
@@ -47,6 +47,7 @@ header {
     background-color: var(--secondary-bg-color);
     padding: 4px 1.25rem 0 1.25rem;
     box-shadow: 0 0 5px var(--secondary-bg-color);
+    z-index: 100;
 }
 
 .header-content > div {
@@ -55,7 +56,14 @@ header {
 
 .pc-nav-container {
     justify-content: start;
+    align-items: center;
     display: flex;
+}
+
+.app-nav-pc {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
 }
 
 .app-title {
@@ -66,7 +74,6 @@ header {
 .app-title h1 {
     font-size: 2.5rem;
 }
-
 
 @media screen and (max-width: 980px) {
     .app-title h1 {

@@ -66,3 +66,20 @@ export function convertIbanToAccountNumber(iban: string) {
 export function getLocalLanguageCode() {
     return navigator.language.substring(0, 2)
 }
+
+export function parseToIntOrReturnNull(value: string | null): number | null {
+    if (value === null) {
+        return null
+    }
+
+    const parsed = parseInt(value, 10)
+    if (isNaN(parsed)) {
+        return null
+    }
+
+    if (parsed.toString() !== value) {
+        return null
+    }
+
+    return parsed
+}

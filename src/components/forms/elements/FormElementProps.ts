@@ -3,7 +3,6 @@ export type FormElementProps = {
     label: string
     validationMessage: string
     defaultValue?: string
-    isFormSubmitted: boolean
     tabIndex?: number
     validateInput: (value: string | File | null) => boolean;
 }
@@ -13,6 +12,7 @@ export type ElementExposedFunctions = {
     getValue: () => string | File | null
     isValid: () => boolean
     reset: () => void
+    setIsFormSubmitted: () => void
 }
 
 export type InputElementProps = {

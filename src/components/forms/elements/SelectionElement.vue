@@ -36,11 +36,14 @@ import { CheckIcon } from "@heroicons/vue/16/solid"
 
 const props = defineProps<SelectionElementProps>()
 
+const emits = defineEmits(["onValidate"])
+
 defineExpose<ElementExposedFunctions>({
     getId,
     getValue,
     isValid,
-    reset
+    reset,
+    setIsFormSubmitted
 })
 
 function resolveDefaultValue() {
@@ -52,9 +55,10 @@ function resolveDefaultValue() {
 const selectedValue = ref<SelectionOptionProps>(resolveDefaultValue())
 const isOpen = ref<boolean>(false)
 const isBlured = ref<boolean>(false)
+const isFormSubmitted = ref<boolean>(false)
 
 const isWarningDisplayed = computed<boolean>(() => {
-    return !isValid && (isBlured.value || props.isFormSubmitted)
+    return !isValid && (isBlured.value || isFormSubmitted.value)
 })
 const getCssClasses = computed<string>(() => {
     let css = isWarningDisplayed.value ? "invalid" : "valid"
@@ -95,11 +99,16 @@ function getValue(): string {
 }
 
 function isValid(): boolean {
+    emits("onValidate")
     return props.validateInput(selectedValue.value.value)
 }
 
 function reset() {
     selectedValue.value = resolveDefaultValue()
+}
+
+function setIsFormSubmitted() {
+    isFormSubmitted.value = true
 }
 </script>
 
@@ -117,7 +126,7 @@ select option {
 .element {
     position: relative;
     width: 100%;
-    border-radius: 5px;
+    border-radius: var(--border-radius);
     border-width: 2px;
     border-style: solid;
 }
@@ -130,7 +139,7 @@ select option {
     top: calc(100% + 0.5rem);
     max-height: 8rem;
     overflow: auto;
-    border-radius: 5px;
+    border-radius: var(--border-radius);
 }
 
 .selection-option {

@@ -1,3 +1,4 @@
+import { parseToIntOrReturnNull } from "@/utils/functions";
 import { defineStore } from "pinia";
 import { computed, onBeforeMount, ref } from "vue";
 
@@ -38,16 +39,16 @@ export const useAuthStore = defineStore('authStore', () => {
         localStorage.setItem(REFRESH_TOKEN_KEY, refrToken)
         localStorage.setItem(REFRESH_TOKEN_EXPIERY_KEY, refrTokenExpiry.toString())
     }
-    
-    function isRefreshTokenExpired() {
-        return refreshTokenExpiry.value && refreshTokenExpiry.value < Date.now() - 3000
+
+    function isRefreshTokenExpired(): boolean {
+        return refreshTokenExpiry.value !== null && refreshTokenExpiry.value < Date.now() - 3000
     }
 
     onBeforeMount(() => {
         accessTokenRef.value = localStorage.getItem(ACCESS_TOKEN_KEY)
-        accessTokenExpiry.value = Number(localStorage.getItem(ACCESS_TOKEN_EXPIERY_KEY))
+        accessTokenExpiry.value = parseToIntOrReturnNull(localStorage.getItem(ACCESS_TOKEN_EXPIERY_KEY))
         refreshTokenRef.value = localStorage.getItem(REFRESH_TOKEN_KEY)
-        refreshTokenExpiry.value = Number(localStorage.getItem(REFRESH_TOKEN_EXPIERY_KEY))
+        refreshTokenExpiry.value = parseToIntOrReturnNull(localStorage.getItem(REFRESH_TOKEN_EXPIERY_KEY))
     })
 
     return {

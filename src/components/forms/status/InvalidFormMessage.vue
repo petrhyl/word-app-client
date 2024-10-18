@@ -1,6 +1,6 @@
 <template>
     <div class="invalid-message-container">
-        <span v-if="isShown" class="invalid-form-message"> {{ message }}<span>&nbsp;</span> </span>
+        <span>&nbsp;</span><span v-if="isShown" class="invalid-form-message"> {{ message }}</span>
     </div>
 </template>
 

@@ -24,6 +24,7 @@ export enum ErrorResponseType {
     FORBIDDEN = 'FORBIDDEN',
     NOT_FOUND = 'NOT_FOUND',
     BAD_REQUEST = 'BAD_REQUEST',
+    UNPROCESSABLE_ENTITY = 'UNPROCESSABLE_ENTITY',
     INTERNAL_SERVER_ERROR = 'INTERNAL_SERVER_ERROR',
     UNKNOWN = 'UNKNOWN'
 }
@@ -75,8 +76,10 @@ async function generateApiResponse<T>(response: Response): Promise<ApiCallRespon
             errorType = ErrorResponseType.UNAUTHORIZED
         } else if (response.status === 403) {
             errorType = ErrorResponseType.FORBIDDEN
-        } else if (response.status === 400 || response.status === 422) {
+        } else if (response.status === 400) {
             errorType = ErrorResponseType.BAD_REQUEST
+        } else if (response.status === 422) {
+            errorType = ErrorResponseType.UNPROCESSABLE_ENTITY
         } else if (response.status === 404) {
             errorType = ErrorResponseType.NOT_FOUND
         } else if (response.status === 500) {
@@ -125,6 +128,8 @@ export default function useCallApi() {
     const { accessToken, refreshToken, setTokens, isRefreshTokenExpired, nullifyTokens } = useAuthStore()
 
     /**
+     * @see {T} - first generic type of this function is type of data sent as a body of API endpoint request
+     * @see {U} - second generic type is type of data deserialized from API response body
      * @param options generic object with data required as a body of API endpoint request - data's generic type is type given as a first generic type of this function
      * @param authToken authorization bearer token if any
      * @returns deserialized object of API response body of type given as a second generic type of this function or generated object with error message if request failed
