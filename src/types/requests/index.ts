@@ -14,3 +14,8 @@ export type UserLogin = {
     email: string
     password: string
 }
+
+export type UserLogout = {
+    userId: number
+    refreshToken: string
+}

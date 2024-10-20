@@ -1,7 +1,7 @@
 <template>
     <PageWrapper>
         <h1>Error</h1>
-        <p class="sorry-text">We are sorry.<br />An error accured on the page. Try it later.</p>
+        <p class="sorry-text">We are sorry.<br />An error accured on the page. Please, try it later.</p>
         <span class="home-page-link">
             Go to <AppButton :type="'link'" :style="'link'" :route="{ name: ROUTE_NAMES.home }">home page</AppButton>
         </span>

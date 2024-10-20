@@ -6,7 +6,7 @@
         </button>
         <div class="menu-wrapper">
             <div
-                class="nav-menu"
+                class="nav-menu-overlay"
                 :class="{ opening: isMenuOpening, closing: !isMenuOpening, open: isMenuOpen }"
                 @click.self="toggleOpen"
             ></div>
@@ -24,14 +24,14 @@
 </template>
 
 <script setup lang="ts">
-import UserMenu from "@/components/menu/dropdown/UserMenu.vue"
+import UserMenu from "@/components/menu/UserMenu.vue"
 import UnloggedUserNav from "@/components/nav/UnloggedUserNav.vue"
-import { useUserStore } from "@/store/user/userStore"
+import useUserAuth from "@/composables/useAppUser"
 import { XMarkIcon } from "@heroicons/vue/24/solid"
 import { Bars3Icon } from "@heroicons/vue/24/solid"
 import { ref } from "vue"
 
-const { user } = useUserStore()
+const { user } = useUserAuth()
 
 const isMenuOpen = ref(false)
 const isMenuOpening = ref(false)
@@ -66,7 +66,7 @@ function toggleOpen() {
     align-items: center;
 }
 
-.nav-menu {
+.nav-menu-overlay {
     display: flex;
 }
 
@@ -94,11 +94,16 @@ function toggleOpen() {
     .button-icon {
         width: 2.75rem;
         height: 2.75rem;
-        stroke-width: 3px;
+        stroke: var(--primary-font-color);
+        stroke-width: 1px;
         color: var(--title-font-color);
     }
 
-    .nav-menu {
+    .menu-wrapper {
+        --menu-width: 320px;
+    }
+
+    .nav-menu-overlay {
         position: fixed;
         right: 0rem;
         top: calc(var(--header-height) - 4px);
@@ -108,19 +113,18 @@ function toggleOpen() {
         justify-content: end;
         background-color: var(--overlay-color);
         animation-duration: 180ms;
-        --menu-width: 320px;
     }
 
-    .nav-menu.open {
+    .nav-menu-overlay.open {
         display: flex;
     }
 
-    .nav-menu.opening {
+    .nav-menu-overlay.opening {
         animation-name: openBackground;
         animation-timing-function: ease-in;
     }
 
-    .nav-menu.closing {
+    .nav-menu-overlay.closing {
         animation-name: closeBackground;
         animation-timing-function: ease-out;
         animation-fill-mode: forwards;

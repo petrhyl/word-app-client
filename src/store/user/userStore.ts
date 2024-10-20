@@ -4,7 +4,7 @@ import { AppUser } from "@/types/models";
 import useCallApi, { ApiCallResponse } from "@/composables/useCallApi";
 import { LoginResponse, UserRegistrationResponse, UserResponse } from "@/types/responses";
 import { useAuthStore } from "./authStore";
-import { UserLogin, UserRegistration } from "@/types/requests";
+import { UserLogin, UserLogout, UserRegistration } from "@/types/requests";
 
 export const useUserStore = defineStore('userStore', () => {
     const authStore = useAuthStore()
@@ -18,9 +18,9 @@ export const useUserStore = defineStore('userStore', () => {
     async function login(data: UserLogin): Promise<ApiCallResponse<LoginResponse>> {
         const response = await callApi<UserLogin, LoginResponse>({ endpoint: '/user/login', method: 'POST', body: data })
 
-        if (response.data?.auth) {            
+        if (response.data?.auth) {
             userRef.value = response.data.auth.user
-            
+
             authStore.setTokens(
                 response.data.auth.token.accessToken,
                 response.data.auth.token.accessTokenExpiresIn,
@@ -32,14 +32,17 @@ export const useUserStore = defineStore('userStore', () => {
         return response
     }
 
-    async function logout() {
-        await callApi<null, null>({ endpoint: '/user/logout', method: 'POST' })
+    function logout() {
+        if (authStore.refreshToken !== null) {
+            callApi<UserLogout, null>({ endpoint: '/user/logout', method: 'POST', body: { userId: userRef.value?.id || 0, refreshToken: authStore.refreshToken } })
+        }
+
         authStore.nullifyTokens()
         userRef.value = null
     }
 
     async function register(data: UserRegistration): Promise<ApiCallResponse<UserRegistrationResponse>> {
-        const response = await callApi<UserRegistration, UserRegistrationResponse>({ endpoint: '/user/register', method: 'POST', body: data })      
+        const response = await callApi<UserRegistration, UserRegistrationResponse>({ endpoint: '/user/register', method: 'POST', body: data })
 
         if (response.data?.auth) {
             userRef.value = response.data.auth.user

@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import { XMarkIcon } from "@heroicons/vue/20/solid"
+import { XMarkIcon } from "@heroicons/vue/24/solid"
 import FadeTransition from "../transitions/FadeTransition.vue"
 import { onMounted, ref, watch } from "vue"
 
@@ -35,9 +35,9 @@ const timeout = ref<NodeJS.Timeout | null>(null)
 
 function toggleOpen(isOpen: boolean) {
     if (timeout.value) {
-        clearTimeout(timeout.value)        
+        clearTimeout(timeout.value)
     }
-    
+
     if (isOpen === true) {
         isShown.value = true
         timeout.value = setTimeout(() => {
@@ -54,15 +54,11 @@ function toggleOpen(isOpen: boolean) {
 watch(
     () => props.show,
     value => {
-        console.log("watch", value);
-        
         toggleOpen(value)
     }
 )
 
 onMounted(() => {
-    console.log(props.show);
-    
     toggleOpen(props.show)
 })
 </script>
@@ -85,7 +81,7 @@ onMounted(() => {
     max-width: 480px;
     background-color: var(--primary-bg-color);
     border-radius: var(--border-radius);
-    box-shadow: 0 3px 5px #0000001a;
+    box-shadow: var(--shadow);
 }
 
 .modal-content {
@@ -116,9 +112,10 @@ onMounted(() => {
 }
 
 .x-mark-icon {
-    width: 1.75rem;
-    height: 1.75rem;
-    stroke-width: 0.75rem;
+    width: 2rem;
+    height: 2rem;
+    stroke: var(--primary-font-color);
+    stroke-width: 2px;
     color: var(--primary-font-color);
 }
 </style>

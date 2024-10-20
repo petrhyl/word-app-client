@@ -8,38 +8,27 @@
 <script setup lang="ts">
 import { RouterView, useRouter } from "vue-router"
 import TopBar from "@/components/single/top-bar/TopBar.vue"
-import { useAuthStore } from "./store/user/authStore"
 import { ROUTE_NAMES } from "./router"
-import { HOME_PAGE_QUERIES, HOME_PAGE_QUERY_KEY_VALUE } from "./utils/constants"
+import useUserAuth from "./composables/useAppUser";
 
 const router = useRouter()
-const { isRefreshTokenExpired, accessToken } = useAuthStore()
+const { isRefreshTokenExpired, accessToken } = useUserAuth()
 
 router.beforeEach((to, from, next) => {
-    if (
-        isRefreshTokenExpired() &&
-        !(
-            to.query &&
-            to.query[HOME_PAGE_QUERY_KEY_VALUE.autoLoggedOut.key] === HOME_PAGE_QUERY_KEY_VALUE.autoLoggedOut.value
-        )
-    ) {
-        return next({
-            name: ROUTE_NAMES.home,
-            query: HOME_PAGE_QUERIES.autoLoggedOut
-        })
+    if (isRefreshTokenExpired() && to.name !== ROUTE_NAMES.home) {
+        return next({ name: ROUTE_NAMES.home })
     }
 
-    if (accessToken === null && to.meta.authRequired) {
+    if (accessToken.value === null && to.meta.authRequired) {
         if (from.meta.authRestricted) {
             return next({ name: ROUTE_NAMES.home })
         }
         return next(new Error("User is not authenticated"))
     }
 
-    if (accessToken !== null && to.meta.authRestricted) {
+    if (accessToken.value !== null && to.meta.authRestricted) {
         if (from.meta.authRequired) {
-            next({ name: ROUTE_NAMES.home })
-            return
+            return next({ name: ROUTE_NAMES.home })
         }
 
         return next(false)

@@ -39,14 +39,11 @@ import UnloggedUserNav from "@/components/nav/UnloggedUserNav.vue"
 import ModalWindow from "@/components/single/ModalWindow.vue"
 import AppButton from "@/components/ui/button/AppButton.vue"
 import PageWrapper from "@/components/ui/page/PageWrapper.vue"
+import useUserAuth from "@/composables/useAppUser"
 import { ROUTE_NAMES } from "@/router"
-import { useAuthStore } from "@/store/user/authStore"
-import { useUserStore } from "@/store/user/userStore"
 import { onBeforeMount, ref } from "vue"
-import { onBeforeRouteUpdate } from "vue-router"
 
-const { user } = useUserStore()
-const { nullifyTokens, isRefreshTokenExpired } = useAuthStore()
+const { nullifyTokens, isRefreshTokenExpired, user } = useUserAuth()
 
 const isAutoLoggedOut = ref(false)
 
@@ -55,17 +52,11 @@ function handleCloseLoggedoutModal() {
 }
 
 function resolveLoginExpiration() {
-    if (
-        isRefreshTokenExpired()
-    ) {
+    if (isRefreshTokenExpired()) {
         isAutoLoggedOut.value = true
         nullifyTokens()
     }
 }
-
-onBeforeRouteUpdate(() => {
-    resolveLoginExpiration()
-})
 
 onBeforeMount(() => {
     resolveLoginExpiration()

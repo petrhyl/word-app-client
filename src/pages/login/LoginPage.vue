@@ -31,8 +31,6 @@ const errorMessage = ref<string | null>(null)
 const fromRoute = ref<RouteLocationNormalizedLoadedGeneric | null>(null)
 
 function redirectLoggedIn() {
-    console.log(fromRoute.value);
-    
     if (fromRoute.value === null || fromRoute.value.meta?.authRestricted) {
         router.push({ name: ROUTE_NAMES.home })
         return

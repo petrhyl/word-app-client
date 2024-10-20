@@ -2,12 +2,12 @@
     <RouterLink v-if="type === 'link' && route" :to="route" :class="getCssClasses">
         <slot></slot>
     </RouterLink>
-    <button v-if="type !== 'link'" :type="type" :class="getCssClasses">
+    <button v-if="type !== 'link'" :type="type" :class="getCssClasses" @click="emits('clickButton')">
         <span class="button-content">
             <slot></slot>
         </span>
         <div class="spinner" v-if="isSubmitting">
-            <LoadingSpinner :circle-color="'#fbfbfb'" :strip-color="'#14f9ff'" :circle-width="4"/>
+            <LoadingSpinner :circle-color="'#fbfbfb'" :strip-color="'#14f9ff'" :circle-width="4" />
         </div>
     </button>
 </template>
@@ -18,11 +18,13 @@ import { RouteLocationRaw } from "vue-router"
 import LoadingSpinner from "./LoadingSpinner.vue"
 
 const props = defineProps<{
-    style: "primary" | "secondary" | "danger" | "link"
+    style: "primary" | "secondary" | "ternary" | "danger" | "link"
     type: "button" | "submit" | "link"
     isSubmitting?: boolean
     route?: RouteLocationRaw
 }>()
+
+const emits = defineEmits(["clickButton"])
 
 const getCssClasses = computed(() => {
     return {
@@ -30,6 +32,7 @@ const getCssClasses = computed(() => {
         button: props.style !== "link",
         primary: props.style === "primary",
         secondary: props.style === "secondary",
+        ternary: props.style === "ternary",
         danger: props.style === "danger",
         link: props.style === "link",
         "is-submitting": props.isSubmitting
@@ -54,7 +57,9 @@ const getCssClasses = computed(() => {
     justify-content: center;
     align-items: center;
     border-radius: var(--border-radius);
-    padding: 0.65rem 1.5rem;
+    border-width: 2px;
+    border-style: solid;
+    padding: 0.5rem 1.5rem;
 }
 
 button {
@@ -71,10 +76,16 @@ button::deep(.spinner) {
 
 .primary {
     background-color: var(--primary-btn-color);
+    border-color: var(--primary-btn-color);
 }
 
 .secondary {
     background-color: var(--secondary-btn-color);
+    border-color: var(--secondary-btn-color);
+}
+
+.ternary {
+    border-color: var(--primary-font-color);
 }
 
 .danger {

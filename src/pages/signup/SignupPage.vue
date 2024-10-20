@@ -66,7 +66,7 @@ async function handleSubmit(data: UserRegistration) {
         isRegistered.value = true
         window.scrollY = 0
         setTimeout(() => {
-            router.push({ name: ROUTE_NAMES.login })
+            router.push({ name: ROUTE_NAMES.home })
         }, 10000)
     }
 }

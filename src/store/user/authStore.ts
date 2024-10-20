@@ -13,7 +13,9 @@ export const useAuthStore = defineStore('authStore', () => {
     const refreshTokenRef = ref<string | null>(null)
     const refreshTokenExpiry = ref<number | null>(null)
 
-    const accessToken = computed(() => accessTokenRef.value)
+    const accessToken = computed(() => {
+        return accessTokenRef.value
+    })
     const refreshToken = computed(() => refreshTokenRef.value)
 
     function nullifyTokens() {

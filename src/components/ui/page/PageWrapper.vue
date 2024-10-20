@@ -13,7 +13,7 @@
     flex-grow: 1;
     flex-direction: column;
     align-items: center;
-    padding: 4rem 1.25rem 2rem 1.25rem;  
+    padding: 3.5rem 1.25rem 2rem 1.25rem;  
     row-gap: 2rem;  
 }
 

@@ -1,5 +1,5 @@
-import { useAuthStore } from "@/store/user/authStore";
 import { RefreshTokenResponse } from "@/types/responses";
+import useUserAuth from "./useAppUser";
 
 export type CallApiOptions<T> = {
     endpoint: string,
@@ -94,12 +94,28 @@ async function generateApiResponse<T>(response: Response): Promise<ApiCallRespon
 
     }
 
-    const data: ApiResponse<T> = await response.json()
+    try {
+        const data: ApiResponse<T> = await response.json()
 
-    return {
-        data: data.data,
-        errorType: null,
-        isError: false
+        if (response.status === 204) {
+            return {
+                data: null,
+                errorType: null,
+                isError: false
+            }
+        }
+
+        return {
+            data: data.data,
+            errorType: null,
+            isError: false
+        }
+    } catch (error) {
+        return {
+            data: null,
+            errorType: null,
+            isError: false
+        }
     }
 }
 
@@ -125,7 +141,7 @@ async function fetchResponse<T>(request: Request): Promise<ApiCallResponse<T>> {
 }
 
 export default function useCallApi() {
-    const { accessToken, refreshToken, setTokens, isRefreshTokenExpired, nullifyTokens } = useAuthStore()
+    const { accessToken, refreshToken, setTokens, isRefreshTokenExpired, nullifyTokens } = useUserAuth()
 
     /**
      * @see {T} - first generic type of this function is type of data sent as a body of API endpoint request
@@ -135,7 +151,7 @@ export default function useCallApi() {
      * @returns deserialized object of API response body of type given as a second generic type of this function or generated object with error message if request failed
      */
     async function callApi<T, U>(options: CallApiOptions<T>): Promise<ApiCallResponse<U>> {
-        const request = createRequest(options, accessToken)
+        const request = createRequest(options, accessToken.value)
 
         const response = await fetchResponse<U>(request)
 

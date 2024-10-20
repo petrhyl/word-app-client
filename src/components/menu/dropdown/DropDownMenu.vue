@@ -1,40 +1,51 @@
 <template>
     <div ref="menuRef" class="drop-down-menu">
-        <div class="drop-down-menu-button" @click="toggleShowItems">
+        <div class="drop-down-menu-button" @click="handleToggleShow">
             <slot name="button"></slot>
         </div>
         <ExpandCollapseTransition>
-            <div v-if="showItems" class="drop-down-items-container">
-                <menu class="drop-down-menu-items">
+            <menu v-if="showItems" class="drop-down-items-container">
+                <ul class="drop-down-menu-items">
                     <slot name="items"></slot>
-                </menu>
-            </div>
+                </ul>
+            </menu>
         </ExpandCollapseTransition>
     </div>
 </template>
 
 <script setup lang="ts">
 import ExpandCollapseTransition from "@/components/transitions/ExpandCollapseTransition.vue"
-import { onMounted, onUnmounted, ref } from "vue"
+import { onMounted, onUnmounted, provide, ref } from "vue"
+import { dropDownMenuInjectionKey } from "./DropDownMenuProvider"
 
 const menuRef = ref<HTMLDivElement | null>(null)
 
 const showItems = ref(false)
 
-function toggleShowItems(e: MouseEvent) {
+function handleClickMenuItem() {
+    showItems.value = false
+}
+
+provide(dropDownMenuInjectionKey, { closeMenu: handleClickMenuItem })
+
+function handleToggleShow() {
+    showItems.value = !showItems.value
+}
+
+function closeMenu(e: MouseEvent) {
     if (menuRef.value?.contains(e.target ? (e.target as Node) : null)) {
-        showItems.value = !showItems.value
-    } else {
-        showItems.value = false
+        return
     }
+
+    showItems.value = false
 }
 
 onMounted(() => {
-    window.addEventListener("click", toggleShowItems)
+    window.addEventListener("click", closeMenu)
 })
 
 onUnmounted(() => {
-    window.removeEventListener("click", toggleShowItems)
+    window.removeEventListener("click", closeMenu)
 })
 </script>
 
@@ -46,8 +57,9 @@ onUnmounted(() => {
 .drop-down-items-container {
     position: absolute;
     top: 100%;
-    padding-top: 0.75rem;
-    z-index: 100;
+    right: 0;
+    padding-top: 0.25rem;
+    z-index: 101;
 }
 
 .drop-down-menu-items {
@@ -57,7 +69,7 @@ onUnmounted(() => {
     background-color: var(--secondary-bg-color);
     border: 1px solid var(--form-border-color);
     border-radius: var(--border-radius);
-    box-shadow: 0 0 5px #3e3e3e;
-    padding: 0.5rem;
+    box-shadow: var(--shadow);
+    padding: 1.5rem;
 }
 </style>

@@ -1,16 +1,18 @@
 <template>
-    <Transition name="expand-collapse" mode="out-in">
+    <Transition name="expandcollapse" type="animation" mode="out-in">
         <slot></slot>
     </Transition>
 </template>
 
 <style scoped>
-.expand-collapse-enter-active {
-    animation: drop-up 0.17s;
+.expandcollapse-enter-active {
+    transform-origin: top;
+    animation: expand-collapse 170ms;
 }
 
-.expand-collapse-leave-active {
-    animation: drop-up 0.17s reverse;
+.expandcollapse-leave-active {
+    transform-origin: top;
+    animation: expand-collapse 170ms reverse;
 }
 
 @keyframes expand-collapse {

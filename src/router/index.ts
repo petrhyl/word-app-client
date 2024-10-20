@@ -74,7 +74,7 @@ const router = createRouter({
     },
     {
       path: '/practise/running',
-      name: ROUTE_NAMES.practise,
+      name: ROUTE_NAMES.practiseRunning,
       meta: { authRequired: true },
       component: () => import('@/pages/practise/running/PractiseRunningPage.vue'),
       beforeEnter: (to, _from, next) => {
