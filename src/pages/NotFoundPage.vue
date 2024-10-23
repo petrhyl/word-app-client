@@ -1,7 +1,7 @@
 <template>
     <PageWrapper>
         <PageTitle title="Not found" description="Sorry, the page you are looking for does not exist." />
-        <div><span>Return to <AppButton :type="'link'" :style="'link'" :route="{name: ROUTE_NAMES.home}">Home page</AppButton></span></div>
+        <div><span>Return to <AppButton :type="'link'" :buttonStyle="'link'" :route="{name: ROUTE_NAMES.home}">Home page</AppButton></span></div>
     </PageWrapper>
 </template>
 

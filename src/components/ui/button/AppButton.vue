@@ -18,7 +18,7 @@ import { RouteLocationRaw } from "vue-router"
 import LoadingSpinner from "./LoadingSpinner.vue"
 
 const props = defineProps<{
-    style: "primary" | "secondary" | "ternary" | "danger" | "link"
+    buttonStyle: "primary" | "secondary" | "ternary" |"submit"| "danger" | "link"
     type: "button" | "submit" | "link"
     isSubmitting?: boolean
     route?: RouteLocationRaw
@@ -29,12 +29,13 @@ const emits = defineEmits(["clickButton"])
 const getCssClasses = computed(() => {
     return {
         clickable: true,
-        button: props.style !== "link",
-        primary: props.style === "primary",
-        secondary: props.style === "secondary",
-        ternary: props.style === "ternary",
-        danger: props.style === "danger",
-        link: props.style === "link",
+        button: props.buttonStyle !== "link",
+        primary: props.buttonStyle === "primary",
+        secondary: props.buttonStyle === "secondary",
+        ternary: props.buttonStyle === "ternary",
+        submit: props.buttonStyle === "submit",
+        danger: props.buttonStyle === "danger",
+        link: props.buttonStyle === "link",
         "is-submitting": props.isSubmitting
     }
 })
@@ -88,6 +89,11 @@ button::deep(.spinner) {
     border-color: var(--primary-font-color);
 }
 
+.submit{
+    background-color: var(--submit-btn-color);
+    border-color: var(--submit-btn-color);
+}
+
 .danger {
     background-color: #c20044;
     color: #dac77b;
@@ -103,6 +109,10 @@ button::deep(.spinner) {
 
 .clickable:hover {
     filter: brightness(1.2);
+}
+
+.button-content{
+    display: inline-flex;
 }
 
 .is-submitting {

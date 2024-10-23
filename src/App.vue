@@ -9,7 +9,7 @@
 import { RouterView, useRouter } from "vue-router"
 import TopBar from "@/components/single/top-bar/TopBar.vue"
 import { ROUTE_NAMES } from "./router"
-import useUserAuth from "./composables/useAppUser";
+import useUserAuth from "./composables/useUserAuth"
 
 const router = useRouter()
 const { isRefreshTokenExpired, accessToken } = useUserAuth()
@@ -31,7 +31,7 @@ router.beforeEach((to, from, next) => {
             return next({ name: ROUTE_NAMES.home })
         }
 
-        return next(false)
+        return next(from)
     }
 
     next()

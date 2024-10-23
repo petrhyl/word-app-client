@@ -40,6 +40,7 @@ function redirectLoggedIn() {
 }
 
 function handleValidState() {
+    errorMessage.value = null
     isError.value = false
 }
 

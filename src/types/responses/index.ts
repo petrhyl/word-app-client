@@ -1,4 +1,4 @@
-import { AppUser, AuthToken } from "../models";
+import { AppLanguage, AppUser, AuthToken, UserVocabularyLanguage } from "../models";
 
 export type RefreshTokenResponse = {
     auth: {
@@ -25,4 +25,30 @@ export type UserRegistrationResponse = {
 
 export type LoginResponse = {
     auth: AuthResponse
+}
+
+export type LanguageResponse = {
+    languages: AppLanguage[]
+}
+
+export type UserVocabularyLanguagesResponse = {
+    languages: UserVocabularyLanguage[]
+}
+
+export type ExerciseItem = {
+    id: number
+    word: string
+    translations: string[]
+    correctAnswers: number
+    isLearned: boolean
+    updatedAt: Date
+}
+
+export type ExerciseResponse = {
+    exercise: {
+        languageId: number
+        languageCode: string
+        languageName: string
+        words: ExerciseItem[]
+    }
 }

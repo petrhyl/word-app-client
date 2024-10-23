@@ -2,17 +2,9 @@
     <header>
         <div class="header-content">
             <div class="pc-nav-container">
-                <nav v-if="user?.id" class="app-nav-pc">
-                    <AppButton :type="'link'" :style="'primary'" :route="{ name: ROUTE_NAMES.practise }">
-                        Start Practise
-                    </AppButton>
-                    <AppButton :type="'link'" :style="'secondary'" :route="{ name: ROUTE_NAMES.addVocabulary }">
-                        Add Vocabulary
-                    </AppButton>
-                </nav>
             </div>
             <div class="app-title">
-                <AppButton :type="'link'" :style="'link'" :route="{ name: ROUTE_NAMES.home }">
+                <AppButton :type="'link'" :buttonStyle="'link'" :route="{ name: ROUTE_NAMES.home }">
                     <h1>Word App</h1>
                 </AppButton>
             </div>
@@ -24,10 +16,8 @@
 <script setup lang="ts">
 import { ROUTE_NAMES } from "@/router"
 import AppButton from "@/components/ui/button/AppButton.vue"
-import { useUserStore } from "@/store/user/userStore"
 import NavMenu from "./NavMenu.vue"
 
-const { user } = useUserStore()
 </script>
 
 <style lang="css" scoped>
@@ -52,18 +42,6 @@ header {
 
 .header-content > div {
     width: calc(100% / 3);
-}
-
-.pc-nav-container {
-    justify-content: start;
-    align-items: center;
-    display: flex;
-}
-
-.app-nav-pc {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
 }
 
 .app-title {

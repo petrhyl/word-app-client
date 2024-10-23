@@ -1,5 +1,5 @@
 import { RefreshTokenResponse } from "@/types/responses";
-import useUserAuth from "./useAppUser";
+import useUserAuth from "./useUserAuth";
 
 export type CallApiOptions<T> = {
     endpoint: string,
@@ -25,13 +25,13 @@ export enum ErrorResponseType {
     NOT_FOUND = 'NOT_FOUND',
     BAD_REQUEST = 'BAD_REQUEST',
     UNPROCESSABLE_ENTITY = 'UNPROCESSABLE_ENTITY',
+    CONFLICT = 'CONFLICT',
     INTERNAL_SERVER_ERROR = 'INTERNAL_SERVER_ERROR',
     UNKNOWN = 'UNKNOWN'
 }
 
 let isRefreshing = false;
 let pendingCalls: Array<(newAccessToken: string) => void> = [];
-let refreshFailed = false;
 
 
 function onTokenRefreshed(accessToken: string) {
@@ -82,7 +82,9 @@ async function generateApiResponse<T>(response: Response): Promise<ApiCallRespon
             errorType = ErrorResponseType.UNPROCESSABLE_ENTITY
         } else if (response.status === 404) {
             errorType = ErrorResponseType.NOT_FOUND
-        } else if (response.status === 500) {
+        } else if (response.status === 409) {
+            errorType = ErrorResponseType.CONFLICT
+        } else if (response.status >= 500) {
             errorType = ErrorResponseType.INTERNAL_SERVER_ERROR
         }
 
@@ -141,43 +143,23 @@ async function fetchResponse<T>(request: Request): Promise<ApiCallResponse<T>> {
 }
 
 export default function useCallApi() {
-    const { accessToken, refreshToken, setTokens, isRefreshTokenExpired, nullifyTokens } = useUserAuth()
+    const { accessToken, refreshToken, setTokens, isRefreshTokenExpired, nullifyLogin } = useUserAuth()
 
-    /**
-     * @see {T} - first generic type of this function is type of data sent as a body of API endpoint request
-     * @see {U} - second generic type is type of data deserialized from API response body
-     * @param options generic object with data required as a body of API endpoint request - data's generic type is type given as a first generic type of this function
-     * @param authToken authorization bearer token if any
-     * @returns deserialized object of API response body of type given as a second generic type of this function or generated object with error message if request failed
-     */
-    async function callApi<T, U>(options: CallApiOptions<T>): Promise<ApiCallResponse<U>> {
-        const request = createRequest(options, accessToken.value)
-
-        const response = await fetchResponse<U>(request)
-
-        if (response.errorType === ErrorResponseType.UNAUTHORIZED && !refreshFailed) {
-            if (isRefreshing) {
-                return new Promise((resolve) => {
-                    addRefreshSubscriber(async (newAccessToken: string) => {
-                        request.headers.set('Authorization', `Bearer ${newAccessToken}`)
-                        resolve(await fetchResponse<U>(request))
-                    });
-                });
-            }
-
+    async function processRefresh<U>(request: Request) {
+        return new Promise<ApiCallResponse<U>>(resolve => setTimeout(async () => {
             isRefreshing = true;
 
+            let response: ApiCallResponse<U> = {
+                data: null,
+                errorType: ErrorResponseType.UNAUTHORIZED,
+                isError: true
+            }
+            
+            if (!accessToken.value || !refreshToken.value || isRefreshTokenExpired()) {               
+                return resolve(response)
+            }
+
             try {
-                if (!accessToken || !refreshToken || isRefreshTokenExpired()) {
-                    nullifyTokens()
-
-                    return {
-                        data: null,
-                        errorType: ErrorResponseType.UNAUTHORIZED,
-                        isError: true
-                    }
-                }
-
                 const tokenResponse = await fetch(`${import.meta.env.VITE_API_URL}/user/refresh`, {
                     method: 'POST',
                     headers: {
@@ -203,13 +185,44 @@ export default function useCallApi() {
 
                 isRefreshing = false;
                 onTokenRefreshed(tokenData.data.auth.token.accessToken);
+
+                response = await fetchResponse<U>(request)
             } catch (err) {
-                refreshFailed = true
+                console.log(err);
+                
                 pendingCalls = []
-                nullifyTokens()
+                nullifyLogin()
             } finally {
                 isRefreshing = false
             }
+
+            resolve(response)
+        }, 100))
+    }
+
+    /**
+     * @see {T} - first generic type of this function is type of data sent as a body of API endpoint request
+     * @see {U} - second generic type is type of data deserialized from API response body
+     * @param options generic object with data required as a body of API endpoint request - data's generic type is type given as a first generic type of this function
+     * @param authToken authorization bearer token if any
+     * @returns deserialized object of API response body of type given as a second generic type of this function or generated object with error message if request failed
+     */
+    async function callApi<T, U>(options: CallApiOptions<T>): Promise<ApiCallResponse<U>> {
+        const request = createRequest(options, accessToken.value)
+
+        const response = await fetchResponse<U>(request)
+
+        if (response.errorType === ErrorResponseType.UNAUTHORIZED) {
+            if (isRefreshing) {
+                return new Promise((resolve) => {
+                    addRefreshSubscriber(async (newAccessToken: string) => {
+                        request.headers.set('Authorization', `Bearer ${newAccessToken}`)
+                        resolve(await fetchResponse<U>(request))
+                    });
+                });
+            }
+
+            return await processRefresh(request)
         }
 
         return response

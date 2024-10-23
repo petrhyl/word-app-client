@@ -29,3 +29,7 @@ export type SelectionElementProps = {
     options: SelectionOptionProps[];
 } & FormElementProps
 
+export type TextElementProps = {
+    rows: number
+    placeholder?: string
+} & FormElementProps

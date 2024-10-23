@@ -1,29 +1,52 @@
 <template>
-    <div class="element">
-        <div>
-            <label :for="id">{{ label }}</label>
-        </div>
-        <div :class="getCssClasses">
-            <select :id="id" :value="selectedValue.label" @change="handleChange" @click="handleOpen" @blur="handleBlur">
+    <div class="element-container">
+        <ElementLable
+            :for-id="id"
+            :label="label"
+            :validation-message="validationMessage"
+            :is-warning-displayed="isWarningDisplayed"
+            :is-label="false"
+        />
+        <div class="element" :class="isWarningDisplayed ? 'invalid' : 'valid'">
+            <select
+                :id="`default-${id}`"
+                class="select-element default"
+                :tabindex="tabIndex"
+                @change="handleChange"
+                @blur="handleBlur"
+            >
                 <option class="select-option" v-for="option in options" :key="option.value" :value="option.value">
                     {{ option.label }}
                 </option>
             </select>
-            <FadeTransition>
-                <div v-if="isOpen" class="options-container">
-                    <div
-                        v-for="val in options"
-                        class="selection-option"
-                        :class="{ 'font-semibold': val.value === selectedValue.value }"
-                        @click="handleSelect(val)"
-                    >
-                        {{ val.label }}
-                        <div class="check-icon-container">
-                            <CheckIcon v-if="val.value === selectedValue.value" class="check-icon" />
+            <div
+                :id="`custom-${id}`"
+                class="select-element custom"
+                :tabindex="tabIndex"
+                @click="handleToggle"
+                @blur="handleBlur"
+                @keypress="handleKeypress"
+            >
+                {{ selectedValue.label }}
+                <div class="icon-container">
+                    <ChevronDownIcon class="check-icon" :class="isOpen ? 'open' : 'close'" />
+                </div>
+                <ExpandCollapseTransition>
+                    <div v-if="isOpen" class="options-container">
+                        <div
+                            v-for="val in options"
+                            class="selection-option"
+                            :class="{ selected: val.value === selectedValue.value }"
+                            @click="handleSelect(val)"
+                        >
+                            {{ val.label }}
+                            <div class="icon-container">
+                                <CheckIcon v-if="val.value === selectedValue.value" class="check-icon" />
+                            </div>
                         </div>
                     </div>
-                </div>
-            </FadeTransition>
+                </ExpandCollapseTransition>
+            </div>
         </div>
     </div>
 </template>
@@ -31,8 +54,10 @@
 <script setup lang="ts">
 import { computed, ref } from "vue"
 import { ElementExposedFunctions, SelectionElementProps, SelectionOptionProps } from "./FormElementProps"
-import FadeTransition from "@/components/transitions/FadeTransition.vue"
-import { CheckIcon } from "@heroicons/vue/16/solid"
+import { CheckIcon } from "@heroicons/vue/24/solid"
+import ElementLable from "./ElementLable.vue"
+import ExpandCollapseTransition from "@/components/transitions/ExpandCollapseTransition.vue"
+import { ChevronDownIcon } from "@heroicons/vue/24/solid"
 
 const props = defineProps<SelectionElementProps>()
 
@@ -47,9 +72,15 @@ defineExpose<ElementExposedFunctions>({
 })
 
 function resolveDefaultValue() {
-    return props.defaultValue
-        ? props.options.find(o => o.value === props.defaultValue) || props.options[0]
-        : props.options[0]
+    if (props.options.length === 0) {
+        return { value: "", label: "" }
+    }
+
+    if (props.defaultValue) {
+        return props.options.find(o => o.value === props.defaultValue) || props.options[0]
+    }
+
+    return props.options[0]
 }
 
 const selectedValue = ref<SelectionOptionProps>(resolveDefaultValue())
@@ -60,34 +91,40 @@ const isFormSubmitted = ref<boolean>(false)
 const isWarningDisplayed = computed<boolean>(() => {
     return !isValid && (isBlured.value || isFormSubmitted.value)
 })
-const getCssClasses = computed<string>(() => {
-    let css = isWarningDisplayed.value ? "invalid" : "valid"
-    if (isOpen.value) {
-        css += " ring-blue-400 ring ring-opacity-40"
-    }
-
-    return css
-})
 
 function handleChange(event: Event) {
     const target = event.target as HTMLSelectElement
     const option = props.options.find(o => o.value === target.value)
     if (option) {
+        validate()
         selectedValue.value = option
     }
 }
 
-function handleOpen() {
+function handleToggle() {
     isOpen.value = !isOpen.value
 }
 
+function handleKeypress(ev: KeyboardEvent) {
+    if (ev.key === "Enter") {
+        handleToggle()
+    }
+}
+
 function handleSelect(value: SelectionOptionProps) {
+    validate()
     selectedValue.value = value
 }
 
 function handleBlur() {
     isBlured.value = true
     isOpen.value = false
+}
+
+function validate() {
+    if (isValid()) {
+        emits("onValidate")
+    }
 }
 
 function getId() {
@@ -99,7 +136,6 @@ function getValue(): string {
 }
 
 function isValid(): boolean {
-    emits("onValidate")
     return props.validateInput(selectedValue.value.value)
 }
 
@@ -113,22 +149,43 @@ function setIsFormSubmitted() {
 </script>
 
 <style lang="css" scoped>
-select option {
-    display: none;
-}
-
 .element-container {
     width: 100%;
     display: flex;
     flex-direction: column;
+    row-gap: 0.5rem;
 }
 
 .element {
-    position: relative;
     width: 100%;
     border-radius: var(--border-radius);
     border-width: 2px;
     border-style: solid;
+}
+
+.select-element {
+    width: 100%;
+    background-color: var(--element-bg-color);
+    color: var(--primary-font-color);
+    font-family: var(--paragraph-font);
+    font-size: 1rem;
+    border-radius: var(--border-radius);
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 0.75rem 0.75rem;
+}
+
+.select-element:focus {
+    box-shadow: var(--focus-shadow);
+}
+
+.select-element.default {
+    display: none;
+}
+.select-element.custom {
+    position: relative;
+    display: block;
 }
 
 .options-container {
@@ -137,25 +194,33 @@ select option {
     left: 0;
     right: 0;
     top: calc(100% + 0.5rem);
-    max-height: 8rem;
+    max-height: 12rem;
     overflow: auto;
     border-radius: var(--border-radius);
+    border: var(--card-border);
+    background-color: var(--secondary-bg-color);
+    padding: 0.5rem 0;
 }
 
 .selection-option {
     position: relative;
     width: 100%;
-    padding-top: 0.75rem;
-    padding-bottom: 0.75rem;
-    padding-left: 1.25rem;
-    padding-right: 2.5rem;
     cursor: pointer;
+    padding: 0.5rem 2.5rem 0.5rem 1rem;
     transition: all 0.17s;
 }
 
-.check-icon-container {
+.selection-option:hover {
+    background-color: var(--element-bg-color);
+}
+
+.selection-option.selected {
+    color: var(--success-color);
+}
+
+.icon-container {
     position: absolute;
-    right: 0.5rem;
+    right: 0.75rem;
     top: 0;
     bottom: 0;
     display: flex;
@@ -165,14 +230,30 @@ select option {
 .check-icon {
     width: 1.5rem;
     height: 1.5rem;
-    stroke-width: 0.5rem;
+    stroke: var(--primary-font-color);
+    stroke-width: 2px;
+    transition: all 0.17s ease-in-out;
+}
+
+.check-icon.open {
+    transform: rotate(180deg);
 }
 
 .valid {
-    border-color: transparent;
+    border-color: var(--card-border-color);
 }
 
 .invalid {
     border-color: var(--warning-color);
+}
+
+@media screen and (max-width: 980px) {
+    .select-element.custom {
+        display: none;
+    }
+
+    .select-element.default {
+        display: block;
+    }
 }
 </style>

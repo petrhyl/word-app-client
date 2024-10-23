@@ -14,6 +14,7 @@
             <p class="registered-message">
                 To log in, please verify your email address by clicking on the link in the email we sent you.
             </p>
+            <p>It could take a few minutes to receive the verification e-mail.</p>
         </PrimaryCard>
     </PageWrapper>
 </template>
@@ -44,6 +45,7 @@ const getDescription = computed(() =>
 )
 
 function handleValidState() {
+    errorMessage.value = null
     isError.value = false
 }
 

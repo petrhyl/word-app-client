@@ -8,7 +8,12 @@ export default function useUserAuth() {
     const { setTokens, nullifyTokens, isRefreshTokenExpired } = authStore
     const userStore = useUserStore()
     const { user } = storeToRefs(userStore)
-    const { login, logout, register } = userStore
+    const { login, logout, register, nullifyUser } = userStore
+
+    function nullifyLogin() {
+        nullifyTokens()        
+        nullifyUser()
+    }
 
     return {
         accessToken,
@@ -18,7 +23,7 @@ export default function useUserAuth() {
         logout,
         register,
         setTokens,
-        nullifyTokens,
+        nullifyLogin,
         isRefreshTokenExpired
     }
 }

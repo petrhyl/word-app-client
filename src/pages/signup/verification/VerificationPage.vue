@@ -15,7 +15,7 @@
                 <FaceSmileIcon class="success-state-icon" />
                 <p>Now you can log in to your account.</p>
                 <div class="login-button">
-                    <AppButton :type="'link'" :style="'primary'" :route="{ name: ROUTE_NAMES.login }">Log in</AppButton>
+                    <AppButton :type="'link'" :buttonStyle="'primary'" :route="{ name: ROUTE_NAMES.login }">Log in</AppButton>
                 </div>
             </div>
         </PrimaryCard>

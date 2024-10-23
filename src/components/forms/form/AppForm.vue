@@ -3,7 +3,7 @@
         <form @submit.prevent="handleSubmit">
             <slot> </slot>
             <InvalidFormMessage :isShown="!isFormValid || isError" :message="getInvalidMessage" />
-            <AppButton :type="'submit'" :style="'primary'" :is-submitting="isLoading">
+            <AppButton :type="'submit'" :buttonStyle="'submit'" :is-submitting="isLoading">
                 <slot name="submit-text"></slot>
             </AppButton>
         </form>
@@ -53,7 +53,7 @@ const getInvalidMessage = computed(() => {
 function retreiveData(): SubmitData | null {
     const data = new Map<string, string | File | null>()
     let isAnyInvalid = false
-    for (const element of props.elementsRefs) {
+    for (const element of props.elementsRefs) {        
         if (!element.isValid()) {
             isAnyInvalid = true
         }

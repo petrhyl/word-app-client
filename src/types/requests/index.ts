@@ -19,3 +19,23 @@ export type UserLogout = {
     userId: number
     refreshToken: string
 }
+
+export type VocabularyItemRequest = {
+    word: string
+    translations: string[]
+}
+
+export type CreateVocabularyRequest = {
+    languageId: number
+    vocabularyItems: VocabularyItemRequest[]
+}
+
+export type ExerciseResultItem = {
+    id: number
+    isAnswredCorrectly: boolean
+}
+
+export type ExerciseResultRequest = {
+    languageId: number
+    words: ExerciseResultItem[]
+}

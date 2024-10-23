@@ -5,7 +5,7 @@
             <p class="auto-loggedout-text">
                 Please go to log-in page by clicking on the button below and log in again.
             </p>
-            <AppButton :style="'primary'" type="link" :route="{ name: ROUTE_NAMES.login }">Log in</AppButton>
+            <AppButton :buttonStyle="'primary'" type="link" :route="{ name: ROUTE_NAMES.login }">Log in</AppButton>
         </ModalWindow>
         <h1 class="welcome-message">Welcome to application for practising your foreign language vocabulary</h1>
         <div v-if="!user?.id" class="prompt-container">
@@ -15,8 +15,8 @@
         <div v-else class="prompt-container">
             <p>You can start practising now</p>
             <div>
-                <AppButton :style="'primary'" type="link" :route="{ name: ROUTE_NAMES.practise }">
-                    Start Exercise
+                <AppButton :buttonStyle="'primary'" type="link" :route="{ name: ROUTE_NAMES.practise }">
+                    Start Practise
                 </AppButton>
             </div>
         </div>
@@ -39,11 +39,11 @@ import UnloggedUserNav from "@/components/nav/UnloggedUserNav.vue"
 import ModalWindow from "@/components/single/ModalWindow.vue"
 import AppButton from "@/components/ui/button/AppButton.vue"
 import PageWrapper from "@/components/ui/page/PageWrapper.vue"
-import useUserAuth from "@/composables/useAppUser"
+import useUserAuth from "@/composables/useUserAuth"
 import { ROUTE_NAMES } from "@/router"
 import { onBeforeMount, ref } from "vue"
 
-const { nullifyTokens, isRefreshTokenExpired, user } = useUserAuth()
+const { nullifyLogin, isRefreshTokenExpired, user } = useUserAuth()
 
 const isAutoLoggedOut = ref(false)
 
@@ -51,10 +51,10 @@ function handleCloseLoggedoutModal() {
     isAutoLoggedOut.value = false
 }
 
-function resolveLoginExpiration() {
+function resolveLoginExpiration() {    
     if (isRefreshTokenExpired()) {
         isAutoLoggedOut.value = true
-        nullifyTokens()
+        nullifyLogin()
     }
 }
 
@@ -110,7 +110,7 @@ onBeforeMount(() => {
     width: 50%;
     height: 2px;
     border-radius: 1px;
-    background-color: var(--form-border-color);
+    background-color: var(--card-border-color);
 }
 
 @media screen and (max-width: 980px) {

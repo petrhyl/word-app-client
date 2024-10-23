@@ -1,17 +1,20 @@
 <template>
     <div class="label-container">
-        <label :for="forId">{{ label }}</label>
+        <component :is="isLabel ? 'label' : 'div'" :for="forId" class="element-label">{{ label }}</component>
         <span v-if="isWarningDisplayed" class="warning">{{ validationMessage }}</span>
     </div>
 </template>
 
 <script setup lang="ts">
-defineProps<{
+withDefaults(defineProps<{
     forId: string
     label: string
     validationMessage: string
     isWarningDisplayed: boolean
-}>()
+    isLabel?: boolean
+}>(),{
+    isLabel: true
+})
 </script>
 
 <style lang="css" scoped>
@@ -20,7 +23,7 @@ defineProps<{
     align-items: center;
 }
 
-.label-container label {
+.element-label {
     flex-shrink: 0;
     font-family: var(--navigation-font);
     color: var(--title-font-color);

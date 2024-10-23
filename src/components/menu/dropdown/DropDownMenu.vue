@@ -67,7 +67,7 @@ onUnmounted(() => {
     flex-direction: column;
     gap: 1rem;
     background-color: var(--secondary-bg-color);
-    border: 1px solid var(--form-border-color);
+    border: 1px solid var(--card-border-color);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
     padding: 1.5rem;

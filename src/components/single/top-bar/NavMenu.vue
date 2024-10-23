@@ -14,9 +14,7 @@
                 class="nav-menu-content"
                 :class="{ opening: isMenuOpening, closing: !isMenuOpening, open: isMenuOpen }"
             >
-                <div v-if="user?.id" class="user-nav-container">
-                    <UserMenu />
-                </div>
+                <UserMenu v-if="user?.id" @click="toggleOpen" />
                 <UnloggedUserNav v-else @click="toggleOpen" css-class="unlogged-user-nav" />
             </menu>
         </div>
@@ -26,7 +24,7 @@
 <script setup lang="ts">
 import UserMenu from "@/components/menu/UserMenu.vue"
 import UnloggedUserNav from "@/components/nav/UnloggedUserNav.vue"
-import useUserAuth from "@/composables/useAppUser"
+import useUserAuth from "@/composables/useUserAuth"
 import { XMarkIcon } from "@heroicons/vue/24/solid"
 import { Bars3Icon } from "@heroicons/vue/24/solid"
 import { ref } from "vue"
@@ -74,10 +72,6 @@ function toggleOpen() {
     display: flex;
     gap: 0.75rem;
     transition: all 0.17s ease-out;
-}
-
-.user-nav-container {
-    display: flex;
 }
 
 :deep(.unlogged-user-nav) {
@@ -139,7 +133,7 @@ function toggleOpen() {
         width: var(--menu-width);
         max-width: 90vw;
         flex-direction: column;
-        padding: 1.5rem 2rem;
+        padding: 2rem;
         background-color: var(--secondary-bg-color);
         overflow: hidden;
         z-index: 101;
@@ -161,14 +155,10 @@ function toggleOpen() {
         animation-fill-mode: forwards;
     }
 
-    .user-nav-container {
-        display: none;
-    }
-
     :deep(.unlogged-user-nav) {
         display: flex;
         flex-direction: column;
-        gap: 0.75rem;
+        gap: 1.5rem;
         padding-bottom: 1.5rem;
     }
 

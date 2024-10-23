@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomePage from '@/pages/HomePage.vue'
 import NotFoundPage from '@/pages/NotFoundPage.vue'
+import { parseToIntOrReturnNull } from '@/utils/functions'
 
 
 export const ROUTE_NAMES = {
@@ -9,6 +10,7 @@ export const ROUTE_NAMES = {
   profile: 'profile',
   addVocabulary: 'addVocabulary',
   vocabularyStats: 'vocabularyStats',
+  createLanguage: 'createLanguage',
   signup: 'signup',
   vefication: 'vefication',
   login: 'login',
@@ -38,14 +40,19 @@ const router = createRouter({
           component: () => import('@/pages/account/ProfilePage.vue')
         },
         {
-          path: 'vocabularies/add',
+          path: 'vocabulary/add',
           name: ROUTE_NAMES.addVocabulary,
           component: () => import('@/pages/account/vocabulary/AddVocabularyPage.vue')
         },
         {
-          path: 'vocabularies/stats',
+          path: 'vocabulary/stats',
           name: ROUTE_NAMES.vocabularyStats,
           component: () => import('@/pages/account/vocabulary/VocabularyStatsPage.vue')
+        },
+        {
+          path: 'vocabulary/languages/create',
+          name: ROUTE_NAMES.createLanguage,
+          component: () => import('@/pages/account/vocabulary/languages/CreateLanguagePage.vue')
         }
       ]
     },
@@ -78,7 +85,7 @@ const router = createRouter({
       meta: { authRequired: true },
       component: () => import('@/pages/practise/running/PractiseRunningPage.vue'),
       beforeEnter: (to, _from, next) => {
-        if (!to.query.lang || !to.query.limit || Number(to.query.limit) < 5 || Number(to.query.limit) > 100) {
+        if (!to.query.langId || !parseToIntOrReturnNull(to.query.langId as string) || !to.query.limit || Number(to.query.limit) < 5 || Number(to.query.limit) > 100) {
           return next({ name: ROUTE_NAMES.practise })
         }
         next()
@@ -94,7 +101,8 @@ const router = createRouter({
 
 router.onError((err) => {
   console.error(err)
-  router.replace({ name: ROUTE_NAMES.notFound })
+  router.addRoute({ name: ROUTE_NAMES.error, path: '/error', component: () => import('@/pages/ErrorPage.vue') })
+  router.replace({ name: ROUTE_NAMES.error })
 })
 
 export default router

@@ -1,40 +1,30 @@
 <template>
-    <FormCard>
-        <form @submit.prevent="handleSubmit">
-            <SelectionElement
-                ref="selectLangRef"
-                :id="'select-lang'"
-                label="Choose vocabulary language"
-                :validation-message="''"
-                :is-form-submitted="isSubmitted"
-                :validate-input="validateSelect"
-                :tab-index="1"
-                :options="props.languages"
-            />
-            <SelectionElement
-                ref="selectAmountRef"
-                :id="'select-limit'"
-                label="Choose amount of words"
-                :validation-message="''"
-                :is-form-submitted="isSubmitted"
-                :validate-input="validateSelect"
-                :tab-index="2"
-                :options="props.amounts"
-            />
-            <AppButton :type="'submit'" :style="'primary'" :is-submitting="isLoading">
-                Start Exercise
-            </AppButton>
-        </form>
-    </FormCard>
+    <AppForm
+        ref="formRef"
+        :elements-refs="elementsRefs"
+        :is-loading="false"
+        :is-error="false"
+        :error-message="null"
+        @submit-form="handleSubmit"
+    >
+        <SelectionElement
+            v-for="element in formElements"
+            ref="elementsRefs"
+            :key="element.id"
+            v-bind="element"
+            @on-validate="handleValidate"
+        />
+        <template #submit-text>Next</template>
+    </AppForm>
 </template>
 
 <script setup lang="ts">
 import { ExerciseQueryParams } from "@/types/requests"
-import { SelectionOptionProps } from "./elements/FormElementProps"
-import FormCard from "../ui/card/FormCard.vue"
+import { SelectionElementProps, SelectionOptionProps } from "./elements/FormElementProps"
 import SelectionElement from "./elements/SelectionElement.vue"
-import { ref } from "vue"
-import AppButton from "../ui/button/AppButton.vue"
+import { computed, ref } from "vue"
+import AppForm from "./form/AppForm.vue"
+import { SubmitData } from "./form/SubmitData"
 
 const props = defineProps<{
     isLoading: boolean
@@ -43,26 +33,51 @@ const props = defineProps<{
 }>()
 
 const emits = defineEmits<{
-    onSubmit: [data: ExerciseQueryParams]
+    onSubmit: [data: ExerciseQueryParams]    
 }>()
 
 const isSubmitted = ref(false)
-const selectLangRef = ref<InstanceType<typeof SelectionElement> | null>(null)
-const selectLimitRef = ref<InstanceType<typeof SelectionElement> | null>(null)
 
-function validateSelect(_value: any): boolean {
-    return true
+    const elementIds = {
+    lang: "exercise-lang",
+    count: "exercise-count"
 }
 
-function handleSubmit() {
+const formElements = computed<SelectionElementProps[]>(() => [
+    {
+        id: elementIds.lang,
+        label: "Language",
+        tabIndex: 1,
+        validationMessage: "choose language",
+        options: props.languages,
+        validateInput: value => typeof value === "string" && props.languages.some(lang => lang.value === value)
+    },
+    {
+        id: elementIds.count,
+        label: "Number of Words",
+        tabIndex: 2,
+        validationMessage: "choose one option",
+        options: props.amounts,
+        validateInput: value => typeof value === "string" && props.amounts.some(amount => amount.value === value)
+    }
+])
+
+const elementsRefs = ref<InstanceType<typeof SelectionElement>[]>([])
+const formRef = ref<InstanceType<typeof AppForm> | null>(null)
+
+function handleValidate() {
+    formRef.value?.setIsValid()
+}
+
+function handleSubmit(data: SubmitData) {    
     if (props.isLoading) {
         return
     }
     
     isSubmitted.value = true
 
-    const langId = parseInt(selectLangRef.value?.getValue() as string)
-    const limit = parseInt(selectLimitRef.value?.getValue() as string)
+    const langId = parseInt(data.get(elementIds.lang) as string)
+    const limit = parseInt(data.get(elementIds.count) as string)
 
     emits('onSubmit', { langId, limit })
 }
@@ -70,8 +85,9 @@ function handleSubmit() {
 
 <style lang="css" scoped>
 form {
+    width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.5rem;
 }
 </style>

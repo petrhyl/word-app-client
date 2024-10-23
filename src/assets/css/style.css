@@ -10,14 +10,17 @@
   --title-font: 'Gill Sans MT', sans-serif;
   --navigation-font: 'Poppins', sans-serif;
   --paragraph-font: 'Monserrat', sans-serif;
-  --primary-bg-color: #00383e;
+  --primary-bg-color: #002d3c;
   --secondary-bg-color: #00213d;
   --element-bg-color: #002931d3;
   --primary-btn-color: #006cab;
-  --secondary-btn-color: #00999c;
-  --form-border-color: #8b80dc5c;
+  --secondary-btn-color: #009698;
+  --submit-btn-color: #002ba0;
+  --card-border-color: #7c72c75c;
   --overlay-color: #1b1b1b81;
   --shadow: 0 0 0.75rem 0 #0000006d;
+  --focus-shadow: 0 0 0.5rem 4px var(--card-border-color);
+  --card-border: 2px solid var(--card-border-color);
   --border-radius: 7px;
   --header-height: 6.5rem;
   color: var(--primary-font-color);
@@ -29,7 +32,7 @@
   box-sizing: border-box;
 }
 
-html{
+html {
   scroll-behavior: smooth;
 }
 
@@ -72,7 +75,8 @@ button {
 }
 
 input,
-button {
+button,
+textarea {
   border: none;
   outline: none;
   background-color: transparent;
@@ -88,6 +92,16 @@ button {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border-width: 0;
+}
+
+.flex-col-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.text-center{
+  text-align: center;
 }
 
 @media screen and (max-width: 980px) {

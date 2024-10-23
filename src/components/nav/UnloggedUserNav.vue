@@ -1,7 +1,7 @@
 <template>
     <nav :class="cssClass">
-        <AppButton :type="'link'" :style="'primary'" :route="{ name: ROUTE_NAMES.login }"> Log In </AppButton>
-        <AppButton :type="'link'" :style="'secondary'" :route="{ name: ROUTE_NAMES.signup }"> Sign Up </AppButton>
+        <AppButton :type="'link'" :buttonStyle="'primary'" :route="{ name: ROUTE_NAMES.login }"> Log In </AppButton>
+        <AppButton :type="'link'" :buttonStyle="'secondary'" :route="{ name: ROUTE_NAMES.signup }"> Sign Up </AppButton>
     </nav>
 </template>
 

@@ -57,6 +57,12 @@ export const useUserStore = defineStore('userStore', () => {
         return response
     }
 
+    function nullifyUser() {
+        console.log('nullifyUser');
+        
+        userRef.value = null        
+    }
+
     onBeforeMount(async () => {
         const response = await callApi<null, UserResponse>({ endpoint: '/user/auth', method: 'GET' })
 
@@ -71,6 +77,7 @@ export const useUserStore = defineStore('userStore', () => {
         user,
         login,
         logout,
-        register
+        register,
+        nullifyUser
     }
 })

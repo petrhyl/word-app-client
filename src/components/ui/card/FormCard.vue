@@ -11,7 +11,7 @@
     max-width: 480px;
     padding: 1.5rem;
     border-radius: var(--border-radius);
-    border: 2px solid var(--form-border-color);
+    border: var(--card-border);
     box-shadow: var(--shadow);
 }
 

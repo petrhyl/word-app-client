@@ -16,3 +16,15 @@ export type AuthUser = {
     user: AppUser;
     token: AuthToken;
 }
+
+export type AppLanguage = {
+    code: string
+    name: string
+}
+
+export type UserVocabularyLanguage = {
+    id: number
+    userId: number
+    code: string
+    name: string
+}
