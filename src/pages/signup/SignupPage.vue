@@ -16,11 +16,18 @@
             </p>
             <p>It could take a few minutes to receive the verification e-mail.</p>
         </PrimaryCard>
+        <div class="flex-col-center">
+            <p class="text-center">Or log in to your account</p>
+            <AppButton :type="'link'" :button-style="'primary'" :route="{ name: ROUTE_NAMES.login }">
+                Log In
+            </AppButton>
+        </div>
     </PageWrapper>
 </template>
 
 <script setup lang="ts">
 import SignupForm from "@/components/forms/SignupForm.vue"
+import AppButton from "@/components/ui/button/AppButton.vue"
 import PrimaryCard from "@/components/ui/card/PrimaryCard.vue"
 import PageTitle from "@/components/ui/page/PageTitle.vue"
 import PageWrapper from "@/components/ui/page/PageWrapper.vue"
@@ -84,5 +91,9 @@ async function handleSubmit(data: UserRegistration) {
 
 .registered-message {
     text-align: center;
+}
+
+.flex-col-center {
+    row-gap: 1rem;
 }
 </style>

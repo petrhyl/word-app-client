@@ -23,7 +23,9 @@
             >
         </PrimaryCard>
         <PrimaryCard v-else>
-            <LoadingSpinner spinner-width-height="3rem" />
+            <div class="loading-container">
+                <LoadingSpinner spinner-width-height="3rem" />
+            </div>
         </PrimaryCard>
     </PageWrapper>
 </template>
@@ -60,8 +62,11 @@ const userLanguagesOptions = ref<SelectionOptionProps[]>([])
 const areLanguagesLoaded = ref(false)
 const isError = ref(false)
 
-function handleSubmit(data:ExerciseQueryParams) {
-    router.push({ name: ROUTE_NAMES.practiseRunning, query: {langId: data.langId.toString(), limit: data.limit.toString()} })
+function handleSubmit(data: ExerciseQueryParams) {
+    router.push({
+        name: ROUTE_NAMES.practiseRunning,
+        query: { langId: data.langId.toString(), limit: data.limit.toString() }
+    })
 }
 
 onBeforeMount(async () => {
@@ -80,6 +85,12 @@ onBeforeMount(async () => {
 })
 </script>
 
-
 <style lang="css" scoped>
+.loading-container {
+    height: 5rem;
+    min-width: 30vw;
+    display: flex;
+    justify-content: center;
+    padding-top: 1.25rem;
+}
 </style>

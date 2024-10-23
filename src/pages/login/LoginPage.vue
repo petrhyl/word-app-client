@@ -8,6 +8,12 @@
             @on-submit="handleSubmit"
             @on-valid-state="handleValidState"
         />
+        <div class="flex-col-center">
+            <p class="text-center">Or create your account</p>
+            <AppButton :type="'link'" :button-style="'secondary'" :route="{ name: ROUTE_NAMES.signup}">
+                Sign Up
+            </AppButton>
+        </div>
     </PageWrapper>
 </template>
 
@@ -21,6 +27,7 @@ import { useUserStore } from "@/store/user/userStore"
 import { ErrorResponseType } from "@/composables/useCallApi"
 import { onBeforeRouteUpdate, RouteLocationNormalizedLoadedGeneric, useRouter } from "vue-router"
 import { ROUTE_NAMES } from "@/router"
+import AppButton from "@/components/ui/button/AppButton.vue"
 
 const { login } = useUserStore()
 const router = useRouter()
@@ -65,7 +72,7 @@ async function handleSubmit(data: UserLogin) {
         redirectLoggedIn()
         return
     }
-    
+
     isError.value = response.isError
     errorMessage.value = errMessage
     isLoading.value = false
@@ -73,9 +80,15 @@ async function handleSubmit(data: UserLogin) {
 
 onBeforeRouteUpdate((_to, from) => {
     if (fromRoute.value !== null) {
-        return        
+        return
     }
 
     fromRoute.value = from
 })
 </script>
+
+<style lang="css" scoped>
+.flex-col-center {
+    row-gap: 1rem;
+}
+</style>

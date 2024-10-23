@@ -57,9 +57,7 @@ export const useUserStore = defineStore('userStore', () => {
         return response
     }
 
-    function nullifyUser() {
-        console.log('nullifyUser');
-        
+    function nullifyUser() {        
         userRef.value = null        
     }
 

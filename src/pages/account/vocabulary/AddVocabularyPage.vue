@@ -4,7 +4,7 @@
         v-if="pickedLanguage && !isSentSuccessfully"
         :isError="isError"
         :isLoading="isLoading"
-        :errorMessage="null"
+        :errorMessage="errorMessage"
         @on-submit="handleSubmitVocabulary"
         @on-valid-state="handleValidState"
     />
@@ -151,12 +151,23 @@ async function handleSubmitVocabulary(data: VocabularyItemRequest[]) {
         isLoading.value = false
 
         if (response.errorType === ErrorResponseType.CONFLICT) {
-            errorMessage.value = "One or more words already exist in your vocabulary"
+            const existingWord = response.error?.existingWord
+
+            const errorMessageText = "One or more words already exist in your vocabulary."
+
+            if (existingWord) {
+                errorMessage.value = `${errorMessageText} Existing word: '${existingWord}''`
+
+                return
+            }
+
+            errorMessage.value = errorMessageText
         }
 
         return
     }
 
+    isLoading.value = false
     isSentSuccessfully.value = true
 }
 
@@ -174,7 +185,7 @@ function handleAddVocabulary() {
 .loading-container {
     height: 5rem;
     min-width: 30vw;
-    padding: 2.5rem;
+    padding-top: 1.25rem;
 }
 
 .vocabulary-setting {

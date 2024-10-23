@@ -68,3 +68,14 @@ onBeforeMount(async () => {
     }
 })
 </script>
+
+
+<style scoped>
+.loading-container {
+    height: 5rem;
+    min-width: 30vw;
+    display: flex;
+    justify-content: center;
+    padding-top: 1.25rem;
+}
+</style>

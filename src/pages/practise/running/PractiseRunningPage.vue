@@ -64,7 +64,7 @@ import PageTitle from "@/components/ui/page/PageTitle.vue"
 import PageWrapper from "@/components/ui/page/PageWrapper.vue"
 import useCallApi from "@/composables/useCallApi"
 import { ROUTE_NAMES } from "@/router"
-import { ExerciseResultItem } from "@/types/requests"
+import { ExerciseResultItem, ExerciseResultRequest } from "@/types/requests"
 import { ExerciseItem, ExerciseResponse } from "@/types/responses"
 import { ChevronRightIcon, FaceFrownIcon, FaceSmileIcon } from "@heroicons/vue/20/solid"
 import { computed, onBeforeMount, ref } from "vue"
@@ -112,7 +112,6 @@ function focusInput() {
             form.querySelector("input")?.focus()
         }
     }, 340)
-    
 }
 
 function focusNextButton() {
@@ -125,7 +124,27 @@ function focusNextButton() {
     }, 340)
 }
 
-function submitResults() {
+async function submitResults() {
+    if (isLoading.value) {
+        return
+    }
+
+    isLoading.value = true
+
+    const response = await callApi<ExerciseResultRequest, { message: string }>({
+        method: "POST",
+        endpoint: "/exercises/results",
+        body: {
+            languageId: exerciseLanguageId.value!,
+            words: exerciseResults.value
+        }
+    })
+
+    if (response.isError) {
+        isError.value = true
+    }
+
+    isLoading.value = false
     answerState.value = "submitted"
 }
 
@@ -224,6 +243,7 @@ onBeforeMount(async () => {
 }
 
 .loading-container {
+    height: 5rem;
     padding: 1.5rem;
     display: flex;
     justify-content: center;

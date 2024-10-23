@@ -16,6 +16,7 @@ export type ApiResponse<T> = {
 export type ApiCallResponse<T = null> = {
     data: T | null;
     errorType: ErrorResponseType | null;
+    error: any
     isError: boolean;
 }
 
@@ -70,8 +71,9 @@ function createRequest<T>(options: CallApiOptions<T>, authToken: string | null):
 }
 
 async function generateApiResponse<T>(response: Response): Promise<ApiCallResponse<T>> {
+    let errorType: ErrorResponseType | null = null
+
     if (!response.ok) {
-        let errorType: ErrorResponseType = ErrorResponseType.UNKNOWN
         if (response.status === 401) {
             errorType = ErrorResponseType.UNAUTHORIZED
         } else if (response.status === 403) {
@@ -86,37 +88,42 @@ async function generateApiResponse<T>(response: Response): Promise<ApiCallRespon
             errorType = ErrorResponseType.CONFLICT
         } else if (response.status >= 500) {
             errorType = ErrorResponseType.INTERNAL_SERVER_ERROR
-        }
 
+            return {
+                data: null,
+                errorType,
+                error: null,
+                isError: true
+            }
+        } else {
+            errorType = ErrorResponseType.UNKNOWN
+        }
+    }
+
+    if (response.status === 204) {
         return {
             data: null,
             errorType,
-            isError: true
+            error: null,
+            isError: false
         }
-
     }
 
     try {
-        const data: ApiResponse<T> = await response.json()
-
-        if (response.status === 204) {
-            return {
-                data: null,
-                errorType: null,
-                isError: false
-            }
-        }
+        const responseData: ApiResponse<T> = await response.json()
 
         return {
-            data: data.data,
-            errorType: null,
-            isError: false
+            data: responseData.data,
+            errorType,
+            error: responseData.isError ? responseData.errors : null,
+            isError: responseData.isError
         }
-    } catch (error) {
+    } catch (err) {
         return {
             data: null,
-            errorType: null,
-            isError: false
+            errorType,
+            error: err instanceof Error ? { message: err.message } : null,
+            isError: true
         }
     }
 }
@@ -131,12 +138,19 @@ async function fetchResponse<T>(request: Request): Promise<ApiCallResponse<T>> {
         const response = await fetch(request)
 
         return generateApiResponse<T>(response)
-    } catch (error) {
-        console.error(error)
+    } catch (err) {
+        console.error(err)
+
+        let error = null
+
+        if (err instanceof Error) {
+            error = { message: err.message }
+        }
 
         return {
             data: null,
             errorType: ErrorResponseType.UNKNOWN,
+            error,
             isError: true
         }
     }
@@ -145,17 +159,16 @@ async function fetchResponse<T>(request: Request): Promise<ApiCallResponse<T>> {
 export default function useCallApi() {
     const { accessToken, refreshToken, setTokens, isRefreshTokenExpired, nullifyLogin } = useUserAuth()
 
-    async function processRefresh<U>(request: Request) {
+    async function processRefresh<T, U>(options: CallApiOptions<T>): Promise<ApiCallResponse<U>> {
         return new Promise<ApiCallResponse<U>>(resolve => setTimeout(async () => {
-            isRefreshing = true;
-
             let response: ApiCallResponse<U> = {
                 data: null,
                 errorType: ErrorResponseType.UNAUTHORIZED,
+                error: null,
                 isError: true
             }
-            
-            if (!accessToken.value || !refreshToken.value || isRefreshTokenExpired()) {               
+
+            if (!accessToken.value || !refreshToken.value || isRefreshTokenExpired()) {
                 return resolve(response)
             }
 
@@ -166,8 +179,8 @@ export default function useCallApi() {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        accessToken: accessToken,
-                        refreshToken: refreshToken
+                        accessToken: accessToken.value,
+                        refreshToken: refreshToken.value
                     })
                 })
 
@@ -181,16 +194,21 @@ export default function useCallApi() {
                     throw new Error('Token refresh failed')
                 }
 
-                setTokens(tokenData.data.auth.token.accessToken, tokenData.data.auth.token.accessTokenExpiresIn, tokenData.data.auth.token.refreshToken, tokenData.data.auth.token.refreshTokenExpireIn)
+                setTokens(tokenData.data.auth.token.accessToken,
+                    tokenData.data.auth.token.accessTokenExpiresIn,
+                    tokenData.data.auth.token.refreshToken,
+                    tokenData.data.auth.token.refreshTokenExpireIn)
 
                 isRefreshing = false;
                 onTokenRefreshed(tokenData.data.auth.token.accessToken);
 
+                const request = createRequest(options, tokenData.data.auth.token.accessToken)
                 response = await fetchResponse<U>(request)
             } catch (err) {
-                console.log(err);
-                
                 pendingCalls = []
+
+                console.log(err);
+
                 nullifyLogin()
             } finally {
                 isRefreshing = false
@@ -201,11 +219,11 @@ export default function useCallApi() {
     }
 
     /**
-     * @see {T} - first generic type of this function is type of data sent as a body of API endpoint request
-     * @see {U} - second generic type is type of data deserialized from API response body
-     * @param options generic object with data required as a body of API endpoint request - data's generic type is type given as a first generic type of this function
+     * @template T - first generic type of this function is type of data sent as a body of API endpoint request
+     * @template U - second generic type is type of data deserialized from API response body
+     * @param {CallApiOptions<T>} options generic object with data required as a body of API endpoint request - data's generic type is type given as a first generic type of this function
      * @param authToken authorization bearer token if any
-     * @returns deserialized object of API response body of type given as a second generic type of this function or generated object with error message if request failed
+     * @returns {Promise<ApiCallResponse<U>>} deserialized object of API response body of type given as a second generic type of this function or generated object with error message if request failed
      */
     async function callApi<T, U>(options: CallApiOptions<T>): Promise<ApiCallResponse<U>> {
         const request = createRequest(options, accessToken.value)
@@ -216,13 +234,15 @@ export default function useCallApi() {
             if (isRefreshing) {
                 return new Promise((resolve) => {
                     addRefreshSubscriber(async (newAccessToken: string) => {
-                        request.headers.set('Authorization', `Bearer ${newAccessToken}`)
-                        resolve(await fetchResponse<U>(request))
+                        const newRequest = createRequest({ ...options }, newAccessToken)
+                        resolve(await fetchResponse<U>(newRequest))
                     });
                 });
             }
 
-            return await processRefresh(request)
+            isRefreshing = true;
+
+            return await processRefresh<T, U>({ ...options })
         }
 
         return response

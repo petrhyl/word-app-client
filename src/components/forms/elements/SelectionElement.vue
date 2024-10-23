@@ -176,6 +176,10 @@ function setIsFormSubmitted() {
     padding: 0.75rem 0.75rem;
 }
 
+.select-element:hover {
+    box-shadow: var(--focus-shadow);
+}
+
 .select-element:focus {
     box-shadow: var(--focus-shadow);
 }

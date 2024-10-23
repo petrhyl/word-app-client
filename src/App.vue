@@ -20,10 +20,7 @@ router.beforeEach((to, from, next) => {
     }
 
     if (accessToken.value === null && to.meta.authRequired) {
-        if (from.meta.authRestricted) {
-            return next({ name: ROUTE_NAMES.home })
-        }
-        return next(new Error("User is not authenticated"))
+        return next({ name: ROUTE_NAMES.login })
     }
 
     if (accessToken.value !== null && to.meta.authRestricted) {
