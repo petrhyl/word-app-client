@@ -29,6 +29,8 @@ export type ForgetPasswordRequest = {
     email: string
 }
 
+export type SendVerificationEmailRequest = ForgetPasswordRequest
+
 export type ResetPasswordRequest = {
     password: string
     verificationKey: string

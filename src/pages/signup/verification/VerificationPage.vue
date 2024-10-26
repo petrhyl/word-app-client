@@ -3,17 +3,17 @@
         <PageTitle title="E-mail verification" :description="getDescription" />
         <PrimaryCard>
             <div v-if="isLoading" class="verification-state">
-                <p>Please wait until we verify your e-mail address.</p>
+                <p>Please wait until we verify your e-mail address</p>
                 <LoadingSpinner :strip-color="'#14f9ff'" :spinner-width-height="'2.75rem'" :circle-width="6" />
             </div>
             <div v-if="!isLoading && !isKeyValid" class="verification-state">
-                <p>Verification key is invalid or has been already used.</p>
+                <p>Verification key is invalid or has been already used</p>
                 <FaceFrownIcon class="invalid-state-icon" />
             </div>
             <div v-if="!isLoading && isKeyValid" class="verification-state">
-                <p>Your e-mail address was successfully verified.</p>
+                <p class="success-message">Your e-mail address has been successfully verified</p>
                 <FaceSmileIcon class="success-state-icon" />
-                <p>Now you can log in to your account.</p>
+                <p>Now you can log in to your account</p>
                 <div class="login-button">
                     <AppButton :type="'link'" :buttonStyle="'primary'" :route="{ name: ROUTE_NAMES.login }">Log in</AppButton>
                 </div>

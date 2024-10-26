@@ -33,7 +33,7 @@
                 </form>
             </PrimaryCard>
             <PrimaryCard v-else-if="answerState === 'submitted' && !isError">
-                <h2 class="text-center">Your results were submitted</h2>
+                <p class="success-message">Your results were submitted</p>
                 <p class="text-center final-message">
                     You translated correctly {{ getCorrectCount }} of {{ exerciseResults.length }} words
                 </p>

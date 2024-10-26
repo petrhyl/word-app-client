@@ -110,7 +110,7 @@ const formRef = ref<InstanceType<typeof AppForm> | null>(null)
 const isSubmitting = ref(false)
 
 function addWord() {
-    const elementsCount = formElements.value.length       
+    const elementsCount = formElements.value.length
 
     formElements.value.push({
         word: {
@@ -125,8 +125,8 @@ function addWord() {
         }
     })
 
-    const elementsContainer = document.getElementById("word-items-container") 
-    console.log(elementsContainer?.scrollHeight);
+    const elementsContainer = document.getElementById("word-items-container")
+
     if (elementsContainer) {
         elementsContainer.style.height = `${elementsContainer.scrollHeight}px`
     }
@@ -139,9 +139,9 @@ function addWord() {
 
     setTimeout(() => {
         if (elementsContainer) {
-            elementsContainer.style.height = 'auto'
+            elementsContainer.style.height = "auto"
         }
-    }, 170);
+    }, 170)
 }
 
 function handleValidate() {

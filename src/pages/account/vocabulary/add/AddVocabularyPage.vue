@@ -11,8 +11,8 @@
         />
         <div class="check-container">
             <PrimaryCard v-if="checkedWord">
-                <h2 class="title check-title">{{ checkedWord }}</h2>
-                <p class="title check-message" :class="wordExists ? 'exists' : 'not-exist'">
+                <h2 class="text-center check-title">{{ checkedWord }}</h2>
+                <p class="text-center check-message" :class="wordExists ? 'exists' : 'not-exist'">
                     The word/phrase
                     {{ wordExists ? "already exists in your vocabulary" : "does not exist in your vocabulary" }}
                 </p>
@@ -36,7 +36,7 @@
         />
         <LoadingCard v-else />
         <div class="setting-nav-container flex-col-center">
-            <p class="title">Or you can add new language to your vocabulary</p>
+            <p class="text-center">Or you can add new language to your vocabulary</p>
             <div class="setting-nav">
                 <AppButton :type="'link'" :button-style="'primary'" :route="{ name: ROUTE_NAMES.createLanguage }"
                     >New language</AppButton
@@ -45,7 +45,7 @@
         </div>
     </div>
     <PrimaryCard v-if="isSentSuccessfully" class="flex-col-center">
-        <p class="title">Vocabulary has been successfully added</p>
+        <p class="success-message">Vocabulary has been successfully added</p>
         <FaceSmileIcon class="success-state-icon" />
         <AppButton :type="'link'" :buttonStyle="'primary'" :route="{ name: ROUTE_NAMES.practice }"
             >Start Practise</AppButton
@@ -99,7 +99,7 @@ const getPageDescription = computed(() => {
         return "You successfully added new words to your vocabulary"
     }
 
-    return "Choose the language of the vocabulary you want to add words to"
+    return "Choose the language of your vocabulary you want to add new words to"
 })
 
 function retreiveVocabularySettings(
@@ -267,10 +267,6 @@ async function handleSubmitCheck(word: string) {
 
 .not-exist {
     color: var(--secondary-font-color);
-}
-
-.title {
-    text-align: center;
 }
 
 .vocabulary-setting {

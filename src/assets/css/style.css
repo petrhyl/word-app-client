@@ -5,7 +5,7 @@
   --primary-font-color: #f2e0ff;
   --secondary-font-color: #8b9cc0;
   --title-font-color: #e3f8fe;
-  --success-color: #6cc4ff;
+  --success-color: #76c8ff;
   --warning-color: #e92d53;
   --title-font: 'Gill Sans MT', sans-serif;
   --navigation-font: 'Poppins', sans-serif;
@@ -102,6 +102,13 @@ textarea {
 
 .text-center{
   text-align: center;
+}
+
+.success-message {
+  text-align: center;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--success-color);
 }
 
 @media screen and (max-width: 980px) {

@@ -11,7 +11,7 @@
             @on-valid-state="handleValidState"
         />
         <PrimaryCard v-else>
-            <p class="text-center success">Your password has been changed successfully</p>
+            <p class="success-message">Your password has been changed successfully</p>
             <p class="text-center">You can loggin now with new password</p>
             <div class="nav">
                 <AppButton type="link" :button-style="'primary'" :route="{ name: ROUTE_NAMES.login }">Log in</AppButton>
@@ -74,9 +74,5 @@ async function handleSubmit(password: string) {
 .nav {
     display: flex;
     justify-content: center;
-}
-
-.success {
-    color: var(--success-color);
 }
 </style>

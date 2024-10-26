@@ -10,7 +10,7 @@
     />
     <PrimaryCard v-else>
         <div class="flex-col-center">
-            <p class="text-center">Password has been changed</p>
+            <p class="success-message">Password has been changed</p>
             <FaceSmileIcon class="state-icon" />
             <p class="text-center">Continue to:</p>
             <div class="nav">

@@ -1,6 +1,6 @@
 <template>
     <PageWrapper>
-        <PageTitle title="Reset Password" description="We will send you verification e-mail to create a new password" />
+        <PageTitle title="Reset Password" description="We will send you verification e-mail to reset your&nbsp;password" />
         <ForgetPasswordForm
             v-if="!isSent"
             :isLoading="isLoading"
@@ -10,7 +10,7 @@
             @on-valid-state="handleValidState"
         />
         <PrimaryCard v-else>
-            <p class="text-center">We have sent you an e-mail to reset your password</p>
+            <p class="success-message">We have sent you an e-mail to reset your password</p>
             <p class="text-center">Please check your inbox</p>
             <p class="text-center small">It may take a few minutes</p>
         </PrimaryCard>
