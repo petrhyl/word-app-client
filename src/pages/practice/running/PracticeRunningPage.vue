@@ -34,38 +34,37 @@
             </PrimaryCard>
             <PrimaryCard v-else-if="answerState === 'submitted' && !isError">
                 <h2 class="text-center">Your results were submitted</h2>
-                <p class="text-center">
+                <p class="text-center final-message">
                     You translated correctly {{ getCorrectCount }} of {{ exerciseResults.length }} words
                 </p>
-                <AppButton :type="'link'" :button-style="'primary'" :route="{ name: ROUTE_NAMES.practise }"
-                    >Go to practise</AppButton
+                <AppButton :type="'link'" :button-style="'primary'" :route="{ name: ROUTE_NAMES.practice }"
+                    >Go to practice</AppButton
+                >
+                <AppButton :type="'link'" :button-style="'secondary'" :route="{ name: ROUTE_NAMES.languagesStats }"
+                    >View stats</AppButton
                 >
             </PrimaryCard>
             <PrimaryCard v-else-if="isError">
                 <h2 class="text-center">Error</h2>
                 <p class="text-center">{{ getErrorMesaage }}</p>
             </PrimaryCard>
-            <PrimaryCard v-else>
-                <div class="loading-container">
-                    <LoadingSpinner spinner-width-height="3rem" />
-                </div>
-            </PrimaryCard>
+            <LoadingCard v-else />
         </FadeTransition>
     </PageWrapper>
 </template>
 
 <script setup lang="ts">
-import PractiseRunningForm from "@/components/forms/PractiseRunningForm.vue"
+import PractiseRunningForm from "@/components/forms/PracticeRunningForm.vue"
 import FadeTransition from "@/components/transitions/FadeTransition.vue"
 import AppButton from "@/components/ui/button/AppButton.vue"
-import LoadingSpinner from "@/components/ui/button/LoadingSpinner.vue"
+import LoadingCard from "@/components/ui/card/LoadingCard.vue"
 import PrimaryCard from "@/components/ui/card/PrimaryCard.vue"
 import PageTitle from "@/components/ui/page/PageTitle.vue"
 import PageWrapper from "@/components/ui/page/PageWrapper.vue"
 import useCallApi from "@/composables/useCallApi"
 import { ROUTE_NAMES } from "@/router"
 import { ExerciseResultItem, ExerciseResultRequest } from "@/types/requests"
-import { ExerciseItem, ExerciseResponse } from "@/types/responses"
+import { VocabularyItem, ExerciseResponse } from "@/types/responses"
 import { ChevronRightIcon, FaceFrownIcon, FaceSmileIcon } from "@heroicons/vue/20/solid"
 import { computed, onBeforeMount, ref } from "vue"
 import { useRoute } from "vue-router"
@@ -73,7 +72,7 @@ import { useRoute } from "vue-router"
 const route = useRoute()
 const { callApi } = useCallApi()
 
-const exerciseWords = ref<ExerciseItem[]>([])
+const exerciseWords = ref<VocabularyItem[]>([])
 const currentIndex = ref(0)
 const exerciseLanguageName = ref<string | null>(null)
 const exerciseLanguageId = ref<number | null>(null)
@@ -88,7 +87,7 @@ const getDescription = computed(() => {
     }
 
     if (answerState.value === "submitted") {
-        return "Results of your practise session were submitted"
+        return "Results of your practice session were submitted"
     }
 
     return "Type correct translation of a word"
@@ -231,6 +230,7 @@ onBeforeMount(async () => {
 
 .translation-title {
     font-size: 0.9rem;
+    margin-bottom: 0.5rem;
 }
 
 .translations {
@@ -242,11 +242,8 @@ onBeforeMount(async () => {
     width: 100%;
 }
 
-.loading-container {
-    height: 5rem;
-    padding: 1.5rem;
-    display: flex;
-    justify-content: center;
+.final-message{
+    padding: 0.75rem 0;
 }
 
 .text-center {

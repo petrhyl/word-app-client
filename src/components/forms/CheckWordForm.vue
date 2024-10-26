@@ -1,4 +1,5 @@
 <template>
+    <h3 class="text-center">You can check if a word&nbsp;/&nbsp;phrase exists</h3>
     <AppForm
         ref="formRef"
         :elements-refs="elementsRefs"
@@ -15,23 +16,16 @@
             v-bind="element"
             @on-validate="handleValidate"
         />
-        <AppButton type="link" button-style="link" :route="{ name: ROUTE_NAMES.forgetPassword }"
-            >Forgot password</AppButton
-        >
-        <template #submit-text>Log In</template>
+        <template #submit-text>Check</template>
     </AppForm>
 </template>
 
 <script setup lang="ts">
-import { UserLogin } from "@/types/requests"
 import { computed, ref } from "vue"
 import InputElement from "./elements/InputElement.vue"
 import { InputElementProps } from "./elements/FormElementProps"
-import { isEmailValid } from "@/utils/validation"
 import AppForm from "./form/AppForm.vue"
 import { SubmitData } from "./form/SubmitData"
-import AppButton from "../ui/button/AppButton.vue"
-import { ROUTE_NAMES } from "@/router"
 
 const props = defineProps<{
     isLoading: boolean
@@ -40,33 +34,23 @@ const props = defineProps<{
 }>()
 
 const emits = defineEmits<{
-    onSubmit: [data: UserLogin]
+    onSubmit: [data: string]
     onValidState: []
 }>()
 
 const elementIds = {
-    email: "user-email",
-    password: "user-password"
+    chekingWord: "checking-word",
 }
 
 const formElements = computed<InputElementProps[]>(() => [
     {
-        id: elementIds.email,
-        label: "E-mail",
-        type: "email",
-        placeholder: "Your e-mail address",
+        id: elementIds.chekingWord,
+        label: "Word",
+        type: "text",
+        placeholder: "Potentially existing word / phrase",
         tabIndex: 1,
-        validationMessage: "wrong e-mail format",
-        validateInput: value => typeof value === "string" && isEmailValid(value)
-    },
-    {
-        id: elementIds.password,
-        label: "Password",
-        type: "watch-password",
-        placeholder: "Enter password",
-        tabIndex: 2,
-        validationMessage: "fill in the password",
-        validateInput: value => typeof value === "string"
+        validationMessage: "is empty or too long",
+        validateInput: value => typeof value === "string" && value.length > 0 && value.length < 120
     }
 ])
 
@@ -86,11 +70,8 @@ function handleSubmit(data: SubmitData) {
         return
     }
 
-    const login: UserLogin = {
-        email: data.get(elementIds.email) as string,
-        password: data.get(elementIds.password) as string
-    }
+   const word = data.get(elementIds.chekingWord) as string    
 
-    emits("onSubmit", login)
+    emits("onSubmit", word)
 }
 </script>

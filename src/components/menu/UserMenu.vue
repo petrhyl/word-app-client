@@ -1,52 +1,50 @@
 <template>
-    <nav>
-        <DropDownMenu class="user-drop-down-menu">
-            <template #button>
-                <AppButton :type="'button'" :buttonStyle="'ternary'">
-                    {{ getUserName }}
-                </AppButton>
-            </template>
-            <template #items>
-                <DropDownMenuItem class="user-menu-item">
-                    <AppButton :type="'link'" :buttonStyle="'primary'" :route="{ name: ROUTE_NAMES.profile }"
-                        >Profile</AppButton
-                    >
-                </DropDownMenuItem>
-                <DropDownMenuItem v-if="isStartVisible" class="user-menu-item">
-                    <AppButton :type="'link'" :buttonStyle="'primary'" :route="{ name: ROUTE_NAMES.practise }"
-                        >Start Practise</AppButton
-                    >
-                </DropDownMenuItem>
-                <DropDownMenuItem class="user-menu-item">
-                    <AppButton :type="'link'" :buttonStyle="'secondary'" :route="{ name: ROUTE_NAMES.addVocabulary }"
-                        >Add Vocabulary</AppButton
-                    >
-                </DropDownMenuItem>
-                <div class="delimeter"><div></div></div>
-                <DropDownMenuItem class="user-menu-item">
-                    <AppButton :type="'button'" :buttonStyle="'secondary'" @click-button="handleLogout"
-                        >Log Out</AppButton
-                    >
-                </DropDownMenuItem>
-            </template>
-        </DropDownMenu>
-        <div class="user-responsive-menu">
-            <AppButton :type="'link'" :buttonStyle="'primary'" :route="{ name: ROUTE_NAMES.profile }"
-                >Profile</AppButton
-            >
-            <AppButton
-                v-if="isStartVisible"
-                :type="'link'"
-                :buttonStyle="'primary'"
-                :route="{ name: ROUTE_NAMES.practise }"
-                >Start Practise</AppButton
-            >
-            <AppButton :type="'link'" :buttonStyle="'secondary'" :route="{ name: ROUTE_NAMES.addVocabulary }"
-                >Add Vocabulary</AppButton
-            >
+    <DropDownMenu class="user-drop-down-menu">
+        <template #button>
+            <AppButton :type="'button'" :buttonStyle="'ternary'">
+                {{ getUserName }}
+            </AppButton>
+        </template>
+        <template #items>
+            <DropDownMenuItem class="user-menu-item">
+                <AppButton :type="'link'" :buttonStyle="'primary'" :route="{ name: ROUTE_NAMES.profile }"
+                    >Profile</AppButton
+                >
+            </DropDownMenuItem>
+            <DropDownMenuItem v-if="isStartVisible" class="user-menu-item">
+                <AppButton :type="'link'" :buttonStyle="'primary'" :route="{ name: ROUTE_NAMES.practice }"
+                    >Start Practise</AppButton
+                >
+            </DropDownMenuItem>
+            <DropDownMenuItem class="user-menu-item">
+                <AppButton :type="'link'" :buttonStyle="'primary'" :route="{ name: ROUTE_NAMES.languagesStats }"
+                    >Language Stats</AppButton
+                >
+            </DropDownMenuItem>
+            <DropDownMenuItem class="user-menu-item">
+                <AppButton :type="'link'" :buttonStyle="'secondary'" :route="{ name: ROUTE_NAMES.addVocabulary }"
+                    >Add Vocabulary</AppButton
+                >
+            </DropDownMenuItem>
             <div class="delimeter"><div></div></div>
-            <AppButton :type="'button'" :buttonStyle="'secondary'" @click-button="handleLogout">Log Out</AppButton>
-        </div>
+            <DropDownMenuItem class="user-menu-item">
+                <AppButton :type="'button'" :buttonStyle="'secondary'" @click-button="handleLogout">Log Out</AppButton>
+            </DropDownMenuItem>
+        </template>
+    </DropDownMenu>
+    <nav class="user-responsive-menu" id="user-nav-menu">
+        <AppButton :type="'link'" :buttonStyle="'primary'" :route="{ name: ROUTE_NAMES.profile }">Profile</AppButton>
+        <AppButton v-if="isStartVisible" :type="'link'" :buttonStyle="'primary'" :route="{ name: ROUTE_NAMES.practice }"
+            >Start Practise</AppButton
+        >
+        <AppButton :type="'link'" :buttonStyle="'primary'" :route="{ name: ROUTE_NAMES.languagesStats }"
+            >Language Stats</AppButton
+        >
+        <AppButton :type="'link'" :buttonStyle="'secondary'" :route="{ name: ROUTE_NAMES.addVocabulary }"
+            >Add Vocabulary</AppButton
+        >
+        <div class="delimeter"><div></div></div>
+        <AppButton :type="'button'" :buttonStyle="'secondary'" @click-button="handleLogout">Log Out</AppButton>
     </nav>
 </template>
 
@@ -56,14 +54,18 @@ import DropDownMenu from "@/components/menu/dropdown/DropDownMenu.vue"
 import { ROUTE_NAMES } from "@/router"
 import useUserAuth from "@/composables/useUserAuth"
 import DropDownMenuItem from "./dropdown/DropDownMenuItem.vue"
-import { computed } from "vue"
+import { computed, onMounted, onUnmounted } from "vue"
 import { useRouter } from "vue-router"
+
+const props = defineProps<{
+    closeMenu: () => void
+}>()
 
 const { user, logout } = useUserAuth()
 const router = useRouter()
 
 const isStartVisible = computed(() => {
-    return router.currentRoute.value.name !== ROUTE_NAMES.practiseRunning
+    return router.currentRoute.value.name !== ROUTE_NAMES.practiceRunning
 })
 
 const getUserName = computed(() => {
@@ -80,6 +82,22 @@ function handleLogout() {
     logout()
     router.push({ name: ROUTE_NAMES.home })
 }
+
+onMounted(()=>{
+    for (const el of document.querySelector("#user-nav-menu")?.children || []) {
+        if (el.tagName === "A" || el.tagName === "BUTTON") {
+            el.addEventListener("click", props.closeMenu)
+        }
+    }
+})
+
+onUnmounted(() => {
+    for (const el of document.querySelector("#user-nav-menu")?.children || []) {
+        if (el.tagName === "A" || el.tagName === "BUTTON") {
+            el.removeEventListener("click", props.closeMenu)
+        }
+    }
+})
 </script>
 
 <style lang="css" scoped>

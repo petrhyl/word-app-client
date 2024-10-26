@@ -1,6 +1,6 @@
 <template>
     <PageWrapper>
-        <PageTitle title="Account login" description="Log in to enjoy vocabulary practising." />
+        <PageTitle title="Account login" description="Log in to enjoy vocabulary practicing." />
         <LoginForm
             :is-loading="isLoading"
             :is-error="isError"

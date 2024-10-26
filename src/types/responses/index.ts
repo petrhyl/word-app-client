@@ -35,7 +35,7 @@ export type UserVocabularyLanguagesResponse = {
     languages: UserVocabularyLanguage[]
 }
 
-export type ExerciseItem = {
+export type VocabularyItem = {
     id: number
     word: string
     translations: string[]
@@ -49,6 +49,15 @@ export type ExerciseResponse = {
         languageId: number
         languageCode: string
         languageName: string
-        words: ExerciseItem[]
+        words: VocabularyItem[]
     }
+}
+
+export type LanguageVocabulary = {
+    language: UserVocabularyLanguage
+    items: VocabularyItem[]
+}
+
+export type LanguageVocabularyResponse = {
+    vocabulary: LanguageVocabulary
 }

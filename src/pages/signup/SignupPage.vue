@@ -48,7 +48,7 @@ const isRegistered = ref(false)
 
 const getTitle = computed(() => (isRegistered.value ? "Account created" : "Account registration"))
 const getDescription = computed(() =>
-    isRegistered.value ? "Thank you for signing up." : "Sign up to be able to create your own vocabulary to practise."
+    isRegistered.value ? "Thank you for signing up." : "Sign up to be able to create your own vocabulary to practice."
 )
 
 function handleValidState() {

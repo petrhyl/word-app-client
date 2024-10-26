@@ -28,3 +28,10 @@ export type UserVocabularyLanguage = {
     code: string
     name: string
 }
+
+export type VocabularyStats = {
+    language: UserVocabularyLanguage
+    successRate: number
+    totalAnsweredWords: number
+    answeredWordsAverage: number
+}

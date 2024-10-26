@@ -57,7 +57,7 @@ onBeforeMount(async () => {
         return
     }
 
-    const response = await callApi<null, { message: string }>({ method: "POST", endpoint: `/user/verification/${key}` })
+    const response = await callApi<null, { message: string }>({ method: "POST", endpoint: `/user/verify/${key}` })
 
     isKeyValid.value = !response.isError
     isLoading.value = false

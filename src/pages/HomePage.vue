@@ -7,15 +7,15 @@
             </p>
             <AppButton :buttonStyle="'primary'" type="link" :route="{ name: ROUTE_NAMES.login }">Log in</AppButton>
         </ModalWindow>
-        <h1 class="welcome-message">Welcome to application for practising your foreign language vocabulary</h1>
+        <h1 class="welcome-message">Welcome to application for practicing your foreign language vocabulary</h1>
         <div v-if="!user?.id" class="prompt-container">
-            <p>Please log in or sign up to start practising</p>
-            <UnloggedUserNav css-class="auth-buttons-container" />
+            <p>Please log in or sign up to start practicing</p>
+            <UnloggedUserNav css-class="auth-buttons-container" :close-menu="() => {}" />
         </div>
         <div v-else class="prompt-container">
-            <p>You can start practising now</p>
+            <p>You can start practicing now</p>
             <div>
-                <AppButton :buttonStyle="'primary'" type="link" :route="{ name: ROUTE_NAMES.practise }">
+                <AppButton :buttonStyle="'primary'" type="link" :route="{ name: ROUTE_NAMES.practice }">
                     Start Practise
                 </AppButton>
             </div>
@@ -51,7 +51,7 @@ function handleCloseLoggedoutModal() {
     isAutoLoggedOut.value = false
 }
 
-function resolveLoginExpiration() {    
+function resolveLoginExpiration() {
     if (isRefreshTokenExpired()) {
         isAutoLoggedOut.value = true
         nullifyLogin()

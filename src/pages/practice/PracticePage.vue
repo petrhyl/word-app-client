@@ -2,7 +2,7 @@
     <PageWrapper>
         <PageTitle
             title="Practise Setting"
-            description="Firstly, choose settings of vocabulary you&nbsp;want to practise"
+            description="Firstly, choose settings of vocabulary you&nbsp;want to practice"
         />
         <PractiseSettingForm
             v-if="areLanguagesLoaded && userLanguagesOptions.length > 0"
@@ -11,35 +11,27 @@
             :is-loading="false"
             @on-submit="handleSubmit"
         />
-        <PrimaryCard v-else-if="isError">
-            <h3 class="text-center">Error</h3>
-            <p class="text-center">An error occurred while loading your languages</p>
-        </PrimaryCard>
         <PrimaryCard v-else-if="areLanguagesLoaded">
-            <p class="text-center">You don't have any languages to practise</p>
+            <p class="text-center">You don't have any languages to practice</p>
             <p class="text-center">Let's create a new vocabulary language first</p>
             <AppButton :type="'link'" :button-style="'primary'" :route="{ name: ROUTE_NAMES.createLanguage }"
                 >New language</AppButton
             >
         </PrimaryCard>
-        <PrimaryCard v-else>
-            <div class="loading-container">
-                <LoadingSpinner spinner-width-height="3rem" />
-            </div>
-        </PrimaryCard>
+        <LoadingCard v-else />
     </PageWrapper>
 </template>
 
 <script setup lang="ts">
 import { SelectionOptionProps } from "@/components/forms/elements/FormElementProps"
-import PractiseSettingForm from "@/components/forms/PractiseSettingForm.vue"
+import PractiseSettingForm from "@/components/forms/PracticeSettingForm.vue"
 import AppButton from "@/components/ui/button/AppButton.vue"
-import LoadingSpinner from "@/components/ui/button/LoadingSpinner.vue"
+import LoadingCard from "@/components/ui/card/LoadingCard.vue"
 import PrimaryCard from "@/components/ui/card/PrimaryCard.vue"
 import PageTitle from "@/components/ui/page/PageTitle.vue"
 import PageWrapper from "@/components/ui/page/PageWrapper.vue"
 import useCallApi from "@/composables/useCallApi"
-import { ROUTE_NAMES } from "@/router"
+import { ERROR_ROUTE_ERRORS, ROUTE_NAMES } from "@/router"
 import { ExerciseQueryParams } from "@/types/requests"
 import { UserVocabularyLanguagesResponse } from "@/types/responses"
 import { onBeforeMount, ref } from "vue"
@@ -60,11 +52,10 @@ const wordAmountOptions: SelectionOptionProps[] = [
 const userLanguagesOptions = ref<SelectionOptionProps[]>([])
 
 const areLanguagesLoaded = ref(false)
-const isError = ref(false)
 
 function handleSubmit(data: ExerciseQueryParams) {
     router.push({
-        name: ROUTE_NAMES.practiseRunning,
+        name: ROUTE_NAMES.practiceRunning,
         query: { langId: data.langId.toString(), limit: data.limit.toString() }
     })
 }
@@ -78,19 +69,9 @@ onBeforeMount(async () => {
             label: lang.name
         }))
     } else {
-        isError.value = true
+        throw new Error(ERROR_ROUTE_ERRORS.dataFetchingError)
     }
 
     areLanguagesLoaded.value = true
 })
 </script>
-
-<style lang="css" scoped>
-.loading-container {
-    height: 5rem;
-    min-width: 30vw;
-    display: flex;
-    justify-content: center;
-    padding-top: 1.25rem;
-}
-</style>

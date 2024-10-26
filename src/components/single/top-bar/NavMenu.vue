@@ -14,8 +14,8 @@
                 class="nav-menu-content"
                 :class="{ opening: isMenuOpening, closing: !isMenuOpening, open: isMenuOpen }"
             >
-                <UserMenu v-if="user?.id" @click="toggleOpen" />
-                <UnloggedUserNav v-else @click="toggleOpen" css-class="unlogged-user-nav" />
+                <UserMenu v-if="user?.id" :close-menu="closeMenu" />
+                <UnloggedUserNav v-else css-class="unlogged-user-nav" :close-menu="closeMenu" />
             </menu>
         </div>
     </div>
@@ -29,6 +29,10 @@ import { XMarkIcon } from "@heroicons/vue/24/solid"
 import { Bars3Icon } from "@heroicons/vue/24/solid"
 import { ref } from "vue"
 
+defineExpose({
+    closeMenu
+})
+
 const { user } = useUserAuth()
 
 const isMenuOpen = ref(false)
@@ -36,12 +40,16 @@ const isMenuOpening = ref(false)
 
 function toggleOpen() {
     if (isMenuOpen.value) {
-        isMenuOpening.value = false
-        setTimeout(() => (isMenuOpen.value = false), 180)
+        closeMenu()
     } else {
         isMenuOpen.value = true
         isMenuOpening.value = true
     }
+}
+
+function closeMenu() {
+    isMenuOpening.value = false
+    setTimeout(() => (isMenuOpen.value = false), 180)
 }
 </script>
 

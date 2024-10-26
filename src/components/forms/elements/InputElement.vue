@@ -14,6 +14,7 @@
                 :placeholder="placeholder"
                 @blur="handleBlur"
                 @input="validate"
+                @paste="handlePaste"
             />
             <div v-if="props.type === 'watch-password'" class="watch-icon-wrapper">
                 <EyeSlashIcon v-if="isPasswordVisible" class="watch-icon" @click="isPasswordVisible = false" />
@@ -70,6 +71,12 @@ function validate() {
 function handleBlur() {
     if (value.value) {
         isBlured.value = true
+    }
+}
+
+function handlePaste(event: ClipboardEvent) {
+    if (props.type === "password") {
+        event.preventDefault()
     }
 }
 

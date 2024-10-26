@@ -1,5 +1,4 @@
 <template>
-    <h3 class="prompt">Fill in all fields to add new words into your vocabulary</h3>
     <AppForm
         ref="formRef"
         :elements-refs="elementsRefs"
@@ -9,27 +8,36 @@
         @submit-form="handleSubmit"
         @on-valid-state="handleValidState"
     >
-        <div v-for="(element, index) in formElements" class="word-item-container">
-            <div class="word-item-number">
-                <span>{{ index + 1 }}</span>
-            </div>
-            <div class="word-item">
-                <InputElement
-                    ref="elementsRefs"
-                    :key="element.word.id"
-                    v-bind="element.word"
-                    @on-validate="handleValidate"
-                />
-                <TextElement
-                    ref="elementsRefs"
-                    :key="element.translation.id"
-                    v-bind="element.translation"
-                    @on-validate="handleValidate"
-                />
+        <div id="word-items-container">
+            <div
+                v-for="(element, index) in formElements"
+                :class="isForEdit ? 'word-item-edit-container ' : 'word-item-add-container'"
+            >
+                <div v-if="!isForEdit" class="word-item-number">
+                    <span>{{ index + 1 }}</span>
+                </div>
+                <div class="word-item">
+                    <InputElement
+                        ref="elementsRefs"
+                        :key="element.word.id"
+                        v-bind="element.word"
+                        :default-value="defaultValue?.word"
+                        @on-validate="handleValidate"
+                    />
+                    <TextElement
+                        ref="elementsRefs"
+                        :key="element.translation.id"
+                        v-bind="element.translation"
+                        :default-value="defaultValue?.translations.join('\n')"
+                        @on-validate="handleValidate"
+                    />
+                </div>
             </div>
         </div>
-        <div class="add-button-container">
-            <AppButton :type="'button'" :button-style="'secondary'" @click-button="addWord"><span class="add-button-text">Add next word </span><ChevronDownIcon class="button-icon" /></AppButton>
+        <div v-if="!isForEdit" class="add-button-container">
+            <AppButton :type="'button'" :button-style="'secondary'" @click-button="addWord"
+                ><span class="add-button-text">Add next word </span><ChevronDownIcon class="button-icon"
+            /></AppButton>
         </div>
         <template #submit-text>Submit</template>
     </AppForm>
@@ -50,6 +58,8 @@ const props = defineProps<{
     isLoading: boolean
     isError: boolean
     errorMessage: string | null
+    isForEdit: boolean
+    defaultValue?: { word: string; translations: string[] }
 }>()
 
 const emits = defineEmits<{
@@ -62,7 +72,7 @@ const formElementGroup: { word: InputElementProps; translation: TextElementProps
         id: "word-",
         label: "Word",
         type: "text",
-        placeholder: "Word to translate",
+        placeholder: "Word / phrase to translate",
         tabIndex: 1,
         validationMessage: "is empty or too long",
         validateInput: value => typeof value === "string" && value !== "" && value.length <= 120
@@ -70,7 +80,7 @@ const formElementGroup: { word: InputElementProps; translation: TextElementProps
     translation: {
         id: "translation-",
         label: "Translations",
-        placeholder: "Each translation phrase/word on a new line. Max 5 translations",
+        placeholder: "Each translation word / phrase on a new line. Max 5 translations",
         tabIndex: 2,
         validationMessage: "can not be empty",
         rows: 5,
@@ -100,7 +110,8 @@ const formRef = ref<InstanceType<typeof AppForm> | null>(null)
 const isSubmitting = ref(false)
 
 function addWord() {
-    const elementsCount = formElements.value.length
+    const elementsCount = formElements.value.length       
+
     formElements.value.push({
         word: {
             ...formElementGroup.word,
@@ -113,6 +124,24 @@ function addWord() {
             tabIndex: 2 + elementsCount * 2
         }
     })
+
+    const elementsContainer = document.getElementById("word-items-container") 
+    console.log(elementsContainer?.scrollHeight);
+    if (elementsContainer) {
+        elementsContainer.style.height = `${elementsContainer.scrollHeight}px`
+    }
+
+    setTimeout(() => {
+        if (elementsContainer) {
+            elementsContainer.style.height = `calc(${elementsContainer.scrollHeight}px + 1rem)`
+        }
+    }, 1)
+
+    setTimeout(() => {
+        if (elementsContainer) {
+            elementsContainer.style.height = 'auto'
+        }
+    }, 170);
 }
 
 function handleValidate() {
@@ -152,12 +181,27 @@ function handleSubmit(data: SubmitData) {
 .prompt {
     text-align: center;
 }
-.word-item-container {
+
+#word-items-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+    overflow: hidden;
+    transition: all 0.17s ease-out;
+}
+
+.word-item-add-container {
     width: 100%;
     display: grid;
     grid-template-columns: 2.5ch auto;
     align-items: start;
-    column-gap: 1rem;
+    column-gap: 0.75rem;
+}
+
+.word-item-edit-container {
+    width: 100%;
+    display: flex;
 }
 
 .word-item-number {
@@ -174,11 +218,11 @@ function handleSubmit(data: SubmitData) {
     row-gap: 0.75rem;
 }
 
-.add-button-container{
+.add-button-container {
     padding-top: 0.25rem;
 }
 
-.add-button-text{
+.add-button-text {
     padding-right: 0.5rem;
 }
 

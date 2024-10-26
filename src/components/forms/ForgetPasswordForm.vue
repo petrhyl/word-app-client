@@ -15,23 +15,18 @@
             v-bind="element"
             @on-validate="handleValidate"
         />
-        <AppButton type="link" button-style="link" :route="{ name: ROUTE_NAMES.forgetPassword }"
-            >Forgot password</AppButton
-        >
-        <template #submit-text>Log In</template>
+        <template #submit-text>Send E-mail</template>
     </AppForm>
 </template>
 
 <script setup lang="ts">
-import { UserLogin } from "@/types/requests"
-import { computed, ref } from "vue"
+import { ForgetPasswordRequest } from "@/types/requests"
+import { ref } from "vue"
 import InputElement from "./elements/InputElement.vue"
 import { InputElementProps } from "./elements/FormElementProps"
 import { isEmailValid } from "@/utils/validation"
 import AppForm from "./form/AppForm.vue"
 import { SubmitData } from "./form/SubmitData"
-import AppButton from "../ui/button/AppButton.vue"
-import { ROUTE_NAMES } from "@/router"
 
 const props = defineProps<{
     isLoading: boolean
@@ -40,16 +35,15 @@ const props = defineProps<{
 }>()
 
 const emits = defineEmits<{
-    onSubmit: [data: UserLogin]
+    onSubmit: [data: ForgetPasswordRequest]
     onValidState: []
 }>()
 
 const elementIds = {
     email: "user-email",
-    password: "user-password"
 }
 
-const formElements = computed<InputElementProps[]>(() => [
+const formElements: InputElementProps[] = [
     {
         id: elementIds.email,
         label: "E-mail",
@@ -58,17 +52,8 @@ const formElements = computed<InputElementProps[]>(() => [
         tabIndex: 1,
         validationMessage: "wrong e-mail format",
         validateInput: value => typeof value === "string" && isEmailValid(value)
-    },
-    {
-        id: elementIds.password,
-        label: "Password",
-        type: "watch-password",
-        placeholder: "Enter password",
-        tabIndex: 2,
-        validationMessage: "fill in the password",
-        validateInput: value => typeof value === "string"
     }
-])
+]
 
 const elementsRefs = ref<InstanceType<typeof InputElement>[]>([])
 const formRef = ref<InstanceType<typeof AppForm> | null>(null)
@@ -86,11 +71,10 @@ function handleSubmit(data: SubmitData) {
         return
     }
 
-    const login: UserLogin = {
+    const request = {
         email: data.get(elementIds.email) as string,
-        password: data.get(elementIds.password) as string
     }
 
-    emits("onSubmit", login)
+    emits("onSubmit", request)
 }
 </script>

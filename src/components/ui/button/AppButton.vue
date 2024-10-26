@@ -75,6 +75,10 @@ button::deep(.spinner) {
     bottom: 0;
 }
 
+button:focus{
+    filter: brightness(1.2);
+}
+
 .primary {
     background-color: var(--primary-btn-color);
     border-color: var(--primary-btn-color);

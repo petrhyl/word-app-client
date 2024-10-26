@@ -1,13 +1,32 @@
 <template>
     <PageTitle title="Add Vocabulary" :description="getPageDescription" />
-    <AddVocabularyForm
-        v-if="pickedLanguage && !isSentSuccessfully"
-        :isError="isError"
-        :isLoading="isLoading"
-        :errorMessage="errorMessage"
-        @on-submit="handleSubmitVocabulary"
-        @on-valid-state="handleValidState"
-    />
+    <div class="flex-col-center" v-if="pickedLanguage && !isSentSuccessfully">
+        <VocabularyItemForm
+            :isError="isError"
+            :isLoading="isAddFormLoading"
+            :errorMessage="addFormErrorMessage"
+            :is-for-edit="false"
+            @on-submit="handleSubmitVocabulary"
+            @on-valid-state="handleAddFormValidState"
+        />
+        <div class="check-container">
+            <PrimaryCard v-if="checkedWord">
+                <h2 class="title check-title">{{ checkedWord }}</h2>
+                <p class="title check-message" :class="wordExists ? 'exists' : 'not-exist'">
+                    The word/phrase
+                    {{ wordExists ? "already exists in your vocabulary" : "does not exist in your vocabulary" }}
+                </p>
+            </PrimaryCard>
+            <CheckWordForm
+                v-else
+                :is-loading="isCheckFormLoading"
+                :is-error="isCheckError"
+                :error-message="checkFromErrorMessage"
+                @on-submit="handleSubmitCheck"
+                @on-valid-state="handleCheckFormValidState"
+            />
+        </div>
+    </div>
     <div v-if="!pickedLanguage" class="vocabulary-setting flex-col-center">
         <AddVocabularySettingForm
             v-if="userLanguages.length > 0"
@@ -15,11 +34,7 @@
             :wordCounts="[1, 3, 5, 10, 15]"
             @on-submit="handleSubmitSettings"
         />
-        <PrimaryCard v-else>
-            <div class="loading-container flex-col-center">
-                <LoadingSpinner spinner-width-height="3rem" />
-            </div>
-        </PrimaryCard>
+        <LoadingCard v-else />
         <div class="setting-nav-container flex-col-center">
             <p class="title">Or you can add new language to your vocabulary</p>
             <div class="setting-nav">
@@ -32,7 +47,7 @@
     <PrimaryCard v-if="isSentSuccessfully" class="flex-col-center">
         <p class="title">Vocabulary has been successfully added</p>
         <FaceSmileIcon class="success-state-icon" />
-        <AppButton :type="'link'" :buttonStyle="'primary'" :route="{ name: ROUTE_NAMES.practise }"
+        <AppButton :type="'link'" :buttonStyle="'primary'" :route="{ name: ROUTE_NAMES.practice }"
             >Start Practise</AppButton
         >
         <AppButton :type="'button'" :button-style="'secondary'" @click-button="handleAddVocabulary"
@@ -42,21 +57,22 @@
 </template>
 
 <script setup lang="ts">
-import AddVocabularyForm from "@/components/forms/AddVocabularyForm.vue"
+import VocabularyItemForm from "@/components/forms/VocabularyItemForm.vue"
 import AddVocabularySettingForm from "@/components/forms/AddVocabularySettingForm.vue"
+import CheckWordForm from "@/components/forms/CheckWordForm.vue"
 import AppButton from "@/components/ui/button/AppButton.vue"
-import LoadingSpinner from "@/components/ui/button/LoadingSpinner.vue"
 import PrimaryCard from "@/components/ui/card/PrimaryCard.vue"
 import PageTitle from "@/components/ui/page/PageTitle.vue"
 import useCallApi, { ErrorResponseType } from "@/composables/useCallApi"
 import { ROUTE_NAMES } from "@/router"
 import { UserVocabularyLanguage } from "@/types/models"
-import { CreateVocabularyRequest, VocabularyItemRequest } from "@/types/requests"
+import { CheckWordRequest, CreateVocabularyRequest, VocabularyItemRequest } from "@/types/requests"
 import { UserVocabularyLanguagesResponse } from "@/types/responses"
 import { parseToIntOrReturnNull } from "@/utils/functions"
 import { FaceSmileIcon } from "@heroicons/vue/24/solid"
 import { computed, onBeforeMount, ref } from "vue"
 import { onBeforeRouteUpdate, RouteLocationNormalizedGeneric, useRoute, useRouter } from "vue-router"
+import LoadingCard from "@/components/ui/card/LoadingCard.vue"
 
 const { callApi } = useCallApi()
 const route = useRoute()
@@ -64,9 +80,14 @@ const router = useRouter()
 
 const userLanguages = ref<UserVocabularyLanguage[]>([])
 const pickedLanguage = ref<UserVocabularyLanguage | null>(null)
-const isLoading = ref(false)
+const isAddFormLoading = ref(false)
+const isCheckFormLoading = ref(false)
 const isError = ref(false)
-const errorMessage = ref<string | null>(null)
+const isCheckError = ref(false)
+const addFormErrorMessage = ref<string | null>(null)
+const checkFromErrorMessage = ref<string | null>(null)
+const checkedWord = ref<string | null>(null)
+const wordExists = ref<boolean>(false)
 const isSentSuccessfully = ref(false)
 
 const getPageDescription = computed(() => {
@@ -128,17 +149,17 @@ function handleSubmitSettings(data: UserVocabularyLanguage) {
     })
 }
 
-function handleValidState() {
-    errorMessage.value = null
+function handleAddFormValidState() {
+    addFormErrorMessage.value = null
     isError.value = false
 }
 
 async function handleSubmitVocabulary(data: VocabularyItemRequest[]) {
-    if (isLoading.value) {
+    if (isAddFormLoading.value) {
         return
     }
 
-    isLoading.value = true
+    isAddFormLoading.value = true
 
     const response = await callApi<CreateVocabularyRequest, { message: string }>({
         method: "POST",
@@ -148,7 +169,7 @@ async function handleSubmitVocabulary(data: VocabularyItemRequest[]) {
 
     if (response.isError) {
         isError.value = true
-        isLoading.value = false
+        isAddFormLoading.value = false
 
         if (response.errorType === ErrorResponseType.CONFLICT) {
             const existingWord = response.error?.existingWord
@@ -156,18 +177,18 @@ async function handleSubmitVocabulary(data: VocabularyItemRequest[]) {
             const errorMessageText = "One or more words already exist in your vocabulary."
 
             if (existingWord) {
-                errorMessage.value = `${errorMessageText} Existing word: '${existingWord}''`
+                addFormErrorMessage.value = `${errorMessageText} Existing word: '${existingWord}''`
 
                 return
             }
 
-            errorMessage.value = errorMessageText
+            addFormErrorMessage.value = errorMessageText
         }
 
         return
     }
 
-    isLoading.value = false
+    isAddFormLoading.value = false
     isSentSuccessfully.value = true
 }
 
@@ -175,17 +196,81 @@ function handleAddVocabulary() {
     isSentSuccessfully.value = false
     router.push({ name: ROUTE_NAMES.addVocabulary })
 }
+
+function handleCheckFormValidState() {
+    checkFromErrorMessage.value = null
+    isCheckError.value = false
+}
+
+async function handleSubmitCheck(word: string) {
+    if (isCheckFormLoading.value) {
+        return
+    }
+
+    isCheckFormLoading.value = true
+
+    const response = await callApi<CheckWordRequest, { exists: boolean }>({
+        method: "POST",
+        endpoint: "/vocabularies/check",
+        body: { languageId: pickedLanguage.value!.id, word }
+    })
+
+    if (response.isError) {
+        isCheckFormLoading.value = false
+        isCheckError.value = true
+        checkFromErrorMessage.value = "An error occurred while checking the word"
+
+        return
+    }
+
+    if (response.data!.exists) {
+        wordExists.value = true
+    } else {
+        wordExists.value = false
+    }
+
+    checkedWord.value = word
+    setTimeout(() => {
+        checkedWord.value = null
+    }, 3500)
+
+    isCheckFormLoading.value = false
+    isCheckError.value = false
+}
 </script>
 
 <style scoped>
-.title {
-    text-align: center;
+.flex-col-center {
+    row-gap: 2rem;
 }
 
-.loading-container {
-    height: 5rem;
-    min-width: 30vw;
-    padding-top: 1.25rem;
+.check-container {
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 1.5rem;
+    padding-top: 0.5rem;
+}
+
+.check-title {
+    padding-top: 1rem;
+}
+
+.check-message {
+    padding-bottom: 1rem;
+}
+
+.exists {
+    color: var(--success-color);
+}
+
+.not-exist {
+    color: var(--secondary-font-color);
+}
+
+.title {
+    text-align: center;
 }
 
 .vocabulary-setting {

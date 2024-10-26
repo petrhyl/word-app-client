@@ -15,10 +15,10 @@
             <h2>Account Navigation</h2>
         </div>
         <div class="account-nav">
-            <AppButton type="link" button-style="primary" :route="{ name: ROUTE_NAMES.vocabularyStats }"
-                >View Stats</AppButton
+            <AppButton type="link" button-style="primary" :route="{ name: ROUTE_NAMES.languagesStats }"
+                >Language Stats</AppButton
             >
-            <AppButton type="link"  buttonStyle="primary" :route="{ name: ROUTE_NAMES.practise }">
+            <AppButton type="link" buttonStyle="primary" :route="{ name: ROUTE_NAMES.practice }">
                 Start Practise
             </AppButton>
             <AppButton type="link" button-style="secondary" :route="{ name: ROUTE_NAMES.addVocabulary }"
@@ -26,6 +26,16 @@
             >
             <AppButton type="link" button-style="secondary" :route="{ name: ROUTE_NAMES.createLanguage }"
                 >New Language</AppButton
+            >
+        </div>
+    </div>
+    <div class="account-nav-container">
+        <div class="nav-title">
+            <h2>Account Actions</h2>
+        </div>
+        <div class="account-nav">
+            <AppButton type="link" button-style="primary" :route="{ name: ROUTE_NAMES.changePassword }"
+                >Change Password</AppButton
             >
         </div>
     </div>
@@ -77,6 +87,6 @@ const { user } = useUserAuth()
     .account-nav {
         grid-template-columns: 1fr;
         gap: 1.25rem;
-    }    
+    }
 }
 </style>

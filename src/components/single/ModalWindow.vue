@@ -11,7 +11,7 @@
                     <div class="modal-content">
                         <slot></slot>
                     </div>
-                    <div class="modal-padding-element"></div>
+                    <div class="modal-padding-element bottom"></div>
                 </div>
             </FadeTransition>
         </div>
@@ -103,6 +103,8 @@ onMounted(() => {
     justify-content: flex-end;
     align-items: center;
     padding-right: 1.5rem;
+    border-top-left-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
 }
 
 .modal-padding-element.top button {
@@ -110,6 +112,11 @@ onMounted(() => {
     display: flex;
     align-items: center;
     padding: 0;
+}
+
+.modal-padding-element.bottom {
+    border-bottom-left-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
 }
 
 .x-mark-icon {

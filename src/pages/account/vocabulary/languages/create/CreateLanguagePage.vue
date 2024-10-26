@@ -1,5 +1,5 @@
 <template>
-    <PageTitle title="Create Language" description="Here you can create new language for your vocabulary to practise" />
+    <PageTitle title="Create Language" description="Here you can create new language for your vocabulary to practice" />
     <CreateLanguageForm
         v-if="allowedLanguages.length > 0"
         :is-error="isError"
@@ -9,17 +9,12 @@
         @on-submit="handleSubmit"
         @on-valid-state="handleValidState"
     />
-    <PrimaryCard v-else>
-        <div class="loading-container">
-            <LoadingSpinner spinner-width-height="3rem" />
-        </div>
-    </PrimaryCard>
+    <LoadingCard v-else />
 </template>
 
 <script setup lang="ts">
 import CreateLanguageForm from "@/components/forms/CreateLanguageForm.vue"
-import LoadingSpinner from "@/components/ui/button/LoadingSpinner.vue"
-import PrimaryCard from "@/components/ui/card/PrimaryCard.vue"
+import LoadingCard from "@/components/ui/card/LoadingCard.vue"
 import PageTitle from "@/components/ui/page/PageTitle.vue"
 import useCallApi from "@/composables/useCallApi"
 import { ROUTE_NAMES } from "@/router"
@@ -68,14 +63,3 @@ onBeforeMount(async () => {
     }
 })
 </script>
-
-
-<style scoped>
-.loading-container {
-    height: 5rem;
-    min-width: 30vw;
-    display: flex;
-    justify-content: center;
-    padding-top: 1.25rem;
-}
-</style>

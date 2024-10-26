@@ -1,14 +1,13 @@
 <template>
     <header>
         <div class="header-content">
-            <div class="pc-nav-container">
-            </div>
+            <div class="pc-nav-container"></div>
             <div class="app-title">
                 <AppButton :type="'link'" :buttonStyle="'link'" :route="{ name: ROUTE_NAMES.home }">
-                    <h1>Word App</h1>
+                    <h1 @click="closeMenu">Word App</h1>
                 </AppButton>
             </div>
-            <NavMenu />
+            <NavMenu ref="navMenu" />
         </div>
     </header>
 </template>
@@ -17,7 +16,13 @@
 import { ROUTE_NAMES } from "@/router"
 import AppButton from "@/components/ui/button/AppButton.vue"
 import NavMenu from "./NavMenu.vue"
+import { ref } from "vue";
 
+const navMenu = ref<InstanceType<typeof NavMenu>>()
+
+function closeMenu() {
+    navMenu.value?.closeMenu()    
+}
 </script>
 
 <style lang="css" scoped>
@@ -36,7 +41,7 @@ header {
     justify-content: space-between;
     background-color: var(--secondary-bg-color);
     padding: 4px 1.25rem 0 1.25rem;
-    box-shadow: 0 0 5px var(--secondary-bg-color);
+    box-shadow: 0 0 6px 0 var(--secondary-bg-color);
     z-index: 100;
 }
 
