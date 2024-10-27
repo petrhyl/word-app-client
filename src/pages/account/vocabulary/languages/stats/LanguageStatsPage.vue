@@ -16,6 +16,7 @@ import PrimaryCard from "@/components/ui/card/PrimaryCard.vue"
 import PageTitle from "@/components/ui/page/PageTitle.vue"
 import LanguageStatisticsList from "@/components/vocabulary/stats/LanguageStatisticsList.vue"
 import useCallApi from "@/composables/useCallApi"
+import { ERROR_ROUTE_ERRORS } from "@/router"
 import { VocabularyStats } from "@/types/models"
 import { onBeforeMount, ref } from "vue"
 
@@ -31,7 +32,7 @@ onBeforeMount(async () => {
     })
 
     if (response.isError) {
-        return
+        throw new Error(ERROR_ROUTE_ERRORS.dataFetchingError)
     }
 
     stats.value = response.data?.results || []

@@ -85,21 +85,14 @@ function setIsFormSubmitted() {
 }
 
 .text-element {
-    position: relative;
-    width: 100%;
-    background-color: var(--element-bg-color);
-    border-width: 2px;
-    border-style: solid;
-    border-radius: var(--border-radius);
-}
-
-.text-element {
     width: 100%;
     background-color: var(--element-bg-color);
     color: var(--primary-font-color);
     font-family: var(--paragraph-font);
     font-size: 1rem;
     border-radius: var(--border-radius);
+    border-width: 2px;
+    border-style: solid;
     resize: none;
     padding: 0.75rem 0.75rem;
 }

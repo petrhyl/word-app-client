@@ -126,4 +126,10 @@ onMounted(() => {
     stroke-width: 2px;
     color: var(--primary-font-color);
 }
+
+@media screen and (max-width: 980px) {
+    .modal-window {
+        max-width: 95%;
+    }
+}
 </style>

@@ -5,15 +5,23 @@ import { createPinia } from 'pinia'
 
 import App from './App.vue'
 
-import router, { ROUTE_NAMES } from './router'
+import router, { ERROR_ROUTE_ERRORS, ROUTE_NAMES } from './router'
 
 const app = createApp(App)
 
-app.config.errorHandler = (err, instance, info) => {
-    console.error(err, instance, info)
+app.config.errorHandler = (err, _instance, _info) => {
+    console.error(err)
     router.addRoute({ name: ROUTE_NAMES.error, path: '/error', component: () => import('@/pages/ErrorPage.vue') })
 
-    router.replace({ name: ROUTE_NAMES.error })
+    let errorQuery
+
+    if (err instanceof Error) {
+        if (err.message === ERROR_ROUTE_ERRORS.invalidIdParam || err.message === ERROR_ROUTE_ERRORS.dataFetchingError) {
+            errorQuery = { error: err.message }
+        }
+    }
+
+    router.replace({ name: ROUTE_NAMES.error, query: errorQuery })
 }
 
 app.use(createPinia())

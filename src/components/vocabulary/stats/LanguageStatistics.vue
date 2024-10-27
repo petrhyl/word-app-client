@@ -12,7 +12,9 @@
             </div>
             <div class="stat-container">
                 <span class="stat-label">Exercise average words amount:</span>
-                <span class="stat">{{ stats.answeredWordsAverage }}</span>
+                <span class="stat">{{
+                    stats.answeredWordsAverage.toLocaleString("en", { maximumFractionDigits: 2 })
+                }}</span>
             </div>
         </div>
         <div class="vocabulary-nav">

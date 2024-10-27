@@ -99,8 +99,9 @@ button:focus{
 }
 
 .danger {
-    background-color: #c20044;
-    color: #dac77b;
+    background-color: var(--warning-color);
+    border-color: var(--warning-color);
+    color: #b0b000;
 }
 
 .link {

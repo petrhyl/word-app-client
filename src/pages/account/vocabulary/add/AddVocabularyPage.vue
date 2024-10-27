@@ -9,7 +9,7 @@
             @on-submit="handleSubmitVocabulary"
             @on-valid-state="handleAddFormValidState"
         />
-        <div class="check-container">
+        <div class="check-container flex-col-center">
             <PrimaryCard v-if="checkedWord">
                 <h2 class="text-center check-title">{{ checkedWord }}</h2>
                 <p class="text-center check-message" :class="wordExists ? 'exists' : 'not-exist'">
@@ -247,8 +247,6 @@ async function handleSubmitCheck(word: string) {
 .check-container {
     width: 100%;
     max-width: 480px;
-    display: flex;
-    flex-direction: column;
     row-gap: 1.5rem;
     padding-top: 0.5rem;
 }

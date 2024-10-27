@@ -39,6 +39,7 @@
                 ><span class="add-button-text">Add next word </span><ChevronDownIcon class="button-icon"
             /></AppButton>
         </div>
+        <div v-else class="note">If you edit this item its practice data will be erased</div>
         <template #submit-text>Submit</template>
     </AppForm>
 </template>
@@ -128,24 +129,22 @@ function addWord() {
     const elementsContainer = document.getElementById("word-items-container")
 
     if (elementsContainer) {
+        const prevHeight = elementsContainer.scrollHeight
+
         elementsContainer.style.height = `${elementsContainer.scrollHeight}px`
-    }
+        elementsContainer.style.overflow = "hidden"
 
-    setTimeout(() => {
-        if (elementsContainer) {
+        setTimeout(() => {
             elementsContainer.style.height = `calc(${elementsContainer.scrollHeight}px + 1rem)`
-        }
-        const wordElement = document.querySelector("#word-items-container > div:last-child")
-        if (wordElement) {
-            wordElement.scrollIntoView()
-        }
-    }, 1)
 
-    setTimeout(() => {
-        if (elementsContainer) {
+            window.scrollBy(0, elementsContainer.scrollHeight - prevHeight)
+        }, 1)
+
+        setTimeout(() => {
             elementsContainer.style.height = "auto"
-        }
-    }, 170)
+            elementsContainer.style.overflow = "visible"
+        }, 170)
+    }
 }
 
 function handleValidate() {
@@ -191,7 +190,6 @@ function handleSubmit(data: SubmitData) {
     display: flex;
     flex-direction: column;
     row-gap: 1rem;
-    overflow: hidden;
     transition: all 0.17s ease-out;
 }
 
@@ -236,5 +234,10 @@ function handleSubmit(data: SubmitData) {
     stroke: var(--primary-font-color);
     stroke-width: 2px;
     transition: all 0.17s ease-in-out;
+}
+
+.note {
+    color: var(--secondary-font-color);
+    font-size: 0.9rem;
 }
 </style>

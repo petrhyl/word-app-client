@@ -15,16 +15,19 @@
             <h2>Account Navigation</h2>
         </div>
         <div class="account-nav">
-            <AppButton type="link" buttonStyle="primary" :route="{ name: ROUTE_NAMES.practice }">
-                Start Practise
-            </AppButton>
+            <div class="start-practice-container">
+                <div class="start-practice-wrapper">
+                    <AppButton type="link" buttonStyle="primary" :route="{ name: ROUTE_NAMES.practice }">
+                        Start Practise
+                    </AppButton>
+                </div>
+            </div>
             <AppButton type="link" button-style="primary" :route="{ name: ROUTE_NAMES.languagesStats }"
                 >Language Stats</AppButton
             >
             <AppButton type="link" button-style="primary" :route="{ name: ROUTE_NAMES.vocabularyLanguages }"
                 >Languages</AppButton
             >
-            <div></div>
             <AppButton type="link" button-style="secondary" :route="{ name: ROUTE_NAMES.addVocabulary }"
                 >Add Vocabulary</AppButton
             >
@@ -38,7 +41,7 @@
             <h2>Account Actions</h2>
         </div>
         <div class="account-nav">
-            <AppButton type="link" button-style="primary" :route="{ name: ROUTE_NAMES.changePassword }"
+            <AppButton type="link" button-style="secondary" :route="{ name: ROUTE_NAMES.changePassword }"
                 >Change Password</AppButton
             >
         </div>
@@ -87,10 +90,33 @@ const { user } = useUserAuth()
     padding-top: 1.5rem;
 }
 
+.start-practice-container {
+    display: flex;
+    justify-content: center;
+    grid-column: span 2;
+}
+
 @media screen and (max-width: 980px) {
+    .details-container {
+        row-gap: 1rem;
+        padding-top: 0;
+    }
+
+    .account-nav-container {
+        padding-top: 1rem;
+    }
+
     .account-nav {
         grid-template-columns: 1fr;
         gap: 1.25rem;
+    }
+
+    .start-practice-container {
+        grid-column: span 1;
+    }
+
+    .start-practice-wrapper {
+        width: 100%;
     }
 }
 </style>

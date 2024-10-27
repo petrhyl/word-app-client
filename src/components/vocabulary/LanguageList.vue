@@ -1,6 +1,11 @@
 <template>
     <div class="language-list">
-        <VocabularyLanguage v-for="language in languages" :key="language.id" :language="language" />
+        <VocabularyLanguage
+            v-for="language in languages"
+            :key="language.id"
+            :language="language"
+            @delete-language="handleDelete"
+        />
     </div>
 </template>
 
@@ -11,6 +16,14 @@ import VocabularyLanguage from "./VocabularyLanguage.vue"
 defineProps<{
     languages: UserVocabularyLanguage[]
 }>()
+
+const emits = defineEmits<{
+    deleteLanguage: [id: number]
+}>()
+
+function handleDelete(id: number) {
+    emits("deleteLanguage", id)
+}
 </script>
 
 <style lang="css" scoped>

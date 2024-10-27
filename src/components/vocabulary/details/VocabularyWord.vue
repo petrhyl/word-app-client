@@ -89,7 +89,9 @@ async function handleSubmit(data: VocabularyItemRequest[]) {
         vacabularyItem.value = {
             ...vacabularyItem.value,
             word: data[0].word,
-            translations: data[0].translations
+            translations: data[0].translations,
+            correctAnswers: 0,
+            isLearned: false
         }
     }
 
