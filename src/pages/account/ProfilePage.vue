@@ -18,7 +18,7 @@
             <div class="start-practice-container">
                 <div class="start-practice-wrapper">
                     <AppButton type="link" buttonStyle="primary" :route="{ name: ROUTE_NAMES.practice }">
-                        Start Practise
+                        Start Practice
                     </AppButton>
                 </div>
             </div>

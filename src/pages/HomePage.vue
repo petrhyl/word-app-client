@@ -16,7 +16,7 @@
             <p>You can start practicing now</p>
             <div>
                 <AppButton :buttonStyle="'primary'" type="link" :route="{ name: ROUTE_NAMES.practice }">
-                    Start Practise
+                    Start Practice
                 </AppButton>
             </div>
         </div>

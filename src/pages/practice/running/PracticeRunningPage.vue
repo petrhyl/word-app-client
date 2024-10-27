@@ -1,6 +1,6 @@
 <template>
     <PageWrapper>
-        <PageTitle title="Practise" :description="getDescription" />
+        <PageTitle title="Practice" :description="getDescription" />
         <FadeTransition>
             <div
                 v-if="answerState !== 'submitted' && isExerciseLoaded && exerciseWords.length > 0"

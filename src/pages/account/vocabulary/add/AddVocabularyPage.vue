@@ -48,7 +48,7 @@
         <p class="success-message">Vocabulary has been successfully added</p>
         <FaceSmileIcon class="success-state-icon" />
         <AppButton :type="'link'" :buttonStyle="'primary'" :route="{ name: ROUTE_NAMES.practice }"
-            >Start Practise</AppButton
+            >Start Practice</AppButton
         >
         <AppButton :type="'button'" :button-style="'secondary'" @click-button="handleAddVocabulary"
             >Add Vocabulary</AppButton

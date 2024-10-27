@@ -1,7 +1,7 @@
 <template>
     <PageWrapper>
         <PageTitle
-            title="Practise Setting"
+            title="Practice Setting"
             description="Firstly, choose settings of vocabulary you&nbsp;want to practice"
         />
         <PractiseSettingForm

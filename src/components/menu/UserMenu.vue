@@ -14,7 +14,7 @@
             <div class="delimeter"><div></div></div>
             <DropDownMenuItem v-if="isStartVisible" class="user-menu-item">
                 <AppButton :type="'link'" :buttonStyle="'primary'" :route="{ name: ROUTE_NAMES.practice }"
-                    >Start Practise</AppButton
+                    >Start Practice</AppButton
                 >
             </DropDownMenuItem>
             <DropDownMenuItem class="user-menu-item">
@@ -37,7 +37,7 @@
         <AppButton :type="'link'" :buttonStyle="'primary'" :route="{ name: ROUTE_NAMES.profile }">Profile</AppButton>
         <div class="delimeter"><div></div></div>
         <AppButton v-if="isStartVisible" :type="'link'" :buttonStyle="'primary'" :route="{ name: ROUTE_NAMES.practice }"
-            >Start Practise</AppButton
+            >Start Practice</AppButton
         >
         <AppButton :type="'link'" :buttonStyle="'primary'" :route="{ name: ROUTE_NAMES.languagesStats }"
             >Language Stats</AppButton
