@@ -92,7 +92,7 @@ async function handleSubmit(data: UserRegistration) {
     isError.value = response.isError
 
     errorMessage.value =
-        response.errorType === ErrorResponseType.UNPROCESSABLE_ENTITY ? "E-mail is already taken" : null
+        response.errorType === ErrorResponseType.BAD_REQUEST ? "E-mail is already taken" : null
 
     if (!response.isError && response.data !== null) {
         isRegistered.value = true

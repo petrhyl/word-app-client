@@ -68,7 +68,7 @@ async function handleSubmit(data: ChangePasswordRequest) {
     if (response.isError) {
         isError.value = true
 
-        if (response.errorType === ErrorResponseType.UNPROCESSABLE_ENTITY) {
+        if (response.errorType === ErrorResponseType.BAD_REQUEST) {
             errorMessage.value = "Invalid user's current password"
         }
 

@@ -59,6 +59,11 @@ const router = createRouter({
           component: () => import('@/pages/account/vocabulary/add/AddVocabularyPage.vue')
         },
         {
+          path: 'vocabulary/languages',
+          name: ROUTE_NAMES.vocabularyLanguages,
+          component: () => import('@/pages/account/vocabulary/languages/VocabularyLanguagesPage.vue')
+        },
+        {
           path: 'vocabulary/languages/stats',
           name: ROUTE_NAMES.languagesStats,
           component: () => import('@/pages/account/vocabulary/languages/stats/LanguageStatsPage.vue')
@@ -90,8 +95,15 @@ const router = createRouter({
     }, {
       path: '/signup/verification/:token',
       name: ROUTE_NAMES.vefication,
+      props: true,
       meta: { authRestricted: true },
-      component: () => import('@/pages/signup/verification/VerificationPage.vue')
+      component: () => import('@/pages/signup/verification/VerificationPage.vue'),
+      beforeEnter: (to, _from, next) => {
+        if (!to.params.token || to.params.token.length < 64) {
+          return next(new Error(ERROR_ROUTE_ERRORS.invalidIdParam))
+        }
+        next()
+      }
     },
     {
       path: '/login',
@@ -104,13 +116,13 @@ const router = createRouter({
       meta: { authRestricted: true },
       component: () => import('@/pages/forget-password/ForgetPasswordPage.vue')
     }, {
-      path: '/reset-password/:code',
+      path: '/reset-password/:token',
       name: ROUTE_NAMES.resetPassword,
       props: true,
       meta: { authRestricted: true },
       component: () => import('@/pages/reset-password/ResetPasswordPage.vue'),
       beforeEnter: (to, _from, next) => {
-        if (!to.params.code || to.params.code.length < 64) {
+        if (!to.params.token || to.params.token.length < 64) {
           return next(new Error(ERROR_ROUTE_ERRORS.invalidIdParam))
         }
         next()

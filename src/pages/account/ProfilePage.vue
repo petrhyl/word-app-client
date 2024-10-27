@@ -15,12 +15,16 @@
             <h2>Account Navigation</h2>
         </div>
         <div class="account-nav">
-            <AppButton type="link" button-style="primary" :route="{ name: ROUTE_NAMES.languagesStats }"
-                >Language Stats</AppButton
-            >
             <AppButton type="link" buttonStyle="primary" :route="{ name: ROUTE_NAMES.practice }">
                 Start Practise
             </AppButton>
+            <AppButton type="link" button-style="primary" :route="{ name: ROUTE_NAMES.languagesStats }"
+                >Language Stats</AppButton
+            >
+            <AppButton type="link" button-style="primary" :route="{ name: ROUTE_NAMES.vocabularyLanguages }"
+                >Languages</AppButton
+            >
+            <div></div>
             <AppButton type="link" button-style="secondary" :route="{ name: ROUTE_NAMES.addVocabulary }"
                 >Add Vocabulary</AppButton
             >

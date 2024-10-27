@@ -61,7 +61,7 @@ async function handleSubmit(data: UserLogin) {
     const response = await login(data)
 
     let errMessage: string | null = null
-    if (response.errorType === ErrorResponseType.UNPROCESSABLE_ENTITY) {
+    if (response.errorType === ErrorResponseType.BAD_REQUEST) {
         errMessage = "Invalid e-mail or password"
     }
     if (response.errorType === ErrorResponseType.FORBIDDEN) {

@@ -30,6 +30,7 @@ header {
     position: relative;
     height: var(--header-height);
     background-color: var(--secondary-bg-color);
+    box-shadow: 0 0 6px 0 var(--secondary-bg-color);
 }
 
 .header-content {
@@ -41,7 +42,6 @@ header {
     justify-content: space-between;
     background-color: var(--secondary-bg-color);
     padding: 4px 1.25rem 0 1.25rem;
-    box-shadow: 0 0 6px 0 var(--secondary-bg-color);
     z-index: 100;
 }
 

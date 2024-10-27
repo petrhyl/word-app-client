@@ -32,9 +32,11 @@ import useCallApi from "@/composables/useCallApi"
 import { ROUTE_NAMES } from "@/router"
 import { FaceFrownIcon, FaceSmileIcon } from "@heroicons/vue/24/solid"
 import { computed, onBeforeMount, ref } from "vue"
-import { useRoute } from "vue-router"
 
-const route = useRoute()
+const props = defineProps<{
+    token: string
+}>()
+
 const { callApi } = useCallApi()
 
 const isKeyValid = ref(false)
@@ -49,15 +51,7 @@ const getDescription = computed(() => {
 })
 
 onBeforeMount(async () => {
-    const key = route.params.token
-    if (!key) {
-        isKeyValid.value = false
-        isLoading.value = false
-
-        return
-    }
-
-    const response = await callApi<null, { message: string }>({ method: "POST", endpoint: `/user/verify/${key}` })
+    const response = await callApi<null, { message: string }>({ method: "POST", endpoint: `/user/verify/${props.token}` })
 
     isKeyValid.value = !response.isError
     isLoading.value = false

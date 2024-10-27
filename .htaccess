@@ -1,0 +1,5 @@
+RewriteEngine On
+RewriteBase /word-app/
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /word-app/index.html [L]
