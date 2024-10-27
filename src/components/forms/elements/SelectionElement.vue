@@ -8,17 +8,16 @@
             :is-label="false"
         />
         <div class="element" :class="isWarningDisplayed ? 'invalid' : 'valid'">
-            <select
-                :id="`default-${id}`"
-                class="select-element default"
-                :tabindex="tabIndex"
-                @change="handleChange"
-                @blur="handleBlur"
-            >
-                <option class="select-option" v-for="option in options" :key="option.value" :value="option.value">
-                    {{ option.label }}
-                </option>
-            </select>
+            <div class="default-select-container">
+                <select :id="`default-${id}`" class="select-element default" :tabindex="tabIndex" @change="handleChange" @blur="handleBlur">
+                    <option class="select-option" v-for="option in options" :key="option.value" :value="option.value">
+                        {{ option.label }}
+                    </option>
+                </select>
+                <div class="icon-container">
+                    <ChevronUpDownIcon class="icon" />
+                </div>
+            </div>
             <div
                 :id="`custom-${id}`"
                 class="select-element custom"
@@ -29,7 +28,7 @@
             >
                 {{ selectedValue.label }}
                 <div class="icon-container">
-                    <ChevronDownIcon class="check-icon" :class="isOpen ? 'open' : 'close'" />
+                    <ChevronDownIcon class="icon" :class="isOpen ? 'open' : 'close'" />
                 </div>
                 <ExpandCollapseTransition>
                     <div v-if="isOpen" class="options-container">
@@ -41,7 +40,7 @@
                         >
                             {{ val.label }}
                             <div class="icon-container">
-                                <CheckIcon v-if="val.value === selectedValue.value" class="check-icon" />
+                                <CheckIcon v-if="val.value === selectedValue.value" class="icon" />
                             </div>
                         </div>
                     </div>
@@ -54,10 +53,9 @@
 <script setup lang="ts">
 import { computed, ref } from "vue"
 import { ElementExposedFunctions, SelectionElementProps, SelectionOptionProps } from "./FormElementProps"
-import { CheckIcon } from "@heroicons/vue/24/solid"
+import { CheckIcon, ChevronDownIcon, ChevronUpDownIcon } from "@heroicons/vue/24/solid"
 import ElementLable from "./ElementLable.vue"
 import ExpandCollapseTransition from "@/components/transitions/ExpandCollapseTransition.vue"
-import { ChevronDownIcon } from "@heroicons/vue/24/solid"
 
 const props = defineProps<SelectionElementProps>()
 
@@ -184,8 +182,13 @@ function setIsFormSubmitted() {
     box-shadow: var(--focus-shadow);
 }
 
-.select-element.default {
+.default-select-container {
+    position: relative;
     display: none;
+}
+
+.select-element.default {
+    appearance: none;
 }
 .select-element.custom {
     position: relative;
@@ -231,7 +234,7 @@ function setIsFormSubmitted() {
     align-items: center;
 }
 
-.check-icon {
+.icon {
     width: 1.5rem;
     height: 1.5rem;
     stroke: var(--primary-font-color);
@@ -239,7 +242,7 @@ function setIsFormSubmitted() {
     transition: all 0.17s ease-in-out;
 }
 
-.check-icon.open {
+.icon.open {
     transform: rotate(180deg);
 }
 
@@ -256,8 +259,10 @@ function setIsFormSubmitted() {
         display: none;
     }
 
-    .select-element.default {
+    .default-select-container {
         display: block;
+        width: 100%;
+        border-radius: var(--border-radius);
     }
 }
 </style>
