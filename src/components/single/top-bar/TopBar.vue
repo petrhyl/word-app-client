@@ -29,13 +29,15 @@ function closeMenu() {
 header {
     position: relative;
     height: var(--header-height);
+    display: flex;
+    justify-content: center;
     background-color: var(--secondary-bg-color);
     box-shadow: 0 0 6px 0 var(--secondary-bg-color);
 }
 
 .header-content {
     position: fixed;
-    width: 100%;
+    width: 95%;
     height: var(--header-height);
     display: flex;
     align-items: center;
@@ -65,6 +67,10 @@ header {
 
     .pc-nav-container {
         display: none;
+    }
+
+    .header-content {
+        width: 100%;
     }
 
     .header-content > div {
