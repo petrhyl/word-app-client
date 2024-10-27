@@ -40,7 +40,7 @@ export type VocabularyItem = {
     word: string
     translations: string[]
     correctAnswers: number
-    isLearned: boolean
+    isLearned: boolean | null
     updatedAt: Date
 }
 

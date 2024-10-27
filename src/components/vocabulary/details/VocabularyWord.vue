@@ -2,17 +2,24 @@
     <div class="vocabulary-word-container">
         <div class="word title-value">
             <div class="title">word / phrase</div>
-            <div class="value">{{ vacabularyItem.word }}</div>
+            <div class="value">{{ vocabularyItem.word }}</div>
         </div>
         <div class="last-answer title-value">
             <div class="title">last answer</div>
-            <div class="value" :class="vacabularyItem.isLearned ? 'correct' : 'incorrect'">
-                {{ vacabularyItem.isLearned ? "Correct" : "Incorrect" }}
+            <div
+                class="value"
+                :class="{
+                    correct: vocabularyItem.isLearned === true,
+                    incorrect: vocabularyItem.isLearned === false,
+                    unanswered: vocabularyItem.isLearned === null
+                }"
+            >
+                {{ getLastAnswer }}
             </div>
         </div>
         <div class="translations title-value">
             <div class="title">translations</div>
-            <div class="value">{{ vacabularyItem.translations.join(", ") }}</div>
+            <div class="value">{{ vocabularyItem.translations.join(", ") }}</div>
         </div>
         <div class="edit-container">
             <div class="edit-button-wrapper">
@@ -27,7 +34,7 @@
             :is-error="isError"
             :is-loading="isLoading"
             :is-for-edit="true"
-            :default-value="{ word: vacabularyItem.word, translations: vacabularyItem.translations }"
+            :default-value="{ word: vocabularyItem.word, translations: vocabularyItem.translations }"
             @on-submit="handleSubmit"
             @on-valid-state="handleValidState"
         />
@@ -41,7 +48,7 @@ import AppButton from "@/components/ui/button/AppButton.vue"
 import useCallApi, { ErrorResponseType } from "@/composables/useCallApi"
 import { UpdateVocabularyItemRequest, VocabularyItemRequest } from "@/types/requests"
 import { VocabularyItem } from "@/types/responses"
-import { ref } from "vue"
+import { computed, ref } from "vue"
 
 const props = defineProps<{
     item: VocabularyItem
@@ -50,11 +57,21 @@ const props = defineProps<{
 
 const { callApi } = useCallApi()
 
-const vacabularyItem = ref<VocabularyItem>(props.item)
+const vocabularyItem = ref<VocabularyItem>(props.item)
 const isEditing = ref(false)
 const isLoading = ref(false)
 const isError = ref(false)
 const errorMessage = ref<string | null>(null)
+
+const getLastAnswer = computed(() => {
+    if (vocabularyItem.value.isLearned === true) {
+        return "Correct"
+    } else if (vocabularyItem.value.isLearned === false) {
+        return "Incorrect"
+    } else {
+        return "Unanswered"
+    }
+})
 
 function handleValidState() {
     isError.value = false
@@ -86,12 +103,12 @@ async function handleSubmit(data: VocabularyItemRequest[]) {
         }
     } else {
         isEditing.value = false
-        vacabularyItem.value = {
-            ...vacabularyItem.value,
+        vocabularyItem.value = {
+            ...vocabularyItem.value,
             word: data[0].word,
             translations: data[0].translations,
             correctAnswers: 0,
-            isLearned: false
+            isLearned: null
         }
     }
 
@@ -124,6 +141,7 @@ function handleEditItem() {
 }
 
 .title {
+    display: flex;
     color: var(--secondary-font-color);
     font-size: 0.9rem;
 }
@@ -141,7 +159,7 @@ function handleEditItem() {
     grid-area: last-answer;
 }
 
-.last-answer .value {
+.last-answer div {
     justify-content: end;
 }
 
@@ -151,6 +169,10 @@ function handleEditItem() {
 
 .incorrect {
     color: var(--warning-color);
+}
+
+.unanswered {
+    color: var(--secondary-font-color);
 }
 
 .translations {
