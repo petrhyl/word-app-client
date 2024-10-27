@@ -19,7 +19,7 @@ defineProps<{
 .vocabulary-conatainer {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    column-gap: 2.5rem;
+    column-gap: 2.75rem;
     row-gap: 1rem;
 }
 
