@@ -1,6 +1,6 @@
 <template>
     <FormCard>
-        <form @submit.prevent="handleSubmit">
+        <form @submit.prevent="handleSubmit" novalidate>
             <slot> </slot>
             <InvalidFormMessage :isShown="!isFormValid || isError" :message="getInvalidMessage" />
             <AppButton :type="'submit'" :buttonStyle="'submit'" :is-submitting="isLoading">

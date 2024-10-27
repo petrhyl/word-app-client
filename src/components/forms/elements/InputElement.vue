@@ -12,6 +12,7 @@
                 :type="getInputType"
                 v-model.trim="value"
                 :placeholder="placeholder"
+                autocapitalize="off"              
                 @blur="handleBlur"
                 @input="validate"
                 @paste="handlePaste"
@@ -51,7 +52,7 @@ const isWarningDisplayed = computed<boolean>(() => {
     return !isValid() && ((isBlured.value && value.value !== null) || isFormSubmitted.value)
 })
 const getInputType = computed(() => {
-    if ((isPasswordVisible.value && props.type === "watch-password") || props.type === "email") {
+    if (isPasswordVisible.value && props.type === "watch-password") {
         return "text"
     }
 

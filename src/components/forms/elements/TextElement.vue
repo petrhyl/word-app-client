@@ -12,6 +12,7 @@
                 v-model.trim="value"
                 :placeholder="placeholder"
                 :rows="rows"
+                autocapitalize="off"
                 @blur="handleBlur"
                 @input="validate"
             ></textarea>
