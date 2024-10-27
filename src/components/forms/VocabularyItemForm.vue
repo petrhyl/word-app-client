@@ -135,6 +135,10 @@ function addWord() {
         if (elementsContainer) {
             elementsContainer.style.height = `calc(${elementsContainer.scrollHeight}px + 1rem)`
         }
+        const wordElement = document.querySelector("#word-items-container > div:last-child")
+        if (wordElement) {
+            wordElement.scrollIntoView()
+        }
     }, 1)
 
     setTimeout(() => {

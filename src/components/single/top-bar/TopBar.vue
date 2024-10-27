@@ -37,13 +37,13 @@ header {
 
 .header-content {
     position: fixed;
-    width: 95%;
+    width: 100%;
     height: var(--header-height);
     display: flex;
     align-items: center;
     justify-content: space-between;
     background-color: var(--secondary-bg-color);
-    padding: 4px 1.25rem 0 1.25rem;
+    padding: 4px 3% 0 3%;
     z-index: 100;
 }
 
@@ -70,7 +70,7 @@ header {
     }
 
     .header-content {
-        width: 100%;
+        padding: 4px 1.25rem 0 1.25rem;
     }
 
     .header-content > div {

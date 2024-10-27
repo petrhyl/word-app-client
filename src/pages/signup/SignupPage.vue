@@ -96,7 +96,7 @@ async function handleSubmit(data: UserRegistration) {
 
     if (!response.isError && response.data !== null) {
         isRegistered.value = true
-        window.scrollY = 0
+        window.scrollTo(0, 0)
         startDecreaseCounter()
     }
 

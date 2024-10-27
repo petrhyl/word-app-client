@@ -2,12 +2,27 @@
     <PageWrapper>
         <PageTitle title="Practise" :description="getDescription" />
         <FadeTransition>
+            <div
+                v-if="answerState !== 'submitted' && isExerciseLoaded && exerciseWords.length > 0"
+                class="practicing-from-container"
+            >
+                <ProgressBar :progress="getProgress" />
+            </div>
+        </FadeTransition>
+        <FadeTransition>
             <PractiseRunningForm
-                v-if="answerState === 'answering' && exerciseWords.length > 0"
+                v-if="answerState === 'answering' && isExerciseLoaded && exerciseWords.length > 0"
                 :is-loading="isLoading"
                 :word="exerciseWords[currentIndex].word"
                 @on-submit="handleSubmitAnswer"
             />
+            <PrimaryCard v-else-if="answerState === 'answering' && isExerciseLoaded && exerciseWords.length === 0">
+                <p class="text-center incorrect-answer">You have no words in your vocabulary to practice</p>
+                <p class="text-center">Add some words to your vocabulary first</p>
+                <AppButton :type="'link'" :button-style="'secondary'" :route="{ name: ROUTE_NAMES.addVocabulary }"
+                    >Add Vocabulary</AppButton
+                >
+            </PrimaryCard>
             <PrimaryCard v-else-if="answerState === 'correct'">
                 <h2 class="correct-answer text-center">Correct</h2>
                 <FaceSmileIcon class="state-icon correct-answer" />
@@ -23,7 +38,9 @@
                 <FaceFrownIcon class="state-icon incorrect-answer" />
                 <div class="correct-translations-container">
                     <p class="text-center translation-title">Correct translations:</p>
-                    <p class="text-center translations">{{ exerciseWords[currentIndex].translations.join(", ") }}</p>
+                    <p class="text-center translations">
+                        {{ exerciseWords[currentIndex - 1].translations.join(", ") }}
+                    </p>
                 </div>
                 <p class="text-center">Try Next</p>
                 <form class="go-next-form" @submit.prevent="goNext">
@@ -61,8 +78,9 @@ import LoadingCard from "@/components/ui/card/LoadingCard.vue"
 import PrimaryCard from "@/components/ui/card/PrimaryCard.vue"
 import PageTitle from "@/components/ui/page/PageTitle.vue"
 import PageWrapper from "@/components/ui/page/PageWrapper.vue"
+import ProgressBar from "@/components/ui/ProgressBar.vue"
 import useCallApi from "@/composables/useCallApi"
-import { ROUTE_NAMES } from "@/router"
+import { ERROR_ROUTE_ERRORS, ROUTE_NAMES } from "@/router"
 import { ExerciseResultItem, ExerciseResultRequest } from "@/types/requests"
 import { VocabularyItem, ExerciseResponse } from "@/types/responses"
 import { ChevronRightIcon, FaceFrownIcon, FaceSmileIcon } from "@heroicons/vue/20/solid"
@@ -73,6 +91,7 @@ const route = useRoute()
 const { callApi } = useCallApi()
 
 const exerciseWords = ref<VocabularyItem[]>([])
+const isExerciseLoaded = ref(false)
 const currentIndex = ref(0)
 const exerciseLanguageName = ref<string | null>(null)
 const exerciseLanguageId = ref<number | null>(null)
@@ -101,6 +120,14 @@ const getErrorMesaage = computed(() => {
 })
 const getCorrectCount = computed(() => {
     return exerciseResults.value.filter(item => item.isAnswredCorrectly).length
+})
+const getProgress = computed(() => {
+    if (exerciseWords.value.length < 1) {
+        return 0
+    }
+
+    const percentage = (currentIndex.value / exerciseWords.value.length) * 100
+    return percentage > 100 ? 100 : percentage
 })
 
 function focusInput() {
@@ -148,13 +175,12 @@ async function submitResults() {
 }
 
 function goNext() {
-    if (currentIndex.value + 1 === exerciseWords.value.length) {
+    if (currentIndex.value === exerciseWords.value.length) {
         submitResults()
 
         return
     }
 
-    currentIndex.value++
     answerState.value = "answering"
 
     focusInput()
@@ -175,6 +201,7 @@ function handleSubmitAnswer(translation: string) {
     })
 
     answerState.value = isCorrect ? "correct" : "incorrect"
+    currentIndex.value++
 
     isLoading.value = false
     focusNextButton()
@@ -190,10 +217,10 @@ onBeforeMount(async () => {
     })
 
     if (response.isError) {
-        isError.value = true
-
-        return
+        throw new Error(ERROR_ROUTE_ERRORS.dataFetchingError)
     }
+
+    isExerciseLoaded.value = true
 
     exerciseWords.value = response.data!.exercise.words
     exerciseLanguageName.value = response.data!.exercise.languageName
@@ -202,6 +229,13 @@ onBeforeMount(async () => {
 </script>
 
 <style lang="css" scoped>
+.practicing-from-container {
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    justify-content: center;
+}
+
 .button-icon {
     width: 1.5rem;
     height: 1.5rem;
@@ -242,7 +276,7 @@ onBeforeMount(async () => {
     width: 100%;
 }
 
-.final-message{
+.final-message {
     padding: 0.75rem 0;
 }
 
