@@ -36,6 +36,11 @@ export type ResetPasswordRequest = {
     verificationKey: string
 }
 
+export type UpdateUserRequest = {
+    name: string
+    language: string
+}
+
 export type VocabularyItemRequest = {
     word: string
     translations: string[]

@@ -20,15 +20,15 @@ withDefaults(defineProps<{
 <style lang="css" scoped>
 .label-container {
     display: flex;
-    align-items: center;
+    align-items: end;
+    height: 1.5rem;
 }
 
 .element-label {
     flex-shrink: 0;
     font-family: var(--navigation-font);
     color: var(--title-font-color);
-    font-size: 1rem;
-    line-height: 1.7rem;
+    font-size: 0.9rem;
     padding-right: 0.5rem;
     padding-left: calc(0.75rem + 2px);
 }
@@ -36,5 +36,6 @@ withDefaults(defineProps<{
 .warning {
     color: var(--warning-color);
     font-size: 0.75rem;
+    padding-bottom: 0.12rem;
 }
 </style>

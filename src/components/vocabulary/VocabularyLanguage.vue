@@ -11,7 +11,7 @@
                 :route="{ name: ROUTE_NAMES.vocabularyDetails, params: { langId: language.id } }"
                 >View Vocabulary</AppButton
             >
-            <AppButton type="button" :button-style="'danger'" @click-button="() => emits('deleteLanguage', language.id)"
+            <AppButton type="button" :button-style="'quaternary'" @click-button="() => emits('deleteLanguage', language.id)"
                 >Delete</AppButton
             >
         </div>

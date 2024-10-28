@@ -13,6 +13,7 @@ export const ROUTE_NAMES = {
   resetPassword: 'resetPassword',
   forgetPassword: 'forgetPassword',
   profile: 'profile',
+  updateUser: 'updateUser',
   vocabularyLanguages: 'vocabularyLanguages',
   addVocabulary: 'addVocabulary',
   languagesStats: 'vocabularyStats',
@@ -46,7 +47,12 @@ const router = createRouter({
         {
           path: 'profile',
           name: ROUTE_NAMES.profile,
-          component: () => import('@/pages/account/ProfilePage.vue')
+          component: () => import('@/pages/account/profile/ProfilePage.vue')
+        },
+        {
+          path: 'profile/update',
+          name: ROUTE_NAMES.updateUser,
+          component: () => import('@/pages/account/profile/update/UpdateProfilePage.vue')
         },
         {
           path: 'change-password',

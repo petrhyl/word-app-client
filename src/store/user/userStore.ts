@@ -57,8 +57,12 @@ export const useUserStore = defineStore('userStore', () => {
         return response
     }
 
-    function nullifyUser() {        
-        userRef.value = null        
+    function nullifyUser() {
+        userRef.value = null
+    }
+
+    function setUser(fetchedUser: AppUser) {
+        userRef.value = fetchedUser
     }
 
     onBeforeMount(async () => {
@@ -76,6 +80,7 @@ export const useUserStore = defineStore('userStore', () => {
         login,
         logout,
         register,
+        setUser,
         nullifyUser
     }
 })

@@ -44,6 +44,9 @@
             <AppButton type="link" button-style="secondary" :route="{ name: ROUTE_NAMES.changePassword }"
                 >Change Password</AppButton
             >
+            <AppButton type="link" button-style="secondary" :route="{ name: ROUTE_NAMES.updateUser }"
+                >Update Profile</AppButton
+            >
         </div>
     </div>
 </template>

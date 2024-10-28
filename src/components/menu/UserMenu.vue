@@ -34,6 +34,9 @@
         </template>
     </DropDownMenu>
     <nav class="user-responsive-menu" id="user-nav-menu">
+        <div class="user-name-container">
+            <p>{{ getUserName }}</p>
+        </div>
         <AppButton :type="'link'" :buttonStyle="'primary'" :route="{ name: ROUTE_NAMES.profile }">Profile</AppButton>
         <div class="delimeter"><div></div></div>
         <AppButton v-if="isStartVisible" :type="'link'" :buttonStyle="'primary'" :route="{ name: ROUTE_NAMES.practice }"
@@ -119,6 +122,12 @@ onUnmounted(() => {
     display: flex;
     justify-content: center;
     padding: 0.25rem 0;
+}
+
+.user-name-container {
+    display: flex;
+    justify-content: center;
+    font-weight: 600;
 }
 
 .delimeter > div {

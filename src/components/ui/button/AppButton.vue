@@ -18,7 +18,7 @@ import { RouteLocationRaw } from "vue-router"
 import LoadingSpinner from "./LoadingSpinner.vue"
 
 const props = defineProps<{
-    buttonStyle: "primary" | "secondary" | "ternary" |"submit"| "danger" | "link"
+    buttonStyle: "primary" | "secondary" | "ternary" | "quaternary" | "submit" | "danger" | "link"
     type: "button" | "submit" | "link"
     isSubmitting?: boolean
     route?: RouteLocationRaw
@@ -33,6 +33,7 @@ const getCssClasses = computed(() => {
         primary: props.buttonStyle === "primary",
         secondary: props.buttonStyle === "secondary",
         ternary: props.buttonStyle === "ternary",
+        quaternary: props.buttonStyle === "quaternary",
         submit: props.buttonStyle === "submit",
         danger: props.buttonStyle === "danger",
         link: props.buttonStyle === "link",
@@ -75,7 +76,7 @@ button::deep(.spinner) {
     bottom: 0;
 }
 
-button:focus{
+button:focus {
     filter: brightness(1.2);
 }
 
@@ -93,7 +94,12 @@ button:focus{
     border-color: var(--primary-font-color);
 }
 
-.submit{
+.quaternary {
+    background-color: #43434f;
+    border-color: #43434f;
+}
+
+.submit {
     background-color: var(--submit-btn-color);
     border-color: var(--submit-btn-color);
 }
@@ -101,7 +107,6 @@ button:focus{
 .danger {
     background-color: var(--warning-color);
     border-color: var(--warning-color);
-    color: #b0b000;
 }
 
 .link {
@@ -116,7 +121,7 @@ button:focus{
     filter: brightness(1.2);
 }
 
-.button-content{
+.button-content {
     display: inline-flex;
 }
 
