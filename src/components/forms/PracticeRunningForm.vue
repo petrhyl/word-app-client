@@ -55,7 +55,7 @@ const formElements = computed<InputElementProps[]>(() => [
         placeholder: "Type one of the word's translations",
         tabIndex: 1,
         validationMessage: "cannot be empty",
-        validateInput: value => typeof value === "string" && value.length > 0
+        validateInput: value => typeof value === "string"
     }
 ])
 
@@ -96,7 +96,7 @@ function handleSubmit(data: SubmitData) {
     padding-left: calc(0.75rem + 2px);
 }
 
-.translating-word{
+.translating-word {
     font-size: 1.75rem;
     text-align: center;
     font-weight: 600;
