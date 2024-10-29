@@ -1,5 +1,5 @@
 <template>
-    <div class="check-container flex-col-center">
+    <div class="flex-col-center">
         <h3 class="text-center">You can check if a word&nbsp;/&nbsp;phrase exists</h3>
         <AppForm
             ref="formRef"
@@ -81,7 +81,6 @@ function handleSubmit(data: SubmitData) {
 <style lang="css" scoped>
 .flex-col-center {
     width: 100%;
-    row-gap: 1.5rem;
     padding-top: 0.5rem;
 }
 </style>

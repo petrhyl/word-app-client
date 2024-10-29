@@ -9,25 +9,28 @@
             @on-submit="handleSubmitVocabulary"
             @on-valid-state="handleAddFormValidState"
         />
-        <FadeTransition>
-            <PrimaryCard v-if="checkedWord" class="check-result-card">
-                <h2 class="text-center check-title">{{ checkedWord }}</h2>
-                <p class="text-center check-message" :class="wordExists ? 'exists' : 'not-exist'">
-                    The word / phrase
-                    {{ wordExists ? "already exists in your vocabulary" : "does not exist in your vocabulary" }}
-                </p>
-            </PrimaryCard>
-            <CheckWordForm
-                v-else
-                :is-loading="isCheckFormLoading"
-                :is-error="isCheckError"
-                :error-message="checkFromErrorMessage"
-                @on-submit="handleSubmitCheck"
-                @on-valid-state="handleCheckFormValidState"
-            />
-        </FadeTransition>
+        <div ref="checkContainerRef" class="check-container">
+            <FadeTransition>
+                <PrimaryCard v-if="checkedWord" class="check-result-card">
+                    <h2 class="text-center check-title">{{ checkedWord }}</h2>
+                    <p class="text-center check-message" :class="wordExists ? 'exists' : 'not-exist'">
+                        The word / phrase
+                        {{ wordExists ? "already exists in your vocabulary" : "does not exist in your vocabulary" }}
+                    </p>
+                </PrimaryCard>
+                <CheckWordForm
+                    v-else
+                    ref="checkFormRef"
+                    :is-loading="isCheckFormLoading"
+                    :is-error="isCheckError"
+                    :error-message="checkFromErrorMessage"
+                    @on-submit="handleSubmitCheck"
+                    @on-valid-state="handleCheckFormValidState"
+                />
+            </FadeTransition>
+        </div>
     </div>
-    <div v-if="!pickedLanguage" class="vocabulary-setting flex-col-center">
+    <div v-else-if="!pickedLanguage" class="vocabulary-setting flex-col-center">
         <AddVocabularySettingForm
             v-if="userLanguages.length > 0"
             :languages="userLanguages"
@@ -44,7 +47,7 @@
             </div>
         </div>
     </div>
-    <PrimaryCard v-if="isSentSuccessfully" class="flex-col-center">
+    <PrimaryCard v-else class="flex-col-center">
         <p class="success-message">Vocabulary has been successfully added</p>
         <FaceSmileIcon class="success-state-icon" />
         <AppButton :type="'link'" :buttonStyle="'primary'" :route="{ name: ROUTE_NAMES.practice }"
@@ -91,6 +94,8 @@ const checkedWord = ref<string | null>(null)
 const wordExists = ref<boolean>(false)
 const isSentSuccessfully = ref(false)
 
+const checkContainerRef = ref<HTMLDivElement | null>(null)
+
 const getPageDescription = computed(() => {
     if (pickedLanguage.value && !isSentSuccessfully.value) {
         return `Here you can add new words to your vocabulary of ${pickedLanguage.value.name} language`
@@ -122,6 +127,12 @@ function retreiveVocabularySettings(
     if (!language) {
         return null
     }
+
+    setTimeout(() => {
+        if (checkContainerRef.value) {
+            checkContainerRef.value.style.height = `${checkContainerRef.value.offsetHeight}px`
+        }
+    }, 10)
 
     return language
 }
@@ -243,6 +254,13 @@ async function handleSubmitCheck(word: string) {
 <style scoped>
 .flex-col-center {
     row-gap: 2rem;
+}
+
+.check-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
 }
 
 .check-result-card {
