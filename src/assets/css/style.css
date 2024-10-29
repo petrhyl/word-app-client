@@ -10,15 +10,15 @@
   --title-font: 'Gill Sans MT', sans-serif;
   --navigation-font: 'Poppins', sans-serif;
   --paragraph-font: 'Monserrat', sans-serif;
-  --primary-bg-color: #002443;
-  --secondary-bg-color: #002d36;
+  --primary-bg-color: #002743;
+  --secondary-bg-color: #1a2757;
   --element-bg-color: #00262e87;
   --primary-btn-color: #006cab;
   --secondary-btn-color: #009698;
   --submit-btn-color: #002ba0;
   --card-border-color: #7c72c75c;
   --overlay-color: #1b1b1b81;
-  --shadow: 0 0 0.75rem 0 #00000084;
+  --shadow: 0 0 0.75rem 0 #0000005c;
   --focus-shadow: 0 0 0.5rem 4px var(--card-border-color);
   --card-border: 2px solid var(--card-border-color);
   --border-radius: 7px;

@@ -55,21 +55,15 @@
                     /></AppButton>
                 </form>
             </PrimaryCard>
-            <PrimaryCard v-else-if="answerState === 'submitted' && !isError">
-                <p class="success-message">Your results</p>
-                <p class="text-center final-message">
-                    You translated correctly {{ getCorrectCount }} of {{ exerciseResults.length }} words
-                </p>
+            <PrimaryCard v-else-if="answerState === 'submitted'">
+                <p :class="isError ? 'text-center' : 'success-message'">{{ isError ? "Error" : "Your results" }}</p>
+                <p class="text-center final-message">{{ getResultMessage }}</p>
                 <AppButton :type="'link'" :button-style="'primary'" :route="{ name: ROUTE_NAMES.practice }"
                     >Go to practice</AppButton
                 >
                 <AppButton :type="'link'" :button-style="'secondary'" :route="{ name: ROUTE_NAMES.languagesStats }"
                     >View stats</AppButton
                 >
-            </PrimaryCard>
-            <PrimaryCard v-else-if="isError">
-                <h2 class="text-center">Error</h2>
-                <p class="text-center">{{ getErrorMesaage }}</p>
             </PrimaryCard>
             <LoadingCard v-else />
         </FadeTransition>
@@ -125,15 +119,15 @@ const getDescription = computed(() => {
 
     return "Type correct translation of a word"
 })
-const getErrorMesaage = computed(() => {
-    if (answerState.value === "submitted") {
+const getCorrectCount = computed(() => {
+    return exerciseResults.value.filter(item => item.isAnswredCorrectly).length
+})
+const getResultMessage = computed(() => {
+    if (isError.value) {
         return "An error occurred while submitting your results"
     }
 
-    return "An error occurred while loading your words"
-})
-const getCorrectCount = computed(() => {
-    return exerciseResults.value.filter(item => item.isAnswredCorrectly).length
+    return `You translated correctly ${getCorrectCount.value} of ${exerciseResults.value.length} words`
 })
 const getProgress = computed(() => {
     if (exerciseWords.value.length < 1) {
@@ -239,6 +233,8 @@ onBeforeMount(async () => {
     exerciseWords.value = response.data!.exercise.words
     exerciseLanguageName.value = response.data!.exercise.languageName
     exerciseLanguageId.value = response.data!.exercise.languageId
+
+    focusInput()
 })
 </script>
 

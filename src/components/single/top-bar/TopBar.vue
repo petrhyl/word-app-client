@@ -32,7 +32,7 @@ header {
     display: flex;
     justify-content: center;
     background-color: var(--secondary-bg-color);
-    box-shadow: 0 0 6px 0 var(--secondary-bg-color);
+    box-shadow: var(--shadow);
 }
 
 .header-content {
