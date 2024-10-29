@@ -26,10 +26,13 @@
             <PrimaryCard v-else-if="answerState === 'correct'">
                 <h2 class="correct-answer text-center">Correct</h2>
                 <FaceSmileIcon class="state-icon correct-answer" />
-                <p class="text-center">Go Next</p>
+                <p class="text-center">{{ currentIndex === exerciseWords.length ? "Finish" : "Go Next" }}</p>
                 <form class="go-next-form" @submit.prevent="goNext">
                     <AppButton :type="'submit'" :button-style="'primary'" :is-submitting="isLoading"
-                        ><span class="next-button-text">Next</span><ChevronRightIcon class="button-icon"
+                        ><span class="next-button-text">{{
+                            currentIndex === exerciseWords.length ? "Submit Results" : "Next"
+                        }}</span
+                        ><ChevronRightIcon v-if="currentIndex < exerciseWords.length" class="button-icon"
                     /></AppButton>
                 </form>
             </PrimaryCard>
@@ -50,7 +53,7 @@
                 </form>
             </PrimaryCard>
             <PrimaryCard v-else-if="answerState === 'submitted' && !isError">
-                <p class="success-message">Your results were submitted</p>
+                <p class="success-message">Your results</p>
                 <p class="text-center final-message">
                     You translated correctly {{ getCorrectCount }} of {{ exerciseResults.length }} words
                 </p>
@@ -101,12 +104,20 @@ const answerState = ref<"correct" | "incorrect" | "answering" | "submitted">("an
 const exerciseResults = ref<ExerciseResultItem[]>([])
 
 const getDescription = computed(() => {
+    if (answerState.value === "submitted") {
+        return "Results of your practice session were submitted"
+    }
+
+    if (currentIndex.value === exerciseWords.value.length && exerciseWords.value.length > 0) {
+        return "You have completed your practice session"
+    }
+
     if (exerciseLanguageName.value) {
         return `Type correct translation of ${exerciseLanguageName.value.toLowerCase()} word`
     }
 
-    if (answerState.value === "submitted") {
-        return "Results of your practice session were submitted"
+    if (exerciseWords.value.length === 0 && isExerciseLoaded.value) {
+        return "You have no words in your vocabulary to practice"
     }
 
     return "Type correct translation of a word"
