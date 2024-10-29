@@ -35,7 +35,7 @@
             </PrimaryCard>
             <PrimaryCard v-else-if="answerState === 'incorrect'">
                 <h2 class="incorrect-answer text-center">Not Correct</h2>
-                <FaceFrownIcon class="state-icon incorrect-answer" />
+                <p class="translating-word">{{ exerciseWords[currentIndex - 1].word }}</p>
                 <div class="correct-translations-container">
                     <p class="text-center translation-title">Correct translations:</p>
                     <p class="text-center translations">
@@ -83,7 +83,7 @@ import useCallApi from "@/composables/useCallApi"
 import { ERROR_ROUTE_ERRORS, ROUTE_NAMES } from "@/router"
 import { ExerciseResultItem, ExerciseResultRequest } from "@/types/requests"
 import { VocabularyItem, ExerciseResponse } from "@/types/responses"
-import { ChevronRightIcon, FaceFrownIcon, FaceSmileIcon } from "@heroicons/vue/20/solid"
+import { ChevronRightIcon, FaceSmileIcon } from "@heroicons/vue/20/solid"
 import { computed, onBeforeMount, ref } from "vue"
 import { useRoute } from "vue-router"
 
@@ -260,6 +260,12 @@ onBeforeMount(async () => {
 
 .incorrect-answer {
     color: var(--warning-color);
+}
+
+.translating-word {
+    font-size: 1.5rem;
+    text-align: center;
+    font-weight: 600;
 }
 
 .translation-title {
