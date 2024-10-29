@@ -89,7 +89,7 @@ const getUserName = computed(() => {
 
 function handleLogout() {
     logout()
-    router.push({ name: ROUTE_NAMES.home })
+    router.replace({ name: ROUTE_NAMES.home })
 }
 
 onMounted(() => {

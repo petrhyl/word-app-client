@@ -39,11 +39,11 @@ const fromRoute = ref<RouteLocationNormalizedLoadedGeneric | null>(null)
 
 function redirectLoggedIn() {
     if (fromRoute.value === null || fromRoute.value.meta?.authRestricted) {
-        router.push({ name: ROUTE_NAMES.home })
+        router.replace({ name: ROUTE_NAMES.home })
         return
     }
 
-    router.push(fromRoute.value.fullPath)
+    router.replace(fromRoute.value.fullPath)
 }
 
 function handleValidState() {
