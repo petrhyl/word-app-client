@@ -55,6 +55,7 @@ const formElements = computed<InputElementProps[]>(() => [
         placeholder: "Type one of the word's translations",
         tabIndex: 1,
         validationMessage: "cannot be empty",
+        notAutoComplete: true,
         validateInput: value => typeof value === "string"
     }
 ])

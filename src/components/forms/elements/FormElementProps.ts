@@ -18,6 +18,7 @@ export type ElementExposedFunctions = {
 export type InputElementProps = {
     type: 'text' | 'email' | 'password' | 'number' | 'date' | 'watch-password'
     placeholder?: string
+    notAutoComplete?: boolean
 } & FormElementProps
 
 export type SelectionOptionProps = {
