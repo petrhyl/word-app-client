@@ -45,10 +45,13 @@
                         {{ exerciseWords[currentIndex - 1].translations.join(", ") }}
                     </p>
                 </div>
-                <p class="text-center">Try Next</p>
+                <p class="text-center">{{ currentIndex === exerciseWords.length ? "Finish" : "Try Next" }}</p>
                 <form class="go-next-form" @submit.prevent="goNext">
                     <AppButton :type="'submit'" :button-style="'primary'" :is-submitting="isLoading"
-                        ><span class="next-button-text">Next</span><ChevronRightIcon class="button-icon"
+                        ><span class="next-button-text">{{
+                            currentIndex === exerciseWords.length ? "Submit Results" : "Next"
+                        }}</span
+                        ><ChevronRightIcon v-if="currentIndex < exerciseWords.length" class="button-icon"
                     /></AppButton>
                 </form>
             </PrimaryCard>
