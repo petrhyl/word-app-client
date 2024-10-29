@@ -21,6 +21,7 @@ const props = defineProps<{
     buttonStyle: "primary" | "secondary" | "ternary" | "quaternary" | "submit" | "danger" | "link"
     type: "button" | "submit" | "link"
     isSubmitting?: boolean
+    isDisabled?: boolean
     route?: RouteLocationRaw
 }>()
 
@@ -37,6 +38,7 @@ const getCssClasses = computed(() => {
         submit: props.buttonStyle === "submit",
         danger: props.buttonStyle === "danger",
         link: props.buttonStyle === "link",
+        disabled: props.isDisabled,
         "is-submitting": props.isSubmitting
     }
 })
@@ -107,6 +109,12 @@ button:focus {
 .danger {
     background-color: var(--warning-color);
     border-color: var(--warning-color);
+}
+
+.clickable.disabled {
+    filter: brightness(0.8) grayscale(0.6);
+    pointer-events: none;
+    color: var(--secondary-font-color);
 }
 
 .link {
