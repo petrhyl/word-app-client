@@ -1,23 +1,25 @@
 <template>
-    <h3 class="text-center">You can check if a word&nbsp;/&nbsp;phrase exists</h3>
-    <AppForm
-        ref="formRef"
-        :elements-refs="elementsRefs"
-        :is-loading="isLoading"
-        :is-error="isError"
-        :error-message="errorMessage"
-        @submit-form="handleSubmit"
-        @on-valid-state="handleValidState"
-    >
-        <InputElement
-            v-for="element in formElements"
-            ref="elementsRefs"
-            :key="element.id"
-            v-bind="element"
-            @on-validate="handleValidate"
-        />
-        <template #submit-text>Check</template>
-    </AppForm>
+    <div class="check-container flex-col-center">
+        <h3 class="text-center">You can check if a word&nbsp;/&nbsp;phrase exists</h3>
+        <AppForm
+            ref="formRef"
+            :elements-refs="elementsRefs"
+            :is-loading="isLoading"
+            :is-error="isError"
+            :error-message="errorMessage"
+            @submit-form="handleSubmit"
+            @on-valid-state="handleValidState"
+        >
+            <InputElement
+                v-for="element in formElements"
+                ref="elementsRefs"
+                :key="element.id"
+                v-bind="element"
+                @on-validate="handleValidate"
+            />
+            <template #submit-text>Check</template>
+        </AppForm>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -39,7 +41,7 @@ const emits = defineEmits<{
 }>()
 
 const elementIds = {
-    chekingWord: "checking-word",
+    chekingWord: "checking-word"
 }
 
 const formElements = computed<InputElementProps[]>(() => [
@@ -70,8 +72,16 @@ function handleSubmit(data: SubmitData) {
         return
     }
 
-   const word = data.get(elementIds.chekingWord) as string    
+    const word = data.get(elementIds.chekingWord) as string
 
     emits("onSubmit", word)
 }
 </script>
+
+<style lang="css" scoped>
+.flex-col-center {
+    width: 100%;
+    row-gap: 1.5rem;
+    padding-top: 0.5rem;
+}
+</style>

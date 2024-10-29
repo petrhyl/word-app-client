@@ -9,11 +9,11 @@
             @on-submit="handleSubmitVocabulary"
             @on-valid-state="handleAddFormValidState"
         />
-        <div class="check-container flex-col-center">
-            <PrimaryCard v-if="checkedWord">
+        <FadeTransition>
+            <PrimaryCard v-if="checkedWord" class="check-result-card">
                 <h2 class="text-center check-title">{{ checkedWord }}</h2>
                 <p class="text-center check-message" :class="wordExists ? 'exists' : 'not-exist'">
-                    The word/phrase
+                    The word / phrase
                     {{ wordExists ? "already exists in your vocabulary" : "does not exist in your vocabulary" }}
                 </p>
             </PrimaryCard>
@@ -25,7 +25,7 @@
                 @on-submit="handleSubmitCheck"
                 @on-valid-state="handleCheckFormValidState"
             />
-        </div>
+        </FadeTransition>
     </div>
     <div v-if="!pickedLanguage" class="vocabulary-setting flex-col-center">
         <AddVocabularySettingForm
@@ -73,6 +73,7 @@ import { FaceSmileIcon } from "@heroicons/vue/24/solid"
 import { computed, onBeforeMount, ref } from "vue"
 import { onBeforeRouteUpdate, RouteLocationNormalizedGeneric, useRoute, useRouter } from "vue-router"
 import LoadingCard from "@/components/ui/card/LoadingCard.vue"
+import FadeTransition from "@/components/transitions/FadeTransition.vue"
 
 const { callApi } = useCallApi()
 const route = useRoute()
@@ -244,11 +245,8 @@ async function handleSubmitCheck(word: string) {
     row-gap: 2rem;
 }
 
-.check-container {
-    width: 100%;
-    max-width: 480px;
-    row-gap: 1.5rem;
-    padding-top: 0.5rem;
+.check-result-card {
+    margin-top: 0.75rem;
 }
 
 .check-title {
