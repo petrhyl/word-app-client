@@ -31,8 +31,7 @@ header {
     height: var(--header-height);
     display: flex;
     justify-content: center;
-    background-color: var(--secondary-bg-color);
-    box-shadow: var(--shadow);
+    background-color: var(--secondary-bg-color);    
 }
 
 .header-content {
@@ -43,6 +42,7 @@ header {
     align-items: center;
     justify-content: space-between;
     background-color: var(--secondary-bg-color);
+    box-shadow: var(--shadow);
     padding: 4px 3% 0 3%;
     z-index: 100;
 }

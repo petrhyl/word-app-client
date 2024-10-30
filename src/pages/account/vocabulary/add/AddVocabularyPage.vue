@@ -206,7 +206,6 @@ async function handleSubmitVocabulary(data: VocabularyItemRequest[]) {
 
 function handleAddVocabulary() {
     isSentSuccessfully.value = false
-    router.push({ name: ROUTE_NAMES.addVocabulary })
 }
 
 function handleCheckFormValidState() {

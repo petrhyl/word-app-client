@@ -19,7 +19,10 @@
             <PrimaryCard v-else-if="answerState === 'answering' && isExerciseLoaded && exerciseWords.length === 0">
                 <p class="text-center incorrect-answer">You have no words in your vocabulary to practice</p>
                 <p class="text-center">Add some words to your vocabulary first</p>
-                <AppButton :type="'link'" :button-style="'secondary'" :route="{ name: ROUTE_NAMES.addVocabulary }"
+                <AppButton
+                    :type="'link'"
+                    :button-style="'secondary'"
+                    :route="{ name: ROUTE_NAMES.addVocabulary, query: { langId: route.query.langId?.toString() } }"
                     >Add Vocabulary</AppButton
                 >
             </PrimaryCard>

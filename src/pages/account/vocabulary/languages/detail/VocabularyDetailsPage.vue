@@ -1,6 +1,19 @@
 <template>
     <PageTitle :title="getPageTitle" description="Here you can see all vocabulary for the language" />
-    <LanguageVocabularyComponent v-if="language" :vocabulary="vocabularyItems" :language="language" />
+    <LanguageVocabularyComponent
+        v-if="vocabularyItems.length > 0 && language"
+        :vocabulary="vocabularyItems"
+        :language="language"
+    />
+    <PrimaryCard v-else-if="language" class="flex-col-center">
+        <p class="text-center">This language does not contain any vocabulary yet</p>
+        <p class="text-center">You can add some</p>
+        <div class="add-nav-container">
+            <AppButton :type="'link'" :button-style="'secondary'" :route="{ name: ROUTE_NAMES.addVocabulary, query: { langId: props.langId } }"
+                >Add Vocabulary</AppButton
+            >
+        </div>
+    </PrimaryCard>
     <LoadingCard v-else />
     <div class="next-vocabulary-button">
         <AppButton
@@ -17,10 +30,11 @@
 <script setup lang="ts">
 import AppButton from "@/components/ui/button/AppButton.vue"
 import LoadingCard from "@/components/ui/card/LoadingCard.vue"
+import PrimaryCard from "@/components/ui/card/PrimaryCard.vue"
 import PageTitle from "@/components/ui/page/PageTitle.vue"
 import LanguageVocabularyComponent from "@/components/vocabulary/details/LanguageVocabularyComponent.vue"
 import useCallApi from "@/composables/useCallApi"
-import { ERROR_ROUTE_ERRORS } from "@/router"
+import { ERROR_ROUTE_ERRORS, ROUTE_NAMES } from "@/router"
 import { UserVocabularyLanguage } from "@/types/models"
 import { LanguageVocabularyResponse, VocabularyItem } from "@/types/responses"
 import { computed, onBeforeMount, ref } from "vue"
@@ -89,5 +103,11 @@ onBeforeMount(async () => {
 .next-vocabulary-button {
     display: flex;
     justify-content: end;
+}
+
+.add-nav-container{
+    display: flex;
+    justify-content: center;
+    padding-top: 1rem;
 }
 </style>
