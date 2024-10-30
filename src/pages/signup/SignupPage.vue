@@ -1,27 +1,29 @@
 <template>
     <PageWrapper>
         <PageTitle :title="getTitle" :description="getDescription" />
-        <SignupForm
-            v-if="!isRegistered"
-            :is-loading="isLoading"
-            :is-error="isError"
-            :error-message="errorMessage"
-            @on-submit="handleSubmit"
-            @on-valid-state="handleValidState"
-        />
-        <PrimaryCard v-else>
-            <p class="success-message">Your account has been created successfully</p>
-            <p class="text-center">
-                To log in, please verify your email address by clicking on the link in the email we have sent you.
-            </p>
-            <p class="text-center small">It could take a few minutes to receive the verification e-mail.</p>
-            <p v-if="isSent" class="text-center">You can resend verification e-mail in {{ counter }} seconds</p>
-            <div v-else class="resend-link">
-                <AppButton :type="'button'" :button-style="'link'" @click-button="resendEmail">
-                    Resend verification e-mail
-                </AppButton>
-            </div>
-        </PrimaryCard>
+        <FadeTransition>
+            <SignupForm
+                v-if="!isRegistered"
+                :is-loading="isLoading"
+                :is-error="isError"
+                :error-message="errorMessage"
+                @on-submit="handleSubmit"
+                @on-valid-state="handleValidState"
+            />
+            <PrimaryCard v-else>
+                <p class="success-message">Your account has been created successfully</p>
+                <p class="text-center">
+                    To log in, please verify your email address by clicking on the link in the email we have sent you.
+                </p>
+                <p class="text-center small">It could take a few minutes to receive the verification e-mail.</p>
+                <p v-if="isSent" class="text-center">You can resend verification e-mail in {{ counter }} seconds</p>
+                <div v-else class="resend-link">
+                    <AppButton :type="'button'" :button-style="'link'" @click-button="resendEmail">
+                        Resend verification e-mail
+                    </AppButton>
+                </div>
+            </PrimaryCard>
+        </FadeTransition>
         <div class="flex-col-center">
             <p class="text-center">Or log in to your account</p>
             <AppButton :type="'link'" :button-style="'primary'" :route="{ name: ROUTE_NAMES.login }">
@@ -33,6 +35,7 @@
 
 <script setup lang="ts">
 import SignupForm from "@/components/forms/SignupForm.vue"
+import FadeTransition from "@/components/transitions/FadeTransition.vue"
 import AppButton from "@/components/ui/button/AppButton.vue"
 import PrimaryCard from "@/components/ui/card/PrimaryCard.vue"
 import PageTitle from "@/components/ui/page/PageTitle.vue"
@@ -91,8 +94,7 @@ async function handleSubmit(data: UserRegistration) {
 
     isError.value = response.isError
 
-    errorMessage.value =
-        response.errorType === ErrorResponseType.BAD_REQUEST ? "E-mail is already taken" : null
+    errorMessage.value = response.errorType === ErrorResponseType.BAD_REQUEST ? "E-mail is already taken" : null
 
     if (!response.isError && response.data !== null) {
         isRegistered.value = true
@@ -129,7 +131,7 @@ async function resendEmail() {
     row-gap: 1rem;
 }
 
-.resend-link{
+.resend-link {
     display: flex;
     justify-content: center;
 }
