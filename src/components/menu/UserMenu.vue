@@ -13,7 +13,7 @@
             </DropDownMenuItem>
             <div class="delimeter"><div></div></div>
             <DropDownMenuItem class="user-menu-item">
-                <AppButton :type="'link'" :buttonStyle="'primary'" :route="{ name: ROUTE_NAMES.practice }" :is-disabled="!isStartVisible"
+                <AppButton :type="'link'" :buttonStyle="'primary'" :route="{ name: ROUTE_NAMES.practice }"
                     >Start Practice</AppButton
                 >
             </DropDownMenuItem>
@@ -43,7 +43,6 @@
             :type="'link'"
             :buttonStyle="'primary'"
             :route="{ name: ROUTE_NAMES.practice }"
-            :is-disabled="!isStartVisible"
             >Start Practice</AppButton
         >
         <AppButton :type="'link'" :buttonStyle="'primary'" :route="{ name: ROUTE_NAMES.languagesStats }"
@@ -72,10 +71,6 @@ const props = defineProps<{
 
 const { user, logout } = useUserAuth()
 const router = useRouter()
-
-const isStartVisible = computed(() => {
-    return router.currentRoute.value.name !== ROUTE_NAMES.practiceRunning
-})
 
 const getUserName = computed(() => {
     let username = user.value?.name

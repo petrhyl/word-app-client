@@ -92,6 +92,16 @@ button:focus {
     border-color: var(--secondary-btn-color);
 }
 
+.router-link-active.primary {
+    box-shadow: 0 0 0 2px var(--secondary-bg-color), 0 0 0.5rem 0.25rem var(--primary-btn-color);
+    filter: brightness(1.2);
+}
+
+.router-link-active.secondary {
+    box-shadow: 0 0 0 2px var(--secondary-bg-color), 0 0 0.5rem 0.25rem var(--secondary-btn-color);
+    filter: brightness(1.2);
+}
+
 .ternary {
     border-color: var(--primary-font-color);
 }
