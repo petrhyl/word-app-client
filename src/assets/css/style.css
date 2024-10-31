@@ -82,6 +82,10 @@ textarea {
   background-color: transparent;
 }
 
+body.no-scroll {
+  overflow: hidden;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -100,7 +104,7 @@ textarea {
   align-items: center;
 }
 
-.text-center{
+.text-center {
   text-align: center;
 }
 

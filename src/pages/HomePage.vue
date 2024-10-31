@@ -10,7 +10,7 @@
         <h1 class="welcome-message">Welcome to application for practicing your foreign language vocabulary</h1>
         <div v-if="!user?.id" class="prompt-container">
             <p>Please log in or sign up to start practicing</p>
-            <UnloggedUserNav css-class="auth-buttons-container" :close-menu="() => {}" />
+            <UnloggedUserNav css-class="auth-buttons-container" :has-home-button="false" :close-menu="() => {}" />
         </div>
         <div v-else class="prompt-container">
             <p>You can start practicing now</p>

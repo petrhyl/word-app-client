@@ -15,7 +15,7 @@
                 :class="{ opening: isMenuOpening, closing: !isMenuOpening, open: isMenuOpen }"
             >
                 <UserMenu v-if="user?.id" :close-menu="closeMenu" />
-                <UnloggedUserNav v-else css-class="unlogged-user-nav" :close-menu="closeMenu" />
+                <UnloggedUserNav v-else css-class="unlogged-user-nav" :has-home-button="true" :close-menu="closeMenu" />
             </menu>
         </div>
     </div>
@@ -44,12 +44,16 @@ function toggleOpen() {
     } else {
         isMenuOpen.value = true
         isMenuOpening.value = true
+        document.body.classList.add("no-scroll")
     }
 }
 
 function closeMenu() {
     isMenuOpening.value = false
-    setTimeout(() => (isMenuOpen.value = false), 180)
+    document.body.classList.remove("no-scroll")
+    setTimeout(() => {
+        isMenuOpen.value = false
+    }, 180)
 }
 </script>
 
@@ -80,6 +84,10 @@ function closeMenu() {
     display: flex;
     gap: 0.75rem;
     transition: all 0.17s ease-out;
+}
+
+:deep(.nav-home-button) {
+    display: none;
 }
 
 :deep(.unlogged-user-nav) {
@@ -114,6 +122,7 @@ function closeMenu() {
         display: none;
         justify-content: end;
         background-color: var(--overlay-color);
+        z-index: 100;
         animation-duration: 180ms;
     }
 
@@ -150,6 +159,7 @@ function closeMenu() {
 
     .nav-menu-content.open {
         display: flex;
+        overflow-y: auto;
     }
 
     .nav-menu-content.opening {
@@ -163,11 +173,14 @@ function closeMenu() {
         animation-fill-mode: forwards;
     }
 
+    :deep(.nav-home-button) {
+        display: block;
+    }
+
     :deep(.unlogged-user-nav) {
         display: flex;
         flex-direction: column;
         gap: 1.5rem;
-        padding-bottom: 1.5rem;
     }
 
     @keyframes openMenu {

@@ -38,6 +38,7 @@
             <p>{{ getUserName }}</p>
         </div>
         <AppButton :type="'link'" :buttonStyle="'primary'" :route="{ name: ROUTE_NAMES.profile }">Profile</AppButton>
+        <AppButton :type="'link'" :buttonStyle="'primary'" :route="{ name: ROUTE_NAMES.home }"> Home </AppButton>
         <div class="delimeter"><div></div></div>
         <AppButton
             :type="'link'"
@@ -75,8 +76,8 @@ const router = useRouter()
 const getUserName = computed(() => {
     let username = user.value?.name
 
-    if (username && username?.length > 10) {
-        return username.slice(0, 10) + "..."
+    if (username && username?.length > 15) {
+        return username.slice(0, 14) + "..."
     }
 
     return username
