@@ -38,12 +38,9 @@
             <p>{{ getUserName }}</p>
         </div>
         <AppButton :type="'link'" :buttonStyle="'primary'" :route="{ name: ROUTE_NAMES.profile }">Profile</AppButton>
-        <AppButton :type="'link'" :buttonStyle="'primary'" :route="{ name: ROUTE_NAMES.home }"> Home </AppButton>
         <div class="delimeter"><div></div></div>
-        <AppButton
-            :type="'link'"
-            :buttonStyle="'primary'"
-            :route="{ name: ROUTE_NAMES.practice }"
+        <AppButton :type="'link'" :buttonStyle="'primary'" :route="{ name: ROUTE_NAMES.home }"> Home </AppButton>
+        <AppButton :type="'link'" :buttonStyle="'primary'" :route="{ name: ROUTE_NAMES.practice }"
             >Start Practice</AppButton
         >
         <AppButton :type="'link'" :buttonStyle="'primary'" :route="{ name: ROUTE_NAMES.languagesStats }"
