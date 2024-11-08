@@ -46,6 +46,8 @@ import { useUserStore } from "@/store/user/userStore"
 import { SendVerificationEmailRequest, UserRegistration } from "@/types/requests"
 import { computed, ref } from "vue"
 
+const SECONDS_TO_RESEND = 60
+
 const { register } = useUserStore()
 const { callApi } = useCallApi()
 
@@ -53,7 +55,7 @@ const isLoading = ref(false)
 const isError = ref(false)
 const errorMessage = ref<string | null>(null)
 const isRegistered = ref(false)
-const counter = ref(20)
+const counter = ref(SECONDS_TO_RESEND)
 const isSent = ref(false)
 const userEmail = ref<string | null>(null)
 
@@ -75,7 +77,7 @@ function startDecreaseCounter() {
 
         if (counter.value === 0) {
             clearInterval(interval)
-            counter.value = 20
+            counter.value = SECONDS_TO_RESEND
             isSent.value = false
         }
     }, 1000)
