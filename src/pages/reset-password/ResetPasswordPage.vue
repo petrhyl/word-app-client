@@ -32,7 +32,7 @@ import { ResetPasswordRequest } from "@/types/requests"
 import { ref } from "vue"
 
 const props = defineProps<{
-    code: string
+    token: string
 }>()
 
 const { callApi } = useCallApi()
@@ -57,7 +57,7 @@ async function handleSubmit(password: string) {
     const response = await callApi<ResetPasswordRequest, { message: string }>({
         method: "PUT",
         endpoint: "/user/reset-password",
-        body: { password, verificationKey: props.code }
+        body: { password, verificationKey: props.token }
     })
 
     if (response.isError) {
