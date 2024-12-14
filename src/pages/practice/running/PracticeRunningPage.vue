@@ -37,6 +37,14 @@
                         }}</span
                         ><ChevronRightIcon v-if="currentIndex < exerciseWords.length" class="button-icon"
                     /></AppButton>
+                    <AppButton
+                        v-if="currentIndex === exerciseWords.length"
+                        :type="'button'"
+                        :button-style="'secondary'"
+                        :is-submitting="isLoading"
+                        @click-button="tryAgain"
+                        >Try Again</AppButton
+                    >
                 </form>
             </PrimaryCard>
             <PrimaryCard v-else-if="answerState === 'incorrect'">
@@ -56,6 +64,14 @@
                         }}</span
                         ><ChevronRightIcon v-if="currentIndex < exerciseWords.length" class="button-icon"
                     /></AppButton>
+                    <AppButton
+                        v-if="currentIndex === exerciseWords.length"
+                        :type="'button'"
+                        :button-style="'secondary'"
+                        :is-submitting="isLoading"
+                        @click-button="tryAgain"
+                        >Try Again</AppButton
+                    >
                 </form>
             </PrimaryCard>
             <PrimaryCard v-else-if="answerState === 'submitted'">
@@ -156,7 +172,7 @@ function focusNextButton() {
         const form = document.querySelector(".go-next-form")
 
         if (form) {
-            form.querySelector("button")?.focus()
+            form.querySelector<HTMLButtonElement>('button[type="submit"]')?.focus()
         }
     }, 340)
 }
@@ -192,6 +208,14 @@ function goNext() {
         return
     }
 
+    answerState.value = "answering"
+
+    focusInput()
+}
+
+function tryAgain() {
+    currentIndex.value = 0
+    exerciseResults.value = []
     answerState.value = "answering"
 
     focusInput()
@@ -293,6 +317,9 @@ onBeforeMount(async () => {
 
 .go-next-form {
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
 }
 
 .final-message {

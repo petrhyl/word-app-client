@@ -17,6 +17,7 @@ export const ROUTE_NAMES = {
   vocabularyLanguages: 'vocabularyLanguages',
   addVocabulary: 'addVocabulary',
   languagesStats: 'vocabularyStats',
+  unlearnedVocabulary: 'unlearnedVocabulary',
   vocabularyDetails: 'vocabularyDetails',
   editVocabularyItem: 'editVocabularyItem',
   createLanguage: 'createLanguage',
@@ -78,6 +79,18 @@ const router = createRouter({
           path: 'vocabulary/languages/create',
           name: ROUTE_NAMES.createLanguage,
           component: () => import('@/pages/account/vocabulary/languages/create/CreateLanguagePage.vue')
+        },
+        {
+          path: 'vocabulary/languages/:langId/unlearned',
+          name: ROUTE_NAMES.unlearnedVocabulary,
+          props: true,
+          component: () => import('@/pages/account/vocabulary/languages/detail/unlearned/UnlearnedVocabularyPage.vue'),
+          beforeEnter: (to, _from, next) => {
+            if (!to.params.langId || !parseToIntOrReturnNull(to.params.langId as string)) {
+              return next(new Error(ERROR_ROUTE_ERRORS.invalidIdParam))
+            }
+            next()
+          }
         },
         {
           path: 'vocabulary/languages/:langId',

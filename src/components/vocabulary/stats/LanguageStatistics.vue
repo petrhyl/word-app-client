@@ -3,16 +3,16 @@
         <LanguageTitle :language-name="stats.language.name" />
         <div class="statistics-container">
             <div class="stat-container">
-                <span class="stat-label">Total answered words:</span>
-                <span class="stat">{{ stats.totalAnsweredWords }}</span>
+                <div class="stat-label">Total answered words:</div>
+                <div class="stat">{{ stats.totalAnsweredWords }}</div>
             </div>
             <div class="stat-container">
-                <span class="stat-label">Success rate:</span>
-                <span class="stat">{{ stats.successRate.toLocaleString("en", { maximumFractionDigits: 2 }) }} %</span>
+                <div class="stat-label">Success rate:</div>
+                <div class="stat">{{ stats.successRate.toLocaleString("en", { maximumFractionDigits: 2 }) }} %</div>
             </div>
             <div class="stat-container">
-                <span class="stat-label">Exercise average words amount:</span>
-                <span class="stat">{{ Math.round(stats.answeredWordsAverage) }}</span>
+                <div class="stat-label">Exercise average words amount:</div>
+                <div class="stat">{{ Math.round(stats.answeredWordsAverage) }}</div>
             </div>
         </div>
         <div class="vocabulary-nav">
@@ -21,6 +21,12 @@
                 :buttonStyle="'primary'"
                 :route="{ name: ROUTE_NAMES.vocabularyDetails, params: { langId: stats.language.id } }"
                 >View Vocabulary</AppButton
+            >
+            <AppButton
+                :type="'link'"
+                :buttonStyle="'secondary'"
+                :route="{ name: ROUTE_NAMES.unlearnedVocabulary, params: { langId: stats.language.id } }"
+                >Unlearned Vocabulary</AppButton
             >
         </div>
     </div>
@@ -63,12 +69,19 @@ defineProps<{
 .stat {
     color: var(--success-color);
     display: flex;
-    justify-content: start;
+    justify-content: end;
     align-items: end;
 }
 
 .vocabulary-nav {
-    display: flex;
-    justify-content: end;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+}
+
+@media screen and (max-width: 980px) {
+    .vocabulary-nav {
+        grid-template-columns: 1fr;
+    }
 }
 </style>
