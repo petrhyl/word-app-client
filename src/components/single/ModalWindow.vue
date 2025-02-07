@@ -78,7 +78,7 @@ onMounted(() => {
 }
 
 .modal-window {
-    max-width: 480px;
+    max-width: 510px;
     background-color: var(--primary-bg-color);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
@@ -130,6 +130,10 @@ onMounted(() => {
 @media screen and (max-width: 980px) {
     .modal-window {
         max-width: 95%;
+    }
+
+    .modal-content {
+        padding: 1.5rem 1rem;
     }
 }
 </style>
