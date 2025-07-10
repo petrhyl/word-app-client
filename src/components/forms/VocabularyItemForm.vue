@@ -8,13 +8,25 @@
         @submit-form="handleSubmit"
         @on-valid-state="handleValidState"
     >
-        <div id="word-items-container">
+        <div ref="elementsContainerRef" :style="elementsContainerStyle" class="word-items-container">
             <div
                 v-for="(element, index) in formElements"
                 :class="isForEdit ? 'word-item-edit-container ' : 'word-item-add-container'"
             >
-                <div v-if="!isForEdit" class="word-item-number">
-                    <span>{{ index + 1 }}</span>
+                <div v-if="!isForEdit" class="word-item-side">
+                    <div class="word-item-number">
+                        <span>{{ index + 1 }}</span>
+                    </div>
+                    <div class="word-item-remove">
+                        <button
+                            v-if="index === formElements.length - 1 && index > 0"
+                            type="button"
+                            class="remove-button"
+                            @click="removeItem(index)"
+                        >
+                            <XMarkIcon class="remove-icon" />
+                        </button>
+                    </div>
                 </div>
                 <div class="word-item">
                     <InputElement
@@ -46,14 +58,14 @@
 
 <script setup lang="ts">
 import { VocabularyItemRequest } from "@/types/requests"
-import { ref } from "vue"
+import { CSSProperties, nextTick, ref } from "vue"
 import InputElement from "./elements/InputElement.vue"
 import { InputElementProps, TextElementProps } from "./elements/FormElementProps"
 import AppForm from "./form/AppForm.vue"
 import { SubmitData } from "./form/SubmitData"
 import TextElement from "./elements/TextElement.vue"
 import AppButton from "../ui/button/AppButton.vue"
-import { ChevronDownIcon } from "@heroicons/vue/20/solid"
+import { ChevronDownIcon, XMarkIcon } from "@heroicons/vue/20/solid"
 
 const props = defineProps<{
     isLoading: boolean
@@ -108,6 +120,8 @@ const formElements = ref<{ word: InputElementProps; translation: TextElementProp
 
 const elementsRefs = ref<InstanceType<typeof InputElement>[]>([])
 const formRef = ref<InstanceType<typeof AppForm> | null>(null)
+const elementsContainerRef = ref<HTMLElement | null>(null)
+const elementsContainerStyle = ref<CSSProperties>({ height: "auto", overflow: "visible" })
 const isSubmitting = ref(false)
 
 function addWord() {
@@ -126,25 +140,67 @@ function addWord() {
         }
     })
 
-    const elementsContainer = document.getElementById("word-items-container")
-
-    if (elementsContainer) {
-        const prevHeight = elementsContainer.scrollHeight
-
-        elementsContainer.style.height = `${elementsContainer.scrollHeight}px`
-        elementsContainer.style.overflow = "hidden"
-
-        setTimeout(() => {
-            elementsContainer.style.height = `calc(${elementsContainer.scrollHeight}px + 1rem)`
-
-            window.scrollBy(0, elementsContainer.scrollHeight - prevHeight)
-        }, 1)
-
-        setTimeout(() => {
-            elementsContainer.style.height = "auto"
-            elementsContainer.style.overflow = "visible"
-        }, 170)
+    if (!elementsContainerRef.value) {
+        return
     }
+
+    const prevHeight = elementsContainerRef.value.scrollHeight
+
+    nextTick(() => {
+        if (!elementsContainerRef.value) {
+            return
+        }
+        const newHeight = elementsContainerRef.value.scrollHeight
+
+        elementsContainerStyle.value.height = `${prevHeight}px`
+        elementsContainerStyle.value.overflow = "hidden"
+
+        requestAnimationFrame(() => {
+            elementsContainerStyle.value.height = `${newHeight}px`
+        })
+
+        const onTransitionEnd = () => {
+            elementsContainerStyle.value.height = "auto"
+            elementsContainerStyle.value.overflow = "visible"
+            elementsContainerRef.value!.removeEventListener("transitionend", onTransitionEnd)
+            window.scrollBy(0, newHeight - prevHeight)
+        }
+
+        elementsContainerRef.value.addEventListener("transitionend", onTransitionEnd)
+    })
+}
+
+function removeItem(index: number) {
+    formElements.value.splice(index, 1)
+
+    if (!elementsContainerRef.value) {
+        return
+    }
+
+    const prevHeight = elementsContainerRef.value.scrollHeight
+
+    nextTick(() => {
+        if (!elementsContainerRef.value) {
+            return
+        }
+
+        elementsContainerStyle.value.height = `${prevHeight}px`
+        elementsContainerStyle.value.overflow = "hidden"
+
+        const newHeight = elementsContainerRef.value.scrollHeight
+
+        requestAnimationFrame(() => {
+            elementsContainerStyle.value.height = `${newHeight}px`
+        })
+
+        const onTransitionEnd = () => {
+            elementsContainerStyle.value.height = "auto"
+            elementsContainerStyle.value.overflow = "visible"
+            elementsContainerRef.value!.removeEventListener("transitionend", onTransitionEnd)
+        }
+
+        elementsContainerRef.value.addEventListener("transitionend", onTransitionEnd)
+    })
 }
 
 function handleValidate() {
@@ -185,12 +241,12 @@ function handleSubmit(data: SubmitData) {
     text-align: center;
 }
 
-#word-items-container {
+.word-items-container {
     width: 100%;
     display: flex;
     flex-direction: column;
     row-gap: 1rem;
-    transition: all 0.17s ease-out;
+    transition: height 250ms ease; /* Smooth height transition */
 }
 
 .word-item-add-container {
@@ -206,11 +262,44 @@ function handleSubmit(data: SubmitData) {
     display: flex;
 }
 
+.word-item-side {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-top: 2.5rem;
+}
+
 .word-item-number {
     display: flex;
-    justify-content: end;
     line-height: 1.7rem;
-    padding-top: 2.5rem;
+    justify-content: end;
+}
+
+.word-item-remove {
+    padding-bottom: 0.25rem;
+}
+
+.remove-button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.remove-button:hover,
+.remove-button:focus {
+    filter: brightness(1.2);
+}
+
+.remove-icon {
+    width: 1.75rem;
+    height: 1.75rem;
+    stroke: var(--secondary-font-color);
+    stroke-width: 1.5;
 }
 
 .word-item {
