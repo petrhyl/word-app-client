@@ -1,6 +1,9 @@
 <template>
     <PageWrapper>
-        <PageTitle title="Reset Password" description="We will send you verification e-mail to reset your&nbsp;password" />
+        <PageTitle
+            title="Reset Password"
+            description="We will send you verification e-mail to reset your&nbsp;password"
+        />
         <ForgetPasswordForm
             v-if="!isSent"
             :isLoading="isLoading"
@@ -52,12 +55,15 @@ async function handleSubmit(data: ForgetPasswordRequest) {
     })
 
     if (response.isError) {
-        if (response.errorType === ErrorResponseType.INTERNAL_SERVER_ERROR) {
-            isError.value = true
+        if (response.errorType === ErrorResponseType.FORBIDDEN) {
+            errorMessage.value = "Your e-mail address is not verified yet"
+        } else if (response.errorType === ErrorResponseType.NOT_FOUND) {
+            errorMessage.value = "User with provided e-mail was not found"
+        } else {
+            errorMessage.value = "Something went wrong, please try again later"
         }
 
-        console.error("error while sending e-mail to reset password")
-
+        isError.value = true
         isLoading.value = false
 
         return
