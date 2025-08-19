@@ -6,6 +6,7 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 
 import router, { ERROR_ROUTE_ERRORS, ROUTE_NAMES } from './router'
+import { installAuthGuard } from './plugins/authGuard'
 
 const app = createApp(App)
 
@@ -26,5 +27,7 @@ app.config.errorHandler = (err, _instance, _info) => {
 
 app.use(createPinia())
 app.use(router)
+
+installAuthGuard(app, router)
 
 app.mount('#app')
