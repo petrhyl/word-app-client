@@ -30,14 +30,14 @@ import LoadingCard from "@/components/ui/card/LoadingCard.vue"
 import PrimaryCard from "@/components/ui/card/PrimaryCard.vue"
 import PageTitle from "@/components/ui/page/PageTitle.vue"
 import PageWrapper from "@/components/ui/page/PageWrapper.vue"
-import useCallApi from "@/composables/useCallApi"
+import ApiAccessor from "@/data/ApiAccessor"
 import { ERROR_ROUTE_ERRORS, ROUTE_NAMES } from "@/router"
 import { ExerciseQueryParams } from "@/types/requests"
 import { UserVocabularyLanguagesResponse } from "@/types/responses"
 import { onBeforeMount, ref } from "vue"
 import { useRouter } from "vue-router"
 
-const { callApi } = useCallApi()
+const callApi = ApiAccessor.callApi
 const router = useRouter()
 
 const wordAmountOptions: SelectionOptionProps[] = [

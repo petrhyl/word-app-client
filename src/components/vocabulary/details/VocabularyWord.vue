@@ -45,7 +45,7 @@
 import VocabularyItemForm from "@/components/forms/VocabularyItemForm.vue"
 import ModalWindow from "@/components/single/ModalWindow.vue"
 import AppButton from "@/components/ui/button/AppButton.vue"
-import useCallApi, { ErrorResponseType } from "@/composables/useCallApi"
+import ApiAccessor, { ErrorResponseType } from "@/data/ApiAccessor"
 import { UpdateVocabularyItemRequest, VocabularyItemRequest } from "@/types/requests"
 import { VocabularyItem } from "@/types/responses"
 import { computed, ref } from "vue"
@@ -55,7 +55,7 @@ const props = defineProps<{
     languageId: number
 }>()
 
-const { callApi } = useCallApi()
+const callApi = ApiAccessor.callApi
 
 const vocabularyItem = ref<VocabularyItem>(props.item)
 const isEditing = ref(false)

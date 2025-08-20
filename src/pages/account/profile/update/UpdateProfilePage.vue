@@ -13,15 +13,15 @@
 <script setup lang="ts">
 import UpdateUserForm from "@/components/forms/UpdateUserForm.vue"
 import PageTitle from "@/components/ui/page/PageTitle.vue"
-import useCallApi from "@/composables/useCallApi"
 import useUserAuth from "@/composables/useUserAuth"
+import ApiAccessor from "@/data/ApiAccessor"
 import { ROUTE_NAMES } from "@/router"
 import { UpdateUserRequest } from "@/types/requests"
 import { UserResponse } from "@/types/responses"
 import { ref } from "vue"
 import { useRouter } from "vue-router"
 
-const { callApi } = useCallApi()
+const callApi = ApiAccessor.callApi
 const { user, setUser } = useUserAuth()
 const router = useRouter()
 

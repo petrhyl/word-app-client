@@ -33,7 +33,7 @@ import LoadingCard from '@/components/ui/card/LoadingCard.vue';
 import PrimaryCard from '@/components/ui/card/PrimaryCard.vue';
 import PageTitle from '@/components/ui/page/PageTitle.vue';
 import LanguageVocabularyComponent from '@/components/vocabulary/details/LanguageVocabularyComponent.vue';
-import useCallApi from '@/composables/useCallApi';
+import ApiAccessor from '@/data/ApiAccessor'
 import { ERROR_ROUTE_ERRORS, ROUTE_NAMES } from '@/router';
 import { UserVocabularyLanguage } from '@/types/models';
 import { LanguageVocabularyResponse, VocabularyItem } from '@/types/responses';
@@ -45,7 +45,7 @@ const props = defineProps<{
 
 const limit = 30
 
-const { callApi } = useCallApi()
+const callApi = ApiAccessor.callApi
 
 const language = ref<UserVocabularyLanguage | null>(null)
 const vocabularyItems = ref<VocabularyItem[]>([])
@@ -72,7 +72,7 @@ async function handleShowMore() {
 
     const response = await callApi<null, LanguageVocabularyResponse>({
         method: "GET",
-        endpoint: `/vocabularies/${props.langId}?limit=${limit}&offset=${newOffset}`
+        endpoint: `vocabularies/${props.langId}?limit=${limit}&offset=${newOffset}`
     })
 
     if (response.isError) {
@@ -87,7 +87,7 @@ async function handleShowMore() {
 onBeforeMount(async () => {
     const response = await callApi<null, LanguageVocabularyResponse>({
         method: "GET",
-        endpoint: `/vocabularies/${props.langId}/unlearned?limit=${limit}&offset=${offset.value}`
+        endpoint: `vocabularies/${props.langId}/unlearned?limit=${limit}&offset=${offset.value}`
     })
 
     if (response.isError) {

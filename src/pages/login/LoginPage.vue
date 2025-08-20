@@ -24,10 +24,10 @@ import PageWrapper from "@/components/ui/page/PageWrapper.vue"
 import { ref } from "vue"
 import { UserLogin } from "@/types/requests"
 import { useUserStore } from "@/store/user/userStore"
-import { ErrorResponseType } from "@/composables/useCallApi"
 import { onBeforeRouteUpdate, RouteLocationNormalizedLoadedGeneric, useRouter } from "vue-router"
 import { ROUTE_NAMES } from "@/router"
 import AppButton from "@/components/ui/button/AppButton.vue"
+import { ErrorResponseType } from "@/data/ApiAccessor"
 
 const { login } = useUserStore()
 const router = useRouter()

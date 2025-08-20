@@ -40,7 +40,7 @@ import AppButton from "@/components/ui/button/AppButton.vue"
 import PrimaryCard from "@/components/ui/card/PrimaryCard.vue"
 import PageTitle from "@/components/ui/page/PageTitle.vue"
 import PageWrapper from "@/components/ui/page/PageWrapper.vue"
-import useCallApi, { ErrorResponseType } from "@/composables/useCallApi"
+import ApiAccessor, { ErrorResponseType } from "@/data/ApiAccessor"
 import { ROUTE_NAMES } from "@/router"
 import { useUserStore } from "@/store/user/userStore"
 import { SendVerificationEmailRequest, UserRegistration } from "@/types/requests"
@@ -49,7 +49,7 @@ import { computed, ref } from "vue"
 const SECONDS_TO_RESEND = 60
 
 const { register } = useUserStore()
-const { callApi } = useCallApi()
+const callApi = ApiAccessor.callApi
 
 const isLoading = ref(false)
 const isError = ref(false)
@@ -110,17 +110,13 @@ async function handleSubmit(data: UserRegistration) {
 async function resendEmail() {
     startDecreaseCounter()
 
-    const response = await callApi<SendVerificationEmailRequest, { message: string }>({
+    await callApi<SendVerificationEmailRequest, { message: string }>({
         method: "POST",
         endpoint: "/user/send",
         body: {
             email: userEmail.value!
         }
     })
-
-    if (response.isError) {
-        console.error(response.error || "Failed to resend verification email")
-    }
 }
 </script>
 

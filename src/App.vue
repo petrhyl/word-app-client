@@ -6,33 +6,8 @@
 </template>
 
 <script setup lang="ts">
-import { RouterView, useRouter } from "vue-router"
+import { RouterView} from "vue-router"
 import TopBar from "@/components/single/top-bar/TopBar.vue"
-import { ROUTE_NAMES } from "./router"
-import useUserAuth from "./composables/useUserAuth"
-
-const router = useRouter()
-const { isRefreshTokenExpired, accessToken } = useUserAuth()
-
-router.beforeEach((to, from, next) => {
-    if (isRefreshTokenExpired() && to.name !== ROUTE_NAMES.home) {
-        return next({ name: ROUTE_NAMES.home })
-    }
-
-    if (accessToken.value === null && to.meta.authRequired) {
-        return next({ name: ROUTE_NAMES.login })
-    }
-
-    if (accessToken.value !== null && to.meta.authRestricted) {
-        if (from.meta.authRequired) {
-            return next({ name: ROUTE_NAMES.home })
-        }
-
-        return next(from)
-    }
-
-    next()
-})
 </script>
 
 <style lang="css" scoped>

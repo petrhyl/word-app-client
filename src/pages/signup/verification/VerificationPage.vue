@@ -28,7 +28,7 @@ import LoadingSpinner from "@/components/ui/button/LoadingSpinner.vue"
 import PrimaryCard from "@/components/ui/card/PrimaryCard.vue"
 import PageTitle from "@/components/ui/page/PageTitle.vue"
 import PageWrapper from "@/components/ui/page/PageWrapper.vue"
-import useCallApi from "@/composables/useCallApi"
+import ApiAccessor from "@/data/ApiAccessor"
 import { ROUTE_NAMES } from "@/router"
 import { FaceFrownIcon, FaceSmileIcon } from "@heroicons/vue/24/solid"
 import { computed, onBeforeMount, ref } from "vue"
@@ -37,7 +37,7 @@ const props = defineProps<{
     token: string
 }>()
 
-const { callApi } = useCallApi()
+const callApi = ApiAccessor.callApi
 
 const isKeyValid = ref(false)
 const isLoading = ref(true)
@@ -51,7 +51,7 @@ const getDescription = computed(() => {
 })
 
 onBeforeMount(async () => {
-    const response = await callApi<null, { message: string }>({ method: "POST", endpoint: `/user/verify/${props.token}` })
+    const response = await callApi<null, { message: string }>({ method: "POST", endpoint: `user/verify/${props.token}` })
 
     isKeyValid.value = !response.isError
     isLoading.value = false

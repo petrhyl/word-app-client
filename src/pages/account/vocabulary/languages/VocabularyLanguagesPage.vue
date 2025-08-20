@@ -29,13 +29,13 @@ import LoadingCard from "@/components/ui/card/LoadingCard.vue"
 import PrimaryCard from "@/components/ui/card/PrimaryCard.vue"
 import PageTitle from "@/components/ui/page/PageTitle.vue"
 import LanguageList from "@/components/vocabulary/LanguageList.vue"
-import useCallApi from "@/composables/useCallApi"
+import ApiAccessor from "@/data/ApiAccessor"
 import { ERROR_ROUTE_ERRORS } from "@/router"
 import { UserVocabularyLanguage } from "@/types/models"
 import { UserVocabularyLanguagesResponse } from "@/types/responses"
 import { computed, onBeforeMount, ref } from "vue"
 
-const { callApi } = useCallApi()
+const callApi = ApiAccessor.callApi
 
 const isLoading = ref(true)
 const isDeleting = ref(false)

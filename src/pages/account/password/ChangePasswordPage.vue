@@ -28,8 +28,8 @@ import ChangePasswordForm from "@/components/forms/ChangePasswordForm.vue"
 import AppButton from "@/components/ui/button/AppButton.vue"
 import PrimaryCard from "@/components/ui/card/PrimaryCard.vue"
 import PageTitle from "@/components/ui/page/PageTitle.vue"
-import useCallApi, { ErrorResponseType } from "@/composables/useCallApi"
 import useUserAuth from "@/composables/useUserAuth"
+import ApiAccessor, { ErrorResponseType } from "@/data/ApiAccessor"
 import { ROUTE_NAMES } from "@/router"
 import { ChangePasswordRequest } from "@/types/requests"
 import { AuthResponse } from "@/types/responses"
@@ -37,7 +37,7 @@ import { FaceSmileIcon } from "@heroicons/vue/24/solid"
 import { ref } from "vue"
 
 
-const { callApi } = useCallApi()
+const callApi = ApiAccessor.callApi
 const { setTokens } = useUserAuth()
 
 const isLoading = ref(false)
@@ -54,8 +54,6 @@ async function handleSubmit(data: ChangePasswordRequest) {
     if (isLoading.value) {
         return
     }
-
-    console.log(data)
 
     isLoading.value = true
 
@@ -77,12 +75,9 @@ async function handleSubmit(data: ChangePasswordRequest) {
         return
     }
 
-    setTokens(
-        response.data!.auth.token.accessToken,
-        response.data!.auth.token.accessTokenExpiresIn,
-        response.data!.auth.token.refreshToken,
-        response.data!.auth.token.refreshTokenExpireIn
-    )
+    if (response.data?.auth.token) {        
+        setTokens(response.data.auth.token)
+    }
 
     isChanged.value = true
     isLoading.value = false

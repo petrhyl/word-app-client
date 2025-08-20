@@ -26,7 +26,7 @@ import AppButton from "@/components/ui/button/AppButton.vue"
 import PrimaryCard from "@/components/ui/card/PrimaryCard.vue"
 import PageTitle from "@/components/ui/page/PageTitle.vue"
 import PageWrapper from "@/components/ui/page/PageWrapper.vue"
-import useCallApi from "@/composables/useCallApi"
+import ApiAccessor from "@/data/ApiAccessor"
 import { ROUTE_NAMES } from "@/router"
 import { ResetPasswordRequest } from "@/types/requests"
 import { ref } from "vue"
@@ -35,7 +35,7 @@ const props = defineProps<{
     token: string
 }>()
 
-const { callApi } = useCallApi()
+const callApi = ApiAccessor.callApi
 
 const isLoading = ref(false)
 const isError = ref(false)
@@ -56,7 +56,7 @@ async function handleSubmit(password: string) {
 
     const response = await callApi<ResetPasswordRequest, { message: string }>({
         method: "PUT",
-        endpoint: "/user/reset-password",
+        endpoint: "user/reset-password",
         body: { password, verificationKey: props.token }
     })
 

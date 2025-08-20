@@ -9,7 +9,7 @@ export type AuthToken = {
     accessToken: string;
     accessTokenExpiresIn: number;
     refreshToken: string;
-    refreshTokenExpireIn: number;
+    refreshTokenExpiresIn: number;
 }
 
 export type AuthUser = {

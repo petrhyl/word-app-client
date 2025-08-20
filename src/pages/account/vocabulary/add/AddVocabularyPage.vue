@@ -66,7 +66,6 @@ import CheckWordForm from "@/components/forms/CheckWordForm.vue"
 import AppButton from "@/components/ui/button/AppButton.vue"
 import PrimaryCard from "@/components/ui/card/PrimaryCard.vue"
 import PageTitle from "@/components/ui/page/PageTitle.vue"
-import useCallApi, { ErrorResponseType } from "@/composables/useCallApi"
 import { ROUTE_NAMES } from "@/router"
 import { UserVocabularyLanguage } from "@/types/models"
 import { CheckWordRequest, CreateVocabularyRequest, VocabularyItemRequest } from "@/types/requests"
@@ -77,8 +76,9 @@ import { computed, onBeforeMount, ref } from "vue"
 import { onBeforeRouteUpdate, RouteLocationNormalizedGeneric, useRoute, useRouter } from "vue-router"
 import LoadingCard from "@/components/ui/card/LoadingCard.vue"
 import FadeTransition from "@/components/transitions/FadeTransition.vue"
+import ApiAccessor, { ErrorResponseType } from "@/data/ApiAccessor"
 
-const { callApi } = useCallApi()
+const callApi = ApiAccessor.callApi
 const route = useRoute()
 const router = useRouter()
 
@@ -184,11 +184,15 @@ async function handleSubmitVocabulary(data: VocabularyItemRequest[]) {
         isAddFormLoading.value = false
 
         if (response.errorType === ErrorResponseType.CONFLICT) {
-            const existingWord = response.error?.existingWord
-
+            
             const errorMessageText = "One or more words already exist in your vocabulary."
-
-            if (existingWord) {
+            
+            if (typeof response.error === 'object' 
+                && response.error !== null 
+                && 'existingWord' in response.error 
+                && response.error.existingWord
+            ) {
+                const existingWord = response.error.existingWord
                 addFormErrorMessage.value = `${errorMessageText} Existing word: '${existingWord}''`
 
                 return

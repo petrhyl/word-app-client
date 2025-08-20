@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomePage from '@/pages/HomePage.vue'
 import NotFoundPage from '@/pages/NotFoundPage.vue'
 import { parseToIntOrReturnNull } from '@/utils/functions'
+import TokenAccessor from '@/data/TokenAccessor'
 
 
 export const ROUTE_NAMES = {
@@ -186,6 +187,20 @@ router.onError((err) => {
 
   router.addRoute({ name: ROUTE_NAMES.error, path: '/error', component: () => import('@/pages/ErrorPage.vue') })
   router.replace({ name: ROUTE_NAMES.error, query: errorQuery })
+})
+
+router.beforeEach((to, _from, next) => {
+  const accessToken = TokenAccessor.instance.accessToken
+
+  if (to.meta.authRequired && !accessToken) {
+    return next({ name: ROUTE_NAMES.login })
+  }
+
+  if (to.meta.authRestricted && accessToken) {
+    return next({ name: ROUTE_NAMES.home })
+  }
+
+  next()
 })
 
 export default router

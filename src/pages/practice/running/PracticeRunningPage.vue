@@ -98,7 +98,7 @@ import PrimaryCard from "@/components/ui/card/PrimaryCard.vue"
 import PageTitle from "@/components/ui/page/PageTitle.vue"
 import PageWrapper from "@/components/ui/page/PageWrapper.vue"
 import ProgressBar from "@/components/ui/ProgressBar.vue"
-import useCallApi from "@/composables/useCallApi"
+import ApiAccessor from "@/data/ApiAccessor"
 import { ERROR_ROUTE_ERRORS, ROUTE_NAMES } from "@/router"
 import { ExerciseResultItem, ExerciseResultRequest } from "@/types/requests"
 import { VocabularyItem, ExerciseResponse } from "@/types/responses"
@@ -107,7 +107,7 @@ import { computed, onBeforeMount, ref } from "vue"
 import { useRoute } from "vue-router"
 
 const route = useRoute()
-const { callApi } = useCallApi()
+const callApi = ApiAccessor.callApi
 
 const exerciseWords = ref<VocabularyItem[]>([])
 const isExerciseLoaded = ref(false)

@@ -16,14 +16,14 @@
 import CreateLanguageForm from "@/components/forms/CreateLanguageForm.vue"
 import LoadingCard from "@/components/ui/card/LoadingCard.vue"
 import PageTitle from "@/components/ui/page/PageTitle.vue"
-import useCallApi from "@/composables/useCallApi"
+import ApiAccessor from "@/data/ApiAccessor"
 import { ROUTE_NAMES } from "@/router"
 import { AppLanguage, UserVocabularyLanguage } from "@/types/models"
 import { LanguageResponse } from "@/types/responses"
 import { onBeforeMount, ref } from "vue"
 import { useRouter } from "vue-router"
 
-const { callApi } = useCallApi()
+const callApi = ApiAccessor.callApi
 const router = useRouter()
 
 const allowedLanguages = ref<AppLanguage[]>([])
@@ -39,7 +39,7 @@ async function handleSubmit(data: AppLanguage) {
 
     const response = await callApi<null, { language: UserVocabularyLanguage }>({
         method: "POST",
-        endpoint: `/languages/${data.code}`
+        endpoint: `languages/${data.code}`
     })
 
     if (response.isError) {
@@ -57,7 +57,7 @@ function handleValidState() {
 }
 
 onBeforeMount(async () => {
-    const response = await callApi<null, LanguageResponse>({ method: "GET", endpoint: "/languages/allowed" })
+    const response = await callApi<null, LanguageResponse>({ method: "GET", endpoint: "languages/allowed" })
     if (!response.isError) {
         allowedLanguages.value = response.data!.languages
     }

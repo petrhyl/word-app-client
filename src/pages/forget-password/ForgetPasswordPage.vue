@@ -25,11 +25,11 @@ import ForgetPasswordForm from "@/components/forms/ForgetPasswordForm.vue"
 import PrimaryCard from "@/components/ui/card/PrimaryCard.vue"
 import PageTitle from "@/components/ui/page/PageTitle.vue"
 import PageWrapper from "@/components/ui/page/PageWrapper.vue"
-import useCallApi, { ErrorResponseType } from "@/composables/useCallApi"
+import ApiAccessor, { ErrorResponseType } from "@/data/ApiAccessor"
 import { ForgetPasswordRequest } from "@/types/requests"
 import { ref } from "vue"
 
-const { callApi } = useCallApi()
+const callApi = ApiAccessor.callApi
 
 const isLoading = ref(false)
 const isError = ref(false)
