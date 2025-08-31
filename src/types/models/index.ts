@@ -6,15 +6,8 @@ export type AppUser = {
 }
 
 export type AuthToken = {
-    accessToken: string;
-    accessTokenExpiresIn: number;
-    refreshToken: string;
-    refreshTokenExpiresIn: number;
-}
-
-export type AuthUser = {
-    user: AppUser;
-    token: AuthToken;
+    token: string;
+    expiresIn: number;
 }
 
 export type AppLanguage = {

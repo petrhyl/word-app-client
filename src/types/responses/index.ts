@@ -1,9 +1,12 @@
-import { AppLanguage, AppUser, AuthToken, UserVocabularyLanguage } from "../models";
+import { AppLanguage, AppUser, AuthToken, UserVocabularyLanguage } from "../models"
+
+export type TokenResponse = {
+    accessToken: AuthToken,
+    refreshToken: AuthToken
+}
 
 export type RefreshTokenResponse = {
-    auth: {
-        token: AuthToken
-    }
+    authToken: TokenResponse
 }
 
 export type UserResponse = {
@@ -12,12 +15,11 @@ export type UserResponse = {
 
 export type AuthResponse = {
     user: AppUser
-    token: AuthToken
+    authToken: TokenResponse
 }
 
 export type UserRegistrationResponse = {
-    auth?: AuthResponse
-    registration?: {
+    registration: {
         userEmail: string
         message: string
     }

@@ -1,6 +1,5 @@
-import { AuthToken } from "@/types/models"
 import { IAuthTokenAccessor } from "./ApiAccessor"
-import { RefreshTokenResponse } from "@/types/responses"
+import { RefreshTokenResponse, TokenResponse } from "@/types/responses"
 
 export default class TokenAccessor implements IAuthTokenAccessor {
     private static readonly ACCESS_TOKEN_KEY = 'aut-w'
@@ -48,18 +47,18 @@ export default class TokenAccessor implements IAuthTokenAccessor {
         return this._refreshTokenExpiry ? new Date(this._refreshTokenExpiry) : null
     }
 
-    setAuthTokens(authTokens: RefreshTokenResponse | AuthToken): void {
-        let tokenObject: AuthToken
-        if ('auth' in authTokens) {
-            tokenObject = authTokens.auth.token
+    setAuthTokens(authTokens: RefreshTokenResponse | TokenResponse): void {
+        let tokenObject: TokenResponse
+        if ('authToken' in authTokens) {
+            tokenObject = authTokens.authToken
         } else {
-            tokenObject = authTokens as AuthToken
+            tokenObject = authTokens as TokenResponse
         }
 
-        this._accessToken = tokenObject.accessToken
-        this._refreshToken = tokenObject.refreshToken
-        this._accessTokenExpiry = tokenObject.accessTokenExpiresIn
-        this._refreshTokenExpiry = tokenObject.refreshTokenExpiresIn
+        this._accessToken = tokenObject.accessToken.token
+        this._refreshToken = tokenObject.refreshToken.token
+        this._accessTokenExpiry = tokenObject.accessToken.expiresIn
+        this._refreshTokenExpiry = tokenObject.refreshToken.expiresIn
 
         localStorage.setItem(TokenAccessor.ACCESS_TOKEN_KEY, this._accessToken)
         localStorage.setItem(TokenAccessor.ACCESS_TOKEN_EXPIERY_KEY, this._accessTokenExpiry.toString())

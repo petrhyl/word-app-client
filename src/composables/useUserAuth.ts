@@ -1,6 +1,6 @@
 import TokenAccessor from "@/data/TokenAccessor"
 import { useUserStore } from "@/store/user/userStore"
-import { AuthToken } from "@/types/models"
+import { TokenResponse } from "@/types/responses"
 import { storeToRefs } from "pinia"
 import { computed, ref } from "vue"
 
@@ -22,7 +22,7 @@ export default function useUserAuth() {
         return tokenAccessor.value.isRefreshTokenExpired()
     }
 
-    function setTokens(tokens: AuthToken) {
+    function setTokens(tokens: TokenResponse) {
         tokenAccessor.value.setAuthTokens(tokens)
     }
 

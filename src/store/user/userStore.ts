@@ -21,7 +21,7 @@ export const useUserStore = defineStore('userStore', () => {
         if (response.data?.auth) {
             userRef.value = response.data.auth.user
 
-            tokenAccessor.setAuthTokens(response.data.auth.token)
+            tokenAccessor.setAuthTokens(response.data.auth.authToken)
         }
 
         return response
