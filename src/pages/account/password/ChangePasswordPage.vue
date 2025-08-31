@@ -75,8 +75,8 @@ async function handleSubmit(data: ChangePasswordRequest) {
         return
     }
 
-    if (response.data?.auth.token) {        
-        setTokens(response.data.auth.token)
+    if (response.data?.auth.authToken) {        
+        setTokens(response.data.auth.authToken)
     }
 
     isChanged.value = true
